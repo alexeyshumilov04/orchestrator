@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  <uri name="https://example.org/geomodel/evolution/v4/00_core" uri="modules/00_core.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/01_governance" uri="modules/01_governance.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/02_data_qc" uri="modules/02_data_qc.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/03_stratigraphy" uri="modules/03_stratigraphy.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/04_structural" uri="modules/04_structural.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/05_facies" uri="modules/05_facies.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/06_petrophysics" uri="modules/06_petrophysics.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/07_geostatistics" uri="modules/07_geostatistics.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/08_grid_volumetrics" uri="modules/08_grid_volumetrics.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/09_uncertainty" uri="modules/09_uncertainty.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/10_dynamic_handoff" uri="modules/10_dynamic_handoff.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/11_tnavigator" uri="modules/11_tnavigator.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/12_lifecycle_evolution" uri="modules/12_lifecycle_evolution.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/13_regional_play" uri="modules/13_regional_play.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/14_pressure_welltest" uri="modules/14_pressure_welltest.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/15_geomechanics" uri="modules/15_geomechanics.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/16_data_ontology" uri="modules/16_data_ontology.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/17_qaqc_rules" uri="modules/17_qaqc_rules.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/18_software_bridge" uri="modules/18_software_bridge.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/19_sources_alignments" uri="modules/19_sources_alignments.rdf"/>
+  <uri name="https://example.org/geomodel/evolution/v4/20_agent_knowledge" uri="modules/20_agent_knowledge.rdf"/>
+</catalog>

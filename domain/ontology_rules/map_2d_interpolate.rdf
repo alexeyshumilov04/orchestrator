@@ -1,0 +1,328 @@
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth%20%3C%3D%202000> <http://www.w3.org/2000/01/rdf-schema#label> "idw_azimuth <= 2000" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_iterations> <https://example.org/tnav#code> "drag_iterations" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__grfs> <https://example.org/tnav#code> "grfs" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__sgs_transform_distribution> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__universal> <http://www.w3.org/2000/01/rdf-schema#label> "universal" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_radius%20%3C%3D%2010000> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_radius <= 10000" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__log_normal> <https://example.org/tnav#code> "log_normal" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__cubic> <http://www.w3.org/2000/01/rdf-schema#label> "cubic" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__power_parameter%20%3C%3D%2010> <https://example.org/tnav#code> "power_parameter <= 10" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__beta> <http://www.w3.org/2000/01/rdf-schema#label> "beta" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_x> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__counts_x%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__do_grid_refinement> <https://example.org/tnav#тип_данных> "boolean" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__second_derivative_coefficient> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__second_derivative_coefficient%20%3C%201> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_radius%20%3E%200> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_radius > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__variogram_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__spherical> .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__drag_coefficient> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_nx> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__step_y> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <https://example.org/tnav#code> "interpolation_type" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__gauss> <https://example.org/tnav#code> "gauss" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#создает> <https://example.org/tnav#function-entity__map_2d_interpolate__result_map_2d%28obj_name%29> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__nugget_effect> <https://example.org/tnav#code> "nugget_effect" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__refinement_steps%20%3C%3D%20100> <https://example.org/tnav#code> "refinement_steps <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__use_advanced> <https://example.org/tnav#тип_данных> "boolean" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_mode> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__ordinary> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__grfs> <http://www.w3.org/2000/01/rdf-schema#label> "grfs" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__log_normal> <http://www.w3.org/2000/01/rdf-schema#label> "log_normal" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_radius> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_radius%20%3C%3D%2010000> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__first_derivative_coefficient%20%3E%200> <http://www.w3.org/2000/01/rdf-schema#label> "first_derivative_coefficient > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_ny%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "start_ny <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__exponential> <https://example.org/tnav#code> "exponential" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points_count> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points_count%20%3C%3D%20100> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__universal> <https://example.org/tnav#code> "universal" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs_transform_distribution> <https://example.org/tnav#code> "sgs_transform_distribution" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth%20%3C%3D%202000> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__first_derivative_coefficient%20%3E%200> <https://example.org/tnav#code> "first_derivative_coefficient > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__first_derivative_coefficient> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__first_derivative_coefficient%20%3E%200> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__power_parameter> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__power_parameter%20%3C%3D%2010> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__beta> <https://example.org/tnav#code> "beta" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_radius%20%3E%200> <https://example.org/tnav#code> "kriging_radius > 0" .
+<https://example.org/tnav#имеет_условие> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_iterations> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__drag_iterations%20%3E%200> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_iterations%20%3C%3D%20100> <https://example.org/tnav#code> "drag_iterations <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_global_mean> <https://example.org/tnav#code> "kriging_global_mean" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs_distribution_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__source_data> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__do_grid_refinement> <http://www.w3.org/2000/01/rdf-schema#label> "do_grid_refinement" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_y%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "counts_y >= 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_axis_ratio> <http://www.w3.org/2000/01/rdf-schema#label> "idw_axis_ratio" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_x> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__splines> <http://www.w3.org/2000/01/rdf-schema#label> "splines" .
+<https://example.org/tnav#имеет_параметр> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__amazonas> <http://www.w3.org/2000/01/rdf-schema#label> "amazonas" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__result_map_2d%28obj_name%29> <http://www.w3.org/2000/01/rdf-schema#label> "result_map_2d(obj_name)" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_x> <http://www.w3.org/2000/01/rdf-schema#label> "step_x" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__counts_y> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__splines_global> <http://www.w3.org/2000/01/rdf-schema#label> "splines_global" .
+<https://example.org/tnav#шаблон_кода> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__refinement_steps> <https://example.org/tnav#code> "refinement_steps" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_axis_ratio%20%3C%3D%2010> <https://example.org/tnav#code> "idw_axis_ratio <= 10" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_x%20%3E%3D%201> <https://example.org/tnav#code> "step_x >= 10" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs_distribution_type> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__power_parameter> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_search_radius> <http://www.w3.org/2000/01/rdf-schema#label> "idw_search_radius" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_ny> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__second_derivative_coefficient> <https://example.org/tnav#code> "second_derivative_coefficient" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_ny> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__start_ny%20%3C%3D%20100> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth%20%3C%3D%202000> <https://example.org/tnav#code> "idw_azimuth <= 2000" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_ny%20%3E%200> <http://www.w3.org/2000/01/rdf-schema#label> "start_ny > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_y> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_ny%20%3E%200> <https://example.org/tnav#code> "start_ny > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_y> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__step_y%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_radius%20%3C%3D%2010000> <https://example.org/tnav#code> "kriging_radius <= 10000" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_axis_ratio> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__idw_axis_ratio%20%3C%3D%2010> .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__counts_x> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_y> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__step_y%20%3C%3D%20100> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__cubic> <https://example.org/tnav#code> "cubic" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__ordinary> <https://example.org/tnav#code> "ordinary" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__do_grid_refinement> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_y%20%3E%3D%201> <https://example.org/tnav#code> "counts_y >= 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__cauchy> <https://example.org/tnav#code> "cauchy" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_nx> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__start_nx%20%3C%3D%20100> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__power_parameter%20%3E%3D%200> <http://www.w3.org/2000/01/rdf-schema#label> "power_parameter >= 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs_distribution_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__normal> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__spherical> <https://example.org/tnav#code> "spherical" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_iterations%20%3E%200> <http://www.w3.org/2000/01/rdf-schema#label> "drag_iterations > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_x%20%3C%3D%20500> <https://example.org/tnav#code> "counts_x <= 500" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_coefficient> <https://example.org/tnav#тип_данных> "float" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__variogram_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__cauchy> .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__second_derivative_coefficient> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_y%20%3E%3D%201> <https://example.org/tnav#code> "step_y >= 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth%20%3E%3D%200> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points_count> <https://example.org/tnav#code> "kriging_points_count" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__second_derivative_coefficient> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__second_derivative_coefficient%20%3E%200> .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__do_drag> <https://example.org/tnav#code> "do_drag" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_iterations%20%3E%200> <https://example.org/tnav#code> "drag_iterations > 0" .
+<https://example.org/tnav#тип_данных> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points_count%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_points_count >= 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs_distribution_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__uniform> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points%20%3E%200> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs_transform_distribution> <http://www.w3.org/2000/01/rdf-schema#label> "sgs_transform_distribution" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__amazonas> <https://example.org/tnav#code> "amazonas" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__idw_axis_ratio> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_iterations> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__drag_iterations%20%3C%3D%20100> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_x> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__counts_x%20%3C%3D%20500> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__simple> <http://www.w3.org/2000/01/rdf-schema#label> "simple" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__start_nx> .
+<https://example.org/tnav#ComputationalFunction> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__abos> <http://www.w3.org/2000/01/rdf-schema#label> "abos" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__simple> <https://example.org/tnav#code> "simple" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__grid_adjust_mode> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__counts> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_x%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "step_x <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__grid_adjust_mode> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_y> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__counts_y%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs_distribution_type> <https://example.org/tnav#code> "sgs_distribution_type" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_coefficient> <https://example.org/tnav#code> "drag_coefficient" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_x%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "counts_x >= 1" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points_count> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_y%20%3C%3D%20500> <http://www.w3.org/2000/01/rdf-schema#label> "counts_y <= 500" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points> <https://example.org/tnav#code> "kriging_points" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_nx%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "start_nx <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__spherical> <http://www.w3.org/2000/01/rdf-schema#label> "spherical" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_y%20%3C%3D%20500> <https://example.org/tnav#code> "counts_y <= 500" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__refinement_steps> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_x%20%3C%3D%20500> <http://www.w3.org/2000/01/rdf-schema#label> "counts_x <= 500" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__power_parameter> <http://www.w3.org/2000/01/rdf-schema#label> "power_parameter" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__normal> <http://www.w3.org/2000/01/rdf-schema#label> "normal" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging> <http://www.w3.org/2000/01/rdf-schema#label> "kriging" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__refinement_steps> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__refinement_steps%20%3C%3D%20100> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth%20%3E%3D%200> <http://www.w3.org/2000/01/rdf-schema#label> "idw_azimuth >= 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__do_grid_refinement> <https://example.org/tnav#code> "do_grid_refinement" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_axis_ratio> <https://example.org/tnav#code> "idw_axis_ratio" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__use_kriging_global_mean> <https://example.org/tnav#code> "use_kriging_global_mean" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__sgs_distribution_type> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_x> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__step_x%20%3C%3D%20100> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__do_drag> <https://example.org/tnav#тип_данных> "boolean" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__well_atributes_table%28obj_name%29> <https://example.org/tnav#тип_данных> "well_atributes" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts> <https://example.org/tnav#code> "counts" .
+<https://example.org/tnav#возможное_значение> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__variogram_type> <http://www.w3.org/2000/01/rdf-schema#label> "variogram_type" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points%20%3C%3D%20100> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__result_map_2d%28obj_name%29> <https://example.org/tnav#code> "result_map_2d(obj_name)" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_x> <https://example.org/tnav#code> "step_x" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__first_derivative_coefficient> <http://www.w3.org/2000/01/rdf-schema#label> "first_derivative_coefficient" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_coefficient> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__drag_coefficient%20%3C%201> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_y> <https://example.org/tnav#code> "counts_y" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth> <http://www.w3.org/2000/01/rdf-schema#label> "idw_azimuth" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_mode> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points_count%20%3E%3D%201> <https://example.org/tnav#code> "kriging_points_count >= 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw> <http://www.w3.org/2000/01/rdf-schema#label> "idw" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__ordinary> <http://www.w3.org/2000/01/rdf-schema#label> "ordinary" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__first_derivative_coefficient%20%3C%201> <http://www.w3.org/2000/01/rdf-schema#label> "first_derivative_coefficient < 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_search_radius> <https://example.org/tnav#code> "idw_search_radius" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_radius> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points%20%3E%200> <https://example.org/tnav#code> "kriging_points > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__least_squares> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_x%20%3E%3D%201> <https://example.org/tnav#code> "counts_x >= 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__splines> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points_count%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_points_count <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_mode> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_mode" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__least_squares> <http://www.w3.org/2000/01/rdf-schema#label> "least_squares" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_y%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "step_y >= 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points_count> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_points_count" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__do_drag> <http://www.w3.org/2000/01/rdf-schema#label> "do_drag" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points_count> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points_count%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging> <https://example.org/tnav#code> "kriging" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__convergent> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__sgs> .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__first_derivative_coefficient> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__use_advanced> <http://www.w3.org/2000/01/rdf-schema#label> "use_advanced" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_radius> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_radius%20%3E%200> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__refinement_steps%20%3E%200> <http://www.w3.org/2000/01/rdf-schema#label> "refinement_steps > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_mode> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__universal> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__power_parameter%20%3E%3D%200> <https://example.org/tnav#code> "power_parameter >= 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__variogram_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__gauss> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_x%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "step_x >= 10" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__grid_adjust_mode> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__step> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__power_parameter> <https://example.org/tnav#code> "power_parameter" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__normal> <https://example.org/tnav#code> "normal" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth%20%3E%3D%200> <https://example.org/tnav#code> "idw_azimuth >= 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_coefficient> <http://www.w3.org/2000/01/rdf-schema#label> "drag_coefficient" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__variogram_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__nugget_effect> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_nx%20%3E%200> <http://www.w3.org/2000/01/rdf-schema#label> "start_nx > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points%20%3E%200> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_points > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_axis_ratio> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__idw_axis_ratio%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw> <https://example.org/tnav#code> "idw" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__idw_search_radius> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_global_mean%20%3E%3D%200> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_global_mean >= 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_nx> <https://example.org/tnav#code> "start_nx" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_global_mean> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_global_mean%20%3E%3D%200> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_points" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_nx> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__start_nx%20%3E%200> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__refinement_steps> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__refinement_steps%20%3E%200> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_global_mean%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_global_mean <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points_count%20%3C%3D%20100> <https://example.org/tnav#code> "kriging_points_count <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__uniform> <https://example.org/tnav#code> "uniform" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__abos> <https://example.org/tnav#code> "abos" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_axis_ratio> <https://example.org/tnav#тип_данных> "float" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_x> <http://www.w3.org/2000/01/rdf-schema#label> "counts_x" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_x%20%3C%3D%20100> <https://example.org/tnav#code> "step_x <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__variogram_type> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__variogram_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__exponential> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__first_derivative_coefficient%20%3C%201> <https://example.org/tnav#code> "first_derivative_coefficient < 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__use_kriging_global_mean> <http://www.w3.org/2000/01/rdf-schema#label> "use_kriging_global_mean" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts> <http://www.w3.org/2000/01/rdf-schema#label> "counts" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_y> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__step_x> .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_global_mean> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__use_advanced> <https://example.org/tnav#code> "use_advanced" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_radius> <https://example.org/tnav#code> "kriging_radius" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_coefficient> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__drag_coefficient%20%3E%200> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_nx%20%3C%3D%20100> <https://example.org/tnav#code> "start_nx <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step> <http://www.w3.org/2000/01/rdf-schema#label> "step" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__least_squares> <https://example.org/tnav#code> "least_squares" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__grid_adjust_mode> <http://www.w3.org/2000/01/rdf-schema#label> "grid_adjust_mode" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_x> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__step_x%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__de_vijs> <http://www.w3.org/2000/01/rdf-schema#label> "de_vijs" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_radius> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_ny> <https://example.org/tnav#code> "start_ny" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__grfs> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__refinement_steps%20%3E%200> <https://example.org/tnav#code> "refinement_steps > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_ny> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__start_ny%20%3E%200> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__well_atributes_table%28obj_name%29> <http://www.w3.org/2000/01/rdf-schema#label> "well_atributes_table(obj_name)" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__de_vijs> <https://example.org/tnav#code> "de_vijs" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_axis_ratio%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "idw_axis_ratio >= 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__variogram_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__de_vijs> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__well_atributes_table%28obj_name%29> <https://example.org/tnav#code> "well_atributes_table(obj_name)" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__second_derivative_coefficient%20%3E%200> <http://www.w3.org/2000/01/rdf-schema#label> "second_derivative_coefficient > 0" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__variogram_type> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__variogram_type> <https://example.org/tnav#code> "variogram_type" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_iterations> <http://www.w3.org/2000/01/rdf-schema#label> "drag_iterations" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__first_derivative_coefficient> <https://example.org/tnav#code> "first_derivative_coefficient" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_coefficient%20%3C%201> <http://www.w3.org/2000/01/rdf-schema#label> "drag_coefficient < 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__power_parameter> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__power_parameter%20%3E%3D%200> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__variogram_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__cubic> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs_distribution_type> <http://www.w3.org/2000/01/rdf-schema#label> "sgs_distribution_type" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth> <https://example.org/tnav#code> "idw_azimuth" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth%20%3C%3D%20360> <http://www.w3.org/2000/01/rdf-schema#label> "idw_azimuth <= 360" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__uniform> <http://www.w3.org/2000/01/rdf-schema#label> "uniform" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__second_derivative_coefficient%20%3C%201> <https://example.org/tnav#code> "second_derivative_coefficient < 1" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__start_ny> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_coefficient%20%3E%200> <http://www.w3.org/2000/01/rdf-schema#label> "drag_coefficient > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_y%20%3C%3D%20100> <https://example.org/tnav#code> "step_y <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_x> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs> <http://www.w3.org/2000/01/rdf-schema#label> "sgs" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_y> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__counts_y%20%3C%3D%20500> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_nx%20%3E%200> <https://example.org/tnav#code> "start_nx > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__first_derivative_coefficient> <https://example.org/tnav#тип_данных> "float" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__result_map_2d%28obj_name%29> <https://example.org/tnav#тип_данных> "map_2d" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_global_mean%20%3E%3D%200> <https://example.org/tnav#code> "kriging_global_mean >= 0" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#использует> <https://example.org/tnav#function-entity__map_2d_interpolate__well_atributes_table%28obj_name%29> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_global_mean> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_global_mean%20%3C%3D%20100> .
+<https://example.org/tnav#создает> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs_distribution_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__beta> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_points <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_mode> <https://example.org/tnav#code> "kriging_mode" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__convergent> <http://www.w3.org/2000/01/rdf-schema#label> "convergent" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#шаблон_кода> "templates/map_2d_interpolate.txt" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__second_derivative_coefficient> <https://example.org/tnav#тип_данных> "float" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_y> <http://www.w3.org/2000/01/rdf-schema#label> "step_y" .
+<https://example.org/tnav#code> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_global_mean%20%3C%3D%20100> <https://example.org/tnav#code> "kriging_global_mean <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_global_mean> <https://example.org/tnav#тип_данных> "float" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__convergent> <https://example.org/tnav#code> "convergent" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__gauss> <http://www.w3.org/2000/01/rdf-schema#label> "gauss" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step> <https://example.org/tnav#code> "step" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__cauchy> <http://www.w3.org/2000/01/rdf-schema#label> "cauchy" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth%20%3C%3D%20360> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__grid_adjust_mode> <https://example.org/tnav#code> "grid_adjust_mode" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__source_data> <http://www.w3.org/2000/01/rdf-schema#label> "source_data" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_nx> <http://www.w3.org/2000/01/rdf-schema#label> "start_nx" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__splines_global> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__source_data> <https://example.org/tnav#code> "source_data" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__idw> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__second_derivative_coefficient%20%3E%200> <https://example.org/tnav#code> "second_derivative_coefficient > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__splines_global> <https://example.org/tnav#code> "splines_global" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__use_kriging_global_mean> <https://example.org/tnav#тип_данных> "boolean" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_coefficient%20%3C%201> <https://example.org/tnav#code> "drag_coefficient < 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_y%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "step_y <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_iterations> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__use_advanced> .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__drag_iterations> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__power_parameter%20%3C%3D%2010> <http://www.w3.org/2000/01/rdf-schema#label> "power_parameter <= 10" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_azimuth%20%3C%3D%20360> <https://example.org/tnav#code> "idw_azimuth <= 360" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/tnav#ComputationalFunction> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__exponential> <http://www.w3.org/2000/01/rdf-schema#label> "exponential" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_coefficient%20%3E%200> <https://example.org/tnav#code> "drag_coefficient > 0" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs_transform_distribution> <https://example.org/tnav#тип_данных> "boolean" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs> <https://example.org/tnav#code> "sgs" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_radius> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_radius" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__abos> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points_count> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__refinement_steps> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_mode> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__simple> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__drag_iterations%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "drag_iterations <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_global_mean> <http://www.w3.org/2000/01/rdf-schema#label> "kriging_global_mean" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_x> <https://example.org/tnav#code> "counts_x" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__step_y> <https://example.org/tnav#code> "step_y" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <http://www.w3.org/2000/01/rdf-schema#label> "map_2d_interpolate" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__amazonas> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_ny> <http://www.w3.org/2000/01/rdf-schema#label> "start_ny" .
+<https://example.org/tnav#использует> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__use_kriging_global_mean> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__start_ny%20%3C%3D%20100> <https://example.org/tnav#code> "start_ny <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__nugget_effect> <http://www.w3.org/2000/01/rdf-schema#label> "nugget_effect" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__power_parameter> .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#code> "map_2d_interpolate" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__refinement_steps%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "refinement_steps <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> <http://www.w3.org/2000/01/rdf-schema#label> "interpolation_type" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__first_derivative_coefficient> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_interpolate__first_derivative_coefficient%20%3C%201> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__refinement_steps> <http://www.w3.org/2000/01/rdf-schema#label> "refinement_steps" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__kriging_points%20%3C%3D%20100> <https://example.org/tnav#code> "kriging_points <= 100" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_axis_ratio%20%3C%3D%2010> <http://www.w3.org/2000/01/rdf-schema#label> "idw_axis_ratio <= 10" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__interpolation_type> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__second_derivative_coefficient%20%3C%201> <http://www.w3.org/2000/01/rdf-schema#label> "second_derivative_coefficient < 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__sgs_distribution_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_interpolate__log_normal> .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__kriging_mode> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__idw_axis_ratio%20%3E%3D%201> <https://example.org/tnav#code> "idw_axis_ratio >= 1" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__splines> <https://example.org/tnav#code> "splines" .
+<https://example.org/tnav#function-entity__map_2d_interpolate__second_derivative_coefficient> <http://www.w3.org/2000/01/rdf-schema#label> "second_derivative_coefficient" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__do_drag> .
+<https://example.org/tnav#function-entity__map_2d_interpolate__counts_y> <http://www.w3.org/2000/01/rdf-schema#label> "counts_y" .
+<https://example.org/tnav#computational-function__map_2d_interpolate> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_interpolate__grid_adjust_mode> .

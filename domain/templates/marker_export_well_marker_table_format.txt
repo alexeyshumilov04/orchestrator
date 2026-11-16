@@ -1,0 +1,29 @@
+# ЭТАЛОН (правило 8): domain/ontology_rules/reference_workflow.py,
+# тНавигатор v26.1 (api_version=v0_0_300a), стр. 109 — «Экспорт маркера
+# Marker_C1tl_Z» (таблица скважинных маркеров).
+# Аргументы скопированы ДОСЛОВНО; экспортируемый маркер (роль `marker`) и имя
+# файла — ДАННЫЕ (objects.marker + parameters.file_name проектного YAML).
+# СТАТУС: подготовлено по машинному эталону, на лицензии НЕ проверено —
+# подтверждение только прогоном `--execute`.
+begin_wf_item (index = 5, name = "Экспорт таблицы скважинных маркеров")
+    marker_export_well_marker_table_format (file_name="Marker_C1tl_Z.txt",
+          well_filter_struct=WellFilterParameters (well_filter_type="all_wells",
+          well_filter_selector=typed_object_name (obj_name="",
+          obj_type=""),
+          tags_filter=[],
+          single_well_selector=""),
+          use_current_marker_set=False,
+          current_marker_set=typed_object_name (obj_name="",
+          obj_type="MarkerSet"),
+          marker_table_allowed_data=None,
+          marker_table_autodetect_type="autodetect_type_use_all",
+          marker_table_tags_filter=[],
+          marker_table=[{"use" : True, "marker" : typed_object_name (obj_name="Marker_C1tl_Z",
+          obj_type="WellMarker")}],
+          scale_type="MD",
+          units_system="metric",
+          export_xy=False,
+          delimiter_mode="предустановленный",
+          delimiter="semicolon",
+          delimiter_str=",")
+    end_wf_item (index = 5)

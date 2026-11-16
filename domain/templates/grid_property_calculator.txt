@@ -1,0 +1,14 @@
+    begin_wf_item (index = 21)
+    grid_property_calculator (mesh=find_object (name="main_grid",
+          type="Grid3d"),
+          result_grid_property=find_object (name="Res3D",
+          type="Grid3dProperty"),
+          discrete_output=False,
+          use_filter=False,
+          user_cut_for_filter=find_object (name="CS_trend",
+          type="Grid3dProperty"),
+          filter_comparator=Comparator (rule="not_equals",
+          value=0),
+          formula="if (Facies3D==1,ResFCh ,if(Facies3D==3, ResCS, ResFP))",
+          variables=variables)
+    end_wf_item (index = 21)

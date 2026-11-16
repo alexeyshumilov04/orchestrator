@@ -1,0 +1,13 @@
+begin_wf_item (index = 19)
+    map_2d_smooth (input_map=typed_object_name (obj_name="BBall_thick",
+          obj_type="Map2d"),
+          output_map=typed_object_name (obj_name="BBall_trend",
+          obj_type="Map2d"),
+          smoothing_method="moving_average",
+          radius=1500,
+          use_polygon_container=False,
+          io_values="inside",
+          input_polygon=typed_object_name (obj_name="Vrez",
+          obj_type="Curve3d"),
+          smooth_transition=False)
+    end_wf_item (index = 19)

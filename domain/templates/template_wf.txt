@@ -1,0 +1,32 @@
+#  Этот файл был сгенерирован тНавигатор v26.1-4207-g254db398cdfc.
+#  Copyright (C) Интегрированные разработки для моделирования 2005-2026.
+#  Все права защищены.
+
+# This file is MACHINE GENERATED! Do not edit.
+
+#api_version=v0_0_300a
+
+from __main__.tnav.workflow import *
+from tnav_debug_utilities import *
+from datetime import datetime, timedelta
+
+
+declare_workflow (workflow_name="Structure_modeling",
+      variables=[])
+
+
+Structure_modeling_variables = {
+
+}
+
+def Structure_modeling (variables = Structure_modeling_variables):
+    pass
+    global datetime
+    check_launch_method ()
+
+
+    begin_user_imports ()
+    end_user_imports ()
+
+    <РАСЧЕТ>
+

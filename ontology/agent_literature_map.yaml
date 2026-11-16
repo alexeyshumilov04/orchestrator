@@ -1,0 +1,67 @@
+# Карта «агент → литературные правила/источники» (E13, задача task-11).
+# ДАННЫЕ: строится из ontology/literature_rules_ext.csv по branch_id правила.
+# Читается agents/knowledge.StaticKnowledge.agent_literature() (config: agents.literature.agent_map).
+# source_ids правил имеют вид LIT-XXXX#pNN (источник + страница).
+
+AG_STRUCTURAL:
+  label: "Структурный агент (горизонты, разломы, поверхности)"
+  status: "present_in_code"
+  branches: ["BR_HORIZON_INTERPRETATION", "BR_FAULT_INCLUSION", "BR_HORIZON_SURFACE", "BR_STRUCTURAL_QC", "BR_STRAT_BOUNDARY", "BR_AUTOCORRELATION", "BR_LAYERING_STYLE"]
+  rules: [RULE_LIT_STRAT_010, RULE_LIT_STRAT_020, RULE_LIT_STRAT_030, RULE_LIT_STRAT_040, RULE_LIT_STRUCT_010, RULE_LIT_STRUCT_020, RULE_LIT_STRUCT_030, RULE_LIT_STRUCT_040, RULE_LIT_STRUCT_050]
+  sources: [LIT-0075, LIT-0096, LIT-0111, LIT-0121, LIT-0123, LIT-0137, LIT-0146]
+  note: "правила действуют только при наличии входных данных; при их отсутствии решение = unknown (правило 6)"
+
+AG_GRID_VOLUMETRICS:
+  label: "Агент сетки и волюметрии (бокс, шаг, слои, апскейлинг)"
+  status: "present_in_code"
+  branches: ["BR_GRID_RESOLUTION", "BR_GRID_LAYERING", "BR_GRID_TYPE", "BR_GRID_DEFECT", "BR_UPSCALING", "BR_UPSCALE_QC"]
+  rules: [RULE_LIT_GRID_010, RULE_LIT_GRID_020, RULE_LIT_GRID_030, RULE_LIT_GRID_040, RULE_LIT_GRID_050, RULE_LIT_GRID_060, RULE_LIT_GRID_070]
+  sources: [LIT-0075, LIT-0123, LIT-0199, LIT-0794]
+  note: "правила действуют только при наличии входных данных; при их отсутствии решение = unknown (правило 6)"
+
+AG_FACIES:
+  label: "Фациальный агент (концепция, пропорции, метод, геотела)"
+  status: "present_in_code"
+  branches: ["BR_DEPOSITIONAL_CONCEPT", "BR_PROPORTION_MODEL", "BR_FACIES_METHOD", "BR_FACIES_HIERARCHY", "BR_SEISMIC_SOFT_DATA", "BR_FACIES_QC"]
+  rules: [RULE_LIT_FACIES_010, RULE_LIT_FACIES_020, RULE_LIT_FACIES_030, RULE_LIT_FACIES_040, RULE_LIT_FACIES_050, RULE_LIT_FACIES_060, RULE_LIT_FACIES_070, RULE_LIT_FACIES_080, RULE_LIT_FACIES_090, RULE_LIT_FACIES_100]
+  sources: [LIT-0075, LIT-0132, LIT-0137, LIT-0143, LIT-0146, LIT-0149, LIT-0786]
+  note: "правила действуют только при наличии входных данных; при их отсутствии решение = unknown (правило 6)"
+
+AG_PETROPHYSICS:
+  label: "Петрофизический агент (φ, k, типизация, геостатистика свойств)"
+  status: "present_in_code"
+  branches: ["BR_POROSITY_MODEL", "BR_PERMEABILITY_MODEL", "BR_ROCK_TYPING", "BR_CUTOFF", "BR_PETRO_QC", "BR_VARIOGRAM", "BR_STATIONARITY", "BR_DECLUSTERING", "BR_PROPERTY_METHOD", "BR_SECONDARY_DATA", "BR_GEOSTAT_QC"]
+  rules: [RULE_LIT_GSTAT_010, RULE_LIT_GSTAT_020, RULE_LIT_GSTAT_030, RULE_LIT_GSTAT_040, RULE_LIT_GSTAT_050, RULE_LIT_GSTAT_060, RULE_LIT_GSTAT_070, RULE_LIT_GSTAT_080, RULE_LIT_GSTAT_090, RULE_LIT_GSTAT_100, RULE_LIT_PETRO_010, RULE_LIT_PETRO_020, RULE_LIT_PETRO_030, RULE_LIT_PETRO_040, RULE_LIT_PETRO_080, RULE_LIT_PETRO_090, RULE_LIT_PETRO_100, RULE_LIT_PETRO_110]
+  sources: [LIT-0069, LIT-0075, LIT-0087, LIT-0123, LIT-0150, LIT-0199, LIT-0201, LIT-0202, LIT-0625, LIT-0653, LIT-0742, LIT-0752, LIT-0797]
+  note: "правила действуют только при наличии входных данных; при их отсутствии решение = unknown (правило 6)"
+
+AG_PVT_SCAL:
+  label: "Агент насыщения/PVT (модель Sw, насыщенность по высоте)"
+  status: "present_in_code"
+  branches: ["BR_SATURATION_EQUATION", "BR_SAT_HEIGHT"]
+  rules: [RULE_LIT_PETRO_050, RULE_LIT_PETRO_060, RULE_LIT_PETRO_070]
+  sources: [LIT-0199, LIT-0625]
+  note: "правила действуют только при наличии входных данных; при их отсутствии решение = unknown (правило 6)"
+
+AG_MAPS:
+  label: "Агент карт (структура, толщины, фации, петрофизика)"
+  status: "present_in_code"
+  branches: []
+  rules: []
+  sources: []
+  note: "правила действуют только при наличии входных данных; при их отсутствии решение = unknown (правило 6)"
+
+AG_GEOSTATISTICS:
+  label: "Агент геостатистики (запрошен в задаче E13)"
+  status: "absent_in_code"
+  rules: []
+  sources: []
+  note: "агента с таким agent_id в agents/*.py НЕТ (есть AG_FACIES/AG_PETROPHYSICS); геостатистические правила отнесены к ним, здесь зафиксирован только пробел — выдумывать агента нельзя (правило 8)"
+
+_unassigned:
+  label: "Правила без агента: неопределённости/ансамбль/приёмка"
+  status: "no_agent_in_code"
+  branches: ["BR_UNCERTAINTY_KIND", "BR_SAMPLING_DESIGN", "BR_ENSEMBLE_CONVERGENCE", "BR_REALIZATION_RANKING", "BR_MODEL_ACCEPTANCE"]
+  rules: [RULE_LIT_UQ_010, RULE_LIT_UQ_020, RULE_LIT_UQ_030, RULE_LIT_UQ_040, RULE_LIT_UQ_050, RULE_LIT_UQ_060, RULE_LIT_UQ_070, RULE_LIT_UQ_080]
+  sources: [LIT-0745, LIT-0746, LIT-0749, LIT-0752, LIT-0753, LIT-0762]
+  note: "в коде нет агента с ответственностью за неопределённости/ансамбль (это уровень координатора); правила доступны через literature_rules_all(), но агенту не назначены"

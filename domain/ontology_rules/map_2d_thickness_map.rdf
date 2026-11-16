@@ -1,0 +1,4 @@
+# Эталон: tNavigator 26.2, manual 41.3.3 Карта толщин по горизонтам.
+<https://example.org/tnav#computational-function__map_2d_thickness_map> <http://www.w3.org/2000/01/rdf-schema#label> "map_2d_thickness_map" .
+<https://example.org/tnav#computational-function__map_2d_thickness_map> <https://example.org/tnav#code> "map_2d_thickness_map" .
+<https://example.org/tnav#computational-function__map_2d_thickness_map> <https://example.org/tnav#шаблон_кода> "templates/map_2d_thickness_map.txt" .

@@ -1,0 +1,5 @@
+# ВНИМАНИЕ: сигнатура функции не из эталонного воркфлоу v26.1 (reference_workflow.py
+# содержит только структурную часть) — проверить вызов на лицензированной машине.
+<https://example.org/tnav#computational-function__geobody_create_by_property> <http://www.w3.org/2000/01/rdf-schema#label> "geobody_create_by_property" .
+<https://example.org/tnav#computational-function__geobody_create_by_property> <https://example.org/tnav#code> "geobody_create_by_property" .
+<https://example.org/tnav#computational-function__geobody_create_by_property> <https://example.org/tnav#шаблон_кода> "templates/geobody_create_by_property.txt" .

@@ -1,0 +1,4 @@
+# Эталон: tNavigator 26.2, tutorial CLOUD1.2 (Model_Build.py) — create_object_template.
+<https://example.org/tnav#computational-function__create_object_template> <http://www.w3.org/2000/01/rdf-schema#label> "create_object_template" .
+<https://example.org/tnav#computational-function__create_object_template> <https://example.org/tnav#code> "create_object_template" .
+<https://example.org/tnav#computational-function__create_object_template> <https://example.org/tnav#шаблон_кода> "templates/create_object_template.txt" .

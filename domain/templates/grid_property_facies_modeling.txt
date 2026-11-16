@@ -1,0 +1,116 @@
+# ВНИМАНИЕ (правило 8): сигнатура НЕ из эталона (машинный v26.1 reference_workflow.py) —
+# функции там нет; вызов разобран пробами и мануалом.
+# tNavigator 26.2 — «Фациальное моделирование (Зоны, Регионы)».
+# Источник (правило 8): мануал Дизайнера `tNavUserGuideDesignerRussian.pdf`, стр. 2581:
+#   «Этот расчёт позволяет создать ДИСКРЕТНОЕ свойство по объекту Blocked Wells,
+#    используя фильтры по дискретным свойствам. Дискретные Blocked Wells должны быть
+#    ПРЕДВАРИТЕЛЬНО созданы.» Метод: Классический SIS либо Кубы свойств порядка
+#    (SIS/GRFS/Кригинг). Зоны/регионы опциональны и требуют ДИСКРЕТНОГО шаблона.
+# Туториал GD3.2 «Фациальное моделирование»: перед этим расчётом свойство создаётся
+# вручную с «Тип свойства – Дискретный» (отсюда требование палитры в данных).
+#
+# ПРОБА V9/V10 (10.10, живая лицензия 26.2, проект models/S001) — ПРОРЫВ:
+#   * входы ОБЯЗАНЫ быть ТИПИЗИРОВАННЫМИ объектами:
+#     mesh=typed_object_name(obj_name="main_grid", obj_type="Grid3d"),
+#     blocked_wells=typed_object_name(obj_name="...", obj_type="BlockedWells"),
+#     result_grid_property=typed_object_name(obj_name="FACIES", obj_type="Grid3dProperty").
+#     Со строковыми именами тНав отвечает «Parameter "Grid" (in group "Input") is not
+#     specified!» — именно поэтому прежняя форма не работала.
+#   * при типизированных входах вызов доходит до разбора `i3_params`; интерполятор
+#     `sis` отвергнут («Unknown parameter value "sis"»), поддерживаются kriging/sgs/grfs.
+#   * ОСТАЛОСЬ ОДНО НЕИЗВЕСТНОЕ: где передаётся список параметров ПО ФАЦИЯМ.
+#     Перебор в ПРАВИЛЬНОМ (типизированном) контексте: `parameters`, `facies_parameters`,
+#     `facies_params`, `facies`, `facies_table`, `facies_list`, `facies_items`,
+#     `zone_region_facies_parameters`, `zr_facies_parameters`, `zones_facies_parameters`,
+#     `interpolation_facies_parameters`, `FaciesParameters`, `params`, `items`,
+#     `interpolation_parameters`, `facies_parameters_list` — ВСЕ отвергнуты
+#     («Unknown argument "<имя>"»). Вывод: параметр НЕ называется через «facies» на уровне
+#     i3_params и, вероятно, вложен в строку зональной таблицы (ZoneRegionParameters) либо
+#     Вложенный вариант (таблица внутри ZoneRegionParameters) проверен пробами V19–V23:
+#     `ZoneRegionFaciesParameters`, `facies_parameters`, `facies`, `interpolation_parameters`
+#     — ВСЕ отвергнуты («Unknown argument» на уровне функции ZoneRegionParameters).
+#     Значит список фаций задаётся иначе: возможно, отдельным аргументом верхнего уровня
+#     (`grid_property_facies_modeling`), либо метод SIS/классика вообще не требует таблицы
+#     фаций (достаточно `facies_order`/`current_facies` в строке зоны), либо параметр
+#     называется вне семейства «facies». ТОЧНЫЙ ОТВЕТ ДАЁТ ТОЛЬКО GUI-СНИМОК диалога:
+#     группа Input, поле со списком/кубом фаций.
+# Пробы: tools/probe_facies.py --variants V9 (типизированные + sis), V10 (+ sgs),
+#        V11…V18 (перебор имён аргумента списка фаций) — результаты в _probe_*.txt.
+#
+# ЭТАЛОННАЯ ФОРМА НАЙДЕНА (правило 8, официальный источник тНава):
+#   C:/Program Files/tNavigator/26.2/tutorials/GD3.7_HowToPerformDataAnalysis/
+#        Data_to_import/Interpolation.py, стр. 137-190 (рабочий воркфлоу тНава).
+# Ключевые отличия от прежней формы:
+#   1) входы — ТИПИЗИРОВАННЫЕ объекты (подтверждено и пробами V9/V10);
+#   2) таблица фаций — аргумент `parameters=[ZoneRegionFaciesParameters (...)]`
+#      и он лежит ВНУТРИ строки `ZoneRegionParameters`, а не на уровне i3_params;
+#   3) в строке зоны обязательны поля метода: `facies_modeling_method`
+#      (например "sis_ordering_cubes"), `classic_sis`, `classic_sis_random_seed`,
+#      `facies_order`, `current_facies`, `restrict=ContactParameters (...)`;
+#   4) на уровне i3_params есть `zone_region_filter_args=ZoneRegionFilter (zone=…,
+#      region=None)`.
+# Итог: прежние 17 отвергнутых имён объясняются не именем, а МЕСТОМ вложения —
+# `parameters` внутри строки зоны (проба V26 проверяет эту форму).
+#
+# СТАТУС ВЫЗОВА (пробы `tools/probe_facies.py` на живой лицензии 26.2):
+#   * в контексте ЭЛЕМЕНТА ВОРКФЛОУ строковые имена для mesh/blocked_wells/
+#     result_grid_property дают ЧИСТУЮ ошибку тНава
+#     («Parameter "Grid" (in group "Input") is not specified!») — гейт G-FACIES = skip,
+#     прогон продолжается; объектные ссылки (`find_object`) в этом контексте РОНЯЮТ
+#     задачу тНава (`Fatal error: access violation` → «Задача уже завершена»), поэтому
+#     здесь строковая форма: провал этапа не должен ронять прогон;
+#   * в контексте `run_py_code` строковые имена принимаются, а `i3_params`
+#     (`zone_region_filter`/`zone_region_filter_args`/`ZoneRegionParameters` в
+#     БЕЗЗОННОЙ форме: use=True, zone=None, region=None, restrict=ContactParameters)
+#     проходят до проверки схемы;
+#   * `InterpolationParametersItem(interpolator_type=...)` принимает `kriging`/`sgs`/`grfs`
+#     (`sis`/`indicator_kriging`/`sequential_indicator` отвергнуты: «Unknown parameter value»);
+#   * ОТКРЫТЫЙ ВОПРОС (блокер): имя аргумента со списком параметров по фациям
+#     (`ZoneRegionFaciesParameters`) не найдено — 20 кандидатов дают
+#     «Invalid call of function Interpolation3dParameters: Unknown argument "<имя>"»;
+#     без этого списка задача тНава падает (access violation), поэтому список сохранён
+#     машинным стилем; требуется GUI-снимок вызова (как в B4_facies.md).
+# Имена объектов подставляются из проектного YAML (`replace`), доменных имён в шаблоне нет.
+    begin_wf_item (index = 1)
+    grid_property_facies_modeling (mesh="__MESH__",
+          blocked_wells="__BLOCKED_WELLS__",
+          result_grid_property="__RESULT_PROPERTY__",
+          i3_params=Interpolation3dParameters (zone_region_filter=ZoneRegionFilterInfo (use_zone=False,
+          use_region=False,
+          zone=find_object (name="",
+          type="Grid3dProperty"),
+          region=find_object (name="",
+          type="Grid3dProperty")),
+          zone_region_filter_args=ZoneRegionFilter (zone=None,
+          region=None),
+          ZoneRegionParameters=[ZoneRegionParameters (use=True,
+          zone=None,
+          region=None,
+          facies_order=[],
+          current_facies=3,
+          restrict=ContactParameters (restriction_type="none",
+          secondary_attribute=find_object (name="",
+          type=""),
+          m_use_da_cond_distr=False,
+          use_contact_restriction=False,
+          contact=find_object (name="",
+          type=""),
+          use_contact_horizon=False,
+          contact_horizon=find_object (name="",
+          type=""),
+          contact_map_total=find_object (name="",
+          type="")))],
+          parameters=[ZoneRegionFaciesParameters (facies=None,
+          params=InterpolationParametersItem (use=True,
+          interpolator_type="kriging",
+          variogram=VariogramParameters (variogram_type="exponential",
+          sill=1,
+          nugget_effect=0.15,
+          range_main=3500,
+          range_normal=3500,
+          range_vertical=1750,
+          azimuth=0,
+          dip=0)))],
+          apply_to_all_zr=False,
+          apply_to_all_f=False))
+    end_wf_item (index = 1)

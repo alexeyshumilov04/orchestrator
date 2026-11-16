@@ -1,0 +1,21 @@
+# ВНИМАНИЕ (правило 8): сигнатура НЕ из эталона (машинный v26.1 reference_workflow.py) —
+# функции там нет; вызов разобран пробами и мануалом.
+# tNavigator 26.2 — «Создать свойство по таблице значений» (grid_property_create_by_values).
+# Источник (правило 8): мануал Дизайнера 26.2, стр. 2734: «Данный расчёт позволяет
+# создать свойство, используя значения для слоя из таблицы… Настройки: Сетка,
+# Свойство зон, Исп., Значение, K1 (начальное значение для слоя по K),
+# K2 (конечное значение для слоя по K)». Созданному свойству присваивается
+# дискретный шаблон (как у `grid_property_create_by_zones`, стр. 2733).
+#
+# СТАТУС (пробы 26.2): вызов принят по аргументам `mesh`/`result_grid_property`/
+# `zones_table`; позиционная строка `(True, 1, 1, 2)` читается расчётом с K1=0 →
+# «Parameter "K1" of table "zones_table" at row 0: the value (0) is less than
+# allowed minimum (1)». СХЕМА СТРОКИ НЕ ЗАКРЫТА — в пайплайн НЕ подключена.
+# Имена объектов подставляются из проектного YAML (objects: mesh/result_grid_property).
+    begin_wf_item (index = 1)
+    grid_property_create_by_values (mesh=find_object (name="",
+          type="Grid3d"),
+          result_grid_property=find_object (name="",
+          type="Grid3dProperty"),
+          zones_table=[{"use" : True}])
+    end_wf_item (index = 1)

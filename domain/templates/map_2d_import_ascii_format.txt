@@ -1,0 +1,22 @@
+    begin_wf_item (index = 5)
+    map_2d_import_ascii_format (use_tags_to_assign=False,
+          tags_to_assign=[],
+          use_folder=False,
+          folder="",
+          splitter=True,
+          files_maps_table=[{"file_name" : "Maps/CS", "map" : find_object (name="CS",
+          type="Map2d")}, {"file_name" : "Maps/CS2", "map" : find_object (name="CS2",
+          type="Map2d")}, {"file_name" : "Maps/CS_azim", "map" : find_object (name="CS_azim",
+          type="Map2d")}, {"file_name" : "Maps/FP", "map" : find_object (name="FP",
+          type="Map2d")}, {"file_name" : "Maps/Fch", "map" : find_object (name="Fch",
+          type="Map2d")}, {"file_name" : "Maps/Fch_azim", "map" : find_object (name="Fch_azim",
+          type="Map2d")}, {"file_name" : "Maps/Trend2DLitho", "map" : find_object (name="Trend2DLitho",
+          type="Map2d")}],
+          splitter2=True,
+          splitter3=True,
+          novalue=99999,
+          use_domain=False,
+          domain="depth",
+          use_xy_units=False,
+          xy_units="metres")
+    end_wf_item (index = 5)

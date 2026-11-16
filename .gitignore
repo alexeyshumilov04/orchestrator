@@ -1,0 +1,36 @@
+# Прогоны и артефакты
+runs/
+logs/
+*.pid
+
+# Рантайм-канал чтения из тНава (код → файл → разбор)
+*.tmp
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# СЕКРЕТЫ (не коммитим): LLM-ключ, лицензия tNavigator, путь+пароль
+config.local.yaml
+Путь до тнав и пароль.txt
+runs/tnav_license_settings.ini
+
+# tNavigator рабочие выгрузки
+RESULTS/
+USER/
+*.UNRST
+*.EGRID
+*.INIT
+*.UNSMRY
+*.SMSPEC
+*.eclend
+
+# распакованный Python API тНава (создаётся автоматически)
+.tnav_api/
+
+# Крупные входы/выходы (код их читает, но в git не тянем)
+data/
+models/
+ontology/*.rdf

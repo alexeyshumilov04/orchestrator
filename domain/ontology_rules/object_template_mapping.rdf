@@ -1,0 +1,4 @@
+# Эталон: tNavigator 26.2, tutorial CLOUD1.2 (Model_Build.py) — object_template_mapping.
+<https://example.org/tnav#computational-function__object_template_mapping> <http://www.w3.org/2000/01/rdf-schema#label> "object_template_mapping" .
+<https://example.org/tnav#computational-function__object_template_mapping> <https://example.org/tnav#code> "object_template_mapping" .
+<https://example.org/tnav#computational-function__object_template_mapping> <https://example.org/tnav#шаблон_кода> "templates/object_template_mapping.txt" .

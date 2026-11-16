@@ -1,0 +1,38 @@
+{
+  "ontology": "GeoModelingEvolutionOntology_v4",
+  "version": "4.0.0",
+  "generated": "2026-09-12",
+  "modules": 21,
+  "triples_all_in_one": 234946,
+  "distinct_local_nodes": 19992,
+  "distinct_local_resources_including_predicates": 20015,
+  "process_stages": 18,
+  "process_substages": 212,
+  "atomic_process_activities": 1272,
+  "data_parameter_definitions": 403,
+  "qaqc_rules_imported": 6117,
+  "tnavigator_callable_candidates": 3257,
+  "software_bindings": 414,
+  "local_and_web_sources": 1548,
+  "bdi_transition_rules_added": 1417,
+  "class_counts": {
+    "ProcessStage": 28,
+    "ProcessSubstage": 212,
+    "AtomicModelingTask": 1272,
+    "ParameterDefinition": 403,
+    "QAQCRule": 5289,
+    "HistoricalQAQCRule": 95,
+    "SoftwareBinding": 414,
+    "TNavigatorCallableCandidate": 2936,
+    "SourceArtifact": 1537,
+    "BDI_BranchPoint": 281,
+    "BDI_DecisionRule": 1713
+  },
+  "node_target": "8000..20000",
+  "warnings": [
+    "Typical ranges are anomaly-screening defaults, not universal acceptance criteria.",
+    "tNavigator callable candidates require signature, license and installed-version verification before execution.",
+    "Petrel/Ocean and GeoVation bindings are capability-level unless a local API/module locator is provided.",
+    "QA/QC checklist evidenceStatus is preserved; candidate rules are not silently promoted to verified rules."
+  ]
+}

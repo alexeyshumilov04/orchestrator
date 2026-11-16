@@ -1,0 +1,19 @@
+    begin_wf_item (index = 11)
+    geobody_create_by_property (grid=find_object (name="main_grid",
+          type="Grid3d"),
+          property=find_object (name="FACIES",
+          type="Grid3dProperty"),
+          comparator=Comparator (rule="greater_or_equal",
+          value=1),
+          result_geobody=find_object (name="Geobodies_FACIES",
+          type="Geobody"),
+          min_volume=0,
+          min_cells=1,
+          connectivity="faces",
+          use_zone=False,
+          zone=find_object (name="",
+          type="Grid3dProperty"),
+          use_region=False,
+          region=find_object (name="",
+          type="Grid3dProperty"))
+    end_wf_item (index = 11)

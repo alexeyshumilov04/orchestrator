@@ -1,0 +1,782 @@
+# ============================================================================
+# ПРОЕКТНЫЙ ГРАФ (ABox) — значения, зависящие от месторождения.
+# Здесь НЕТ кода: только данные. Оркестратор читает этот файл и подставляет
+# значения в гены воркфлоу (маркеры, объекты, пороги, пути к данным).
+# Проект: Герасимовское (Западная Сибирь).
+# ============================================================================
+field: Герасимовское
+dataset_root: "data/Герасимовское/Source"
+
+# --- система координат и данные ---------------------------------------------
+crs: "local (X_seiscoord/y_seiscoord, m)"   # СК данных: совпадает со структурными картами *.irap
+                                            # (extent 63754..76254 × 304597..320147); UTM не подходит.
+inputs:
+  wellhead: "Wellhead.txt"
+  welltop: "Welltop.txt"
+  surface: "struct/depth_u1.irap"
+  surface_std: "struct/std_depth_u1.irap"
+  faults: "struct/faults.irap"
+  fault_map: "struct/fault_map.irap"
+  logs: "RIGIS"
+  inclinometry: "GERASIM_406_inkl"
+
+# --- маркеры (из Welltop.txt) -----------------------------------------------
+markers:
+  reservoir_top: "BAJ"
+  # РОЛЬ ПОДОШВЫ объявлена явно (round 162–163): подошва строится по маркеру J2 —
+  # это видно в самом пайплайне поля (шаг result_horizon=U1_bot, well_marker=J2).
+  # Без этой роли генератор объектной модели не мог отличить производителя кровли от
+  # подошвы (оба шага используют аргумент well_marker) и оставлял горизонт подошвы
+  # неразрешённым. Значение — из данных поля, не выдумано.
+  reservoir_base: "J2"
+  order: ["BAJ", "J1", "J2", "J3"]
+
+# Моделируемый горизонт кровли резервуара — для QAQC-сшивки скважин
+# (наблюдение = отбивка BAJ в TVDSS, модель = отметка этого горизонта в точке скважины).
+reservoir_horizon: "U1_top"
+
+# --- СТРУКТУРНЫЕ ПОСТРОЕНИЯ: интервал и решение о «врезе» ----------------------
+# АГЕНТ САМ определяет, на каком пласте работает и нужен ли врез (эрозионная
+# карта Tl_thick_vrez + полигон Vrez): решение ДЕТЕРМИНИРОВАННОЕ, по покрытию
+# кровли интервала отбивками в скважинах (welltops), порог — ниже.
+#   coverage < erosion_when_top_coverage_lt  -> врез СТРОИТСЯ (часть пласта размыта)
+#   coverage >= порога                       -> шаги вреза ПРОПУСКАЮТСЯ (skipped_by_policy)
+#   erosion: on|off                          -> принудительно, решением человека
+#   нет welltops                              -> врез НЕ строится (неизвестное != ложь)
+structural:
+  interval_top_marker: "BAJ"          # кровля моделируемого пласта (Ю1)
+  interval_base_marker: "J2"          # подошва моделируемого пласта
+  erosion: auto                       # auto | on | off (человек может переопределить)
+  erosion_steps: ["polygon_create_by_map_intersection"]   # врез — только полигон (толщина теперь тоже map_2d_calculator, её пропускать нельзя)
+  erosion_when_top_coverage_lt: 0.8   # порог покрытия отбивками (0..1):
+                                      # покрытие BAJ 90% >= 0.8 -> агент решает, что врез НЕ нужен.
+
+# --- контакты и флюиды (данные проекта, не код) -----------------------------
+contacts:
+  owc_offset_m: 20.0              # ВНК = datum - offset (если контакт не по данным)
+pvt:
+  pvtw: [300.0, 1.0, 4.0e-5, 0.5, 0.0]
+  pvdo: [[20.0, 1.05, 1.3], [100.0, 1.03, 1.2], [300.0, 1.0, 1.0]]
+  pvdg: [[50.0, 0.019, 0.013], [150.0, 0.0075, 0.015], [350.0, 0.0036, 0.018]]
+scal:
+  swof: [[0.15, 0.0, 0.85, 0.0], [0.50, 0.2, 0.30, 0.0], [0.85, 1.0, 0.0, 0.0]]
+  sgof: [[0.00, 0.0, 1.0, 0.0], [0.30, 0.3, 0.40, 0.0], [0.60, 1.0, 0.0, 0.0]]
+
+# --- физические пороги (skрининг, из data_parameter_catalog) ----------------
+thresholds:
+  poro: [0.02, 0.35]
+  perm: [0.1, 5000.0]
+  swl: [0.05, 0.60]
+geostat:
+  hole_range_m: 3500.0
+  nugget: 0.15
+  anisotropy: 0.5
+  n_facies: 3
+  facies_method: "sis"     # метод фациального моделирования (политика агента G-FACIES)
+
+# --- ПЕТРОФИЗИКА: кубы пористости/проницаемости из ГИС (не константа) ----------
+# АГЕНТ ПЕТРОФИЗИКИ (AG_PETROPHYSICS) читает метод интерполяции, вариограмму и
+# карту «мнемоника LAS → blocked well → куб сетки». Кубы PORO/PERM строятся
+# ИНТЕРПОЛЯЦИЕЙ отбивок скважин (RIGIS/*.las), а не константой, и видны в проекте.
+petrophysics:
+  method: "kriging"                 # метод интерполяции (политика агента)
+  variogram: {range_main: 3500.0, nugget_effect: 0.15, sill: 1.0}
+  cubes:                            # мнемоника LAS → blocked well → куб сетки
+    # ИСПРАВЛЕНО ПО ФАКТУ (раунд 79): в исходных LAS поля
+    # (data/Герасимовское/Source/RIGIS/*.las) фактически есть кривые
+    # DEPTH, A, WATER, CLAY, POROSITY, SATURATION, LITHOLOGY, TIP.
+    # Канала `PHIE` в данных НЕТ — поэтому пористость берётся из `POROSITY`.
+    # Канала проницаемости (`KINT` и любого другого) в LAS тоже НЕТ: пока он не
+    # подтверждён источником (керн/другой каталог), куб PERM строится как фон —
+    # это ЧЕСТНО фиксируется гейтом G-PETRO (см. проверку наличия каналов),
+    # а не выдаётся за измеренную проницаемость.
+    - {log: "PHIE", blocked: "Poro", cube: "PORO"}   # пористость (Porosity factor)
+    - {log: "KINT", blocked: "Perm", cube: "PERM"}   # проницаемость (Permeability)
+  # ПОДТВЕРЖДЕНО ЖИВЫМ ПРОГОНОМ (раунд 81): в проекте существуют именно каналы PHIE и
+  # KINT; прежний вывод «каналов нет» был ошибкой разбора LAS и отменён.
+  # БЛАНКИ (измерено, раунд 82): −999.2 — null-маркер, отсекать ДО статистики/интерполяции.
+  null_values: [-999.2, -999.25, -999.0]
+  # ЕДИНИЦЫ И ДИАПАЗОНЫ ПРОВЕРЯЮТСЯ ДО ПОСТРОЕНИЯ КУБА (ДАННЫЕ; правило G-PETRO).
+  # Измерено по 61 LAS (230 271 значение): PHIE p10 2 / медиана 3 / p90 7 / max 11 —
+  # похоже на проценты; KINT медиана 0.78 / max 1.38 — семантика НЕ подтверждена.
+  # Проверка обязана давать failed с формулировкой «кривая вне ожидаемого диапазона /
+  # единицы не подтверждены», а не строить куб молча.
+  expect:
+    PHIE: {units: "percent", min: 0.0, max: 35.0}
+    KINT: {units: "not_permeability", min: 0.0, max: 5000.0}
+  # РЕШЕНИЕ ЗАКАЗЧИКА (раунд 84): PHIE — В ПРОЦЕНТАХ (2…11 %), KINT — НЕ проницаемость.
+  # Отсюда два правила (ДАННЫЕ, правило 1):
+  #   1) масштаб пористости: доля = процент/100 (PHIE_scale);
+  #   2) проницаемость НЕ берётся из KINT: PERM строится зависимостью от пористости
+  #      (PERM = f(PORO)) штатным grid_property_calculator (подтверждён пробой);
+  #      коэффициенты — из литературы (Литература/Моделирование петрофизики…),
+  #      статус EVIDENCE_BACKED_CANDIDATE до подтверждения керном.
+  scale:
+    PHIE: 0.01                      # проценты → доли (0.02…0.11)
+  perm_from_poro:
+    enabled: true
+    source_curve: "PORO"            # из пористости, а не из KINT
+    target_cube: "PERM"             # ДАННЫЕ: какой куб заполняется зависимостью k-φ
+    # ФОРМА ЗАВИСИМОСТИ — из ЛИТЕРАТУРЫ (правило 8: со ссылкой, не из головы).
+    # RULE_LIT_PETRO_020 (ontology/literature_rules_ext.csv): «Проницаемость оценивать
+    #   через связь с пористостью (Козени-Карман/регрессия), проверяя тип зависимости»;
+    #   источник LIT-0201#p14 — Меркулов, «Геофизические исследования скважин», стр. 14:
+    #   «Теоретически проницаемость может быть описана уравнением Козени Кармена».
+    form: "kozeny_carman"
+    source_rule: "RULE_LIT_PETRO_020"
+    source_ids: ["LIT-0201#p14"]
+    # ОГРАНИЧЕНИЯ ИЗ ЛИТЕРАТУРЫ (обязательны к соблюдению):
+    #   RULE_LIT_PETRO_110 — единая зависимость k-φ НЕДОПУСТИМА при литолого-фациальной
+    #     изменчивости (LIT-0201#p3): связь применяется по литотипам/фациям;
+    #   RULE_LIT_PETRO_080 — cut-off проницаемых интервалов обосновывать по керну/ГИС,
+    #     а не задавать константой (LIT-0625#p2);
+    #   RULE_LIT_PETRO_040 — физическая основа связи k-φ: распределение пор по размерам
+    #     (ЯМР/капиллярометрия), LIT-0202#p20.
+    constraints: ["RULE_LIT_PETRO_110", "RULE_LIT_PETRO_080", "RULE_LIT_PETRO_040"]
+    # КОЭФФИЦИЕНТЫ: Козени-Карман требует удельной поверхности/извилистости; без керна
+    # они не определены, поэтому 0 → проверка даёт unknown, а не подставляет числа.
+    a: 0.0
+    b: 0.0
+    knowledge_status: "EVIDENCE_BACKED_CANDIDATE"
+    needs_review: true              # правило 8: подбор не выдаётся за утверждённый факт
+    note: "KINT признан непроницаемостной кривой (решение заказчика); PERM строится\
+ связью k-φ по литературе (Козени-Карман), с обязательным учётом литотипов и\
+ обоснованным cut-off; до получения керна коэффициенты не задаются (unknown)"
+deck:
+  nz: 3
+  dz: 10.0
+  well_rate: 200.0
+  well_bhp: 50.0
+
+# --- ПЕРЕОПРЕДЕЛЕНИЯ функций воркфлоу (имена объектов/параметры) --------------
+# Ключ — имя функции тНава; объекты подставляются в typed_object_name по роли.
+functions:
+  # ЭТАЛОН v26.1 (reference_workflow.py, стр. 32, wf item 1 «Подгон полигона под
+  # сейсмику»): роль полигона в вызове — `polygon`. В прежних данных здесь
+  # ошибочно стояла роль `boundary` — такой роли в шаблоне нет, рендер писал
+  # «object role не найден» (render_warnings). Полигон пишется в ОТДЕЛЬНЫЙ объект,
+  # а НЕ в `Boundary`: `Boundary` задаёт region сетки (импорт этапа 0), и его
+  # перезапись сломала бы рабочую сетку 250×311×22.
+  polygon_create_by_map_2d_boundary:
+    objects:
+      polygon: {obj_name: "U1_seis_boundary", obj_type: "Curve3d"}
+      horizon: {obj_name: "U1_seis", obj_type: "Horizon"}
+  map_2d_distance_to_marker:
+    objects:
+      result_map_2d: {obj_name: "Dist_to_well", obj_type: "Map2d"}
+      well_marker: {obj_name: "BAJ", obj_type: "WellMarker"}
+  horizon_smooth:
+    parameters: {radius: 200}
+    objects:
+      input_horizon: {obj_name: "U1_seis", obj_type: "Horizon"}
+      output_horizon: {obj_name: "U1_seis_smooth", obj_type: "Horizon"}
+  # Бокс IDW-горизонтов — ЛОКАЛЬНАЯ СК Герасимовского (extent 63754..76254 ×
+  # 304597..320147), как исходный depth_u1.irap. В шаблоне функции остался чужой
+  # бокс (min_x=2221900, length 4200×4600) от обучающего набора: если `autodetect_box`
+  # его не перекроет, горизонт строится на пустой области (маркеры скважин лежат
+  # в другой СК) -> далее сетка «The resulting grid has no elements!».
+  horizon_interpolate_by_marker_idw:
+    parameters: {autodetect_box: True,
+                 min_x: 63754.458879, min_y: 304597.452304,
+                 length_x: 12500.0, length_y: 15550.0,
+                 counts_x: 0, counts_y: 0,
+                 autodetect_grid: False,
+                 step_x: 50, step_y: 50}
+  wells_attribute_thickness_calculation:
+    objects:
+      result_well_attribute: {obj_name: "Tl_thick", obj_type: "WellAttribute"}
+      marker_top: {obj_name: "BAJ", obj_type: "WellMarker"}
+      marker_bottom: {obj_name: "J2", obj_type: "WellMarker"}
+      # Событие несогласия отключено (use_marker_unconformity=False), но имя объекта в
+      # шаблоне должно существовать — указываем реальный маркер кровли (BAJ).
+      marker_unconformity: {obj_name: "BAJ", obj_type: "WellMarker"}
+  # ГЛОБАЛЬНАЯ ОЧИСТКА шаблонов функций от ЧУЖИХ объектов обучения (правило 7).
+  # Применяется к каждому шагу данной функции (мержится со step.replace).
+  #  * ошибка «неизвестное != ложь»: неиспользуемые зоны/регионы/кубы чужого
+  #    проекта отключаются (use_zone=False) и их имена заменяются пустыми, чтобы
+  #    в рендере не осталось токенов обучения (contract.foreign_tokens).
+  create_blocked_well_log:
+    replace:
+      'name="CS_trend"': 'name=""'
+      'name="CS"': 'name=""'
+  grid_property_interpolate_by_wells_log_3d:
+    replace:
+      # ПЕТРОФИЗИКА ИНТЕРПОЛИРУЕТСЯ ПО ЗОНАМ: use_zone=True (НЕ отключать!), зона =
+      # FACIES (задаётся объектом `zone` на шаге). Без зоны/региона функция падает
+      # «No zones or regions are selected for interpolation!» (эталон CLOUD1.2).
+      # Чистим только чужие имена неиспользуемых ссылок шаблона обучения.
+      'name="zone_id"': 'name=""'
+      'name="Litho3D"': 'name=""'
+      'name="CS"': 'name=""'
+      'name="Res3D"': 'name=""'
+  grid_property_create_volumetric_properties:
+    replace:
+      'name="CS_trend"': 'name=""'
+      'name="LithoRes"': 'name=""'
+
+# === ПОЛНЫЙ ПАЙПЛАЙН ПОСТРОЕНИЯ 3D ГМ (данные, не код) =======================
+# Порядок этапов → шагов. Шаги с известным шаблоном рендерятся в воркфлоу тНава;
+# шаги, для которых шаблон функции ещё не добавлен, помечаются pending_template
+# (видны в UI, но не рендерятся) — это «дорожная карта» до полного 3D ГМ.
+pipeline:
+  - stage: "0. Импорт данных Герасимовского"
+    steps:
+      # 0.1 СКВАЖИНЫ И ТРАЕКТОРИИ — создают объекты `Wells`/`Trajectories`.
+      #     Обязательно ДО ГИС и маркеров: тНав валидирует вход и падает с
+      #     «cannot be started due to invalid input parameter (type 'Wells table', name 'Wells')».
+      #     Таблицы `MD X Y Z` готовятся из `inputs.inclinometry` + `inputs.wellhead`
+      #     (см. domain/trajectories.py) и кладутся в <проект>/Wells/.
+      # 0.0 ГРАНИЦА МОДЕЛИ — импортируется ПЕРВОЙ: нужна как region сетки,
+      #     sample-object (авто-бокс) и фильтр волюметрии. В эталонном воркфлоу
+      #     это отдельный полигон (polygon_import_*). Контур готовит
+      #     domain/trajectories.prepare_boundary() из структурной карты → Polygons/Boundary.txt.
+      - function: polygon_import_txt_format
+      - function: wells_import_path_deviation_format
+        glob: {file_names: "Wells/*.txt"}
+      - function: wells_log_import_las_format
+        glob: {file_names: "RIGIS/*.las"}
+      - function: marker_import_txt_format
+        lists: {file_names: ["Welltop.txt"]}
+      - function: horizon_import_ascii_format
+        # Бланковое значение карты depth_u1.irap = 9999900 (36 598 ячеек из 41 721).
+        # Дефолт шаблона (novalue=99999) его НЕ ловит -> бланк идёт как глубина ~1e7,
+        # Z сетки разлетается до +-9e6 (проверено: get_max_z=9 871 517).
+        parameters: {novalue: 9999900}
+        replace:
+          "Horizons/Seis": "struct/depth_u1.irap"
+          'name="Seis"': 'name="U1_seis"'
+      - function: horizon_import_ascii_format
+        # СЕЙСМИЧЕСКИЙ ТРЕНД КРОВЛИ: depth_u1_not_tued.irap — та же сетка 251×312
+        # и локальная СК, сейсмические отметки без «тьюнинга». Спот-проверка:
+        # центральная полоса содержит реальные глубины ~-2400..-2470, СЗ край —
+        # бланк 9999900. Идёт трендом в IDW кровли U1_top (этап 1);
+        # подошва U1_bot строится по маркерам без тренда (сейсмики уровня J2 нет).
+        parameters: {novalue: 9999900}
+        replace:
+          "Horizons/Seis": "struct/depth_u1_not_tued.irap"
+          'name="Seis"': 'name="U1_seis_trend"'
+      # 0.2 РАЗЛОМЫ — импорт траекторий разломов (sticks XYZ) в проект -> объект
+      #     «Faults» типа `Fault3d` (учёт разломов: видны в проекте, доступны для
+      #     сетки/свойств). Данные: `inputs.faults` (struct/faults.irap; точки X Y Z,
+      #     разделитель 999.0 — формат совпадает с эталоном GD2.2 «How to build grid
+      #     with faults», воркфлоу 26.2, файлы Fault*.txt).
+      - function: fault_import_sticks_xyz_format
+        replace:
+          '"Faults/faults.irap"': '"struct/faults.irap"'
+  # --- 1. СТРУКТУРНЫЕ ПОВЕРХНОСТИ: горизонты (СТРОЯТСЯ ПЕРВЫМИ) ----------------
+  # Поверхности кровли/подошвы строятся НЕПОСРЕДСТВЕННО из отбивок скважин ДО карт
+  # толщин. Раньше порядок был обратный: толщины (этап 1) → горизонт-калькулятор
+  # C1bb_top_trend = кровля + Tl_thick (этап 2). Тренд ссылался на горизонт,
+  # создаваемый В ТОМ ЖЕ этапе позже → «Parameter "Trend Horizon…" не найден», этап
+  # падал, до стадии сетки (4) дело не доходило → 3D-сетки не было вовсе.
+  - stage: "1. Структурные поверхности: горизонты"
+    steps:
+      # ПОДГОН ПОЛИГОНА под границу сейсмического горизонта — машинный эталон
+      # reference_workflow.py (v26.1, стр. 32, wf item 1). Полигон `U1_seis_boundary`
+      # — НОВЫЙ объект (не `Boundary`), чтобы не перезаписать region сетки.
+      # СТАТУС: подготовлено по эталону, на лицензии НЕ проверено (правило 8).
+      - function: polygon_create_by_map_2d_boundary
+      - function: horizon_smooth
+        objects:
+          input_horizon: {obj_name: "U1_seis", obj_type: "Horizon"}
+          output_horizon: {obj_name: "U1_seis_smooth", obj_type: "Horizon"}
+      # Сглаживание СЕЙСМИЧЕСКОГО ТРЕНДА кровли (depth_u1_not_tued -> U1_seis_trend).
+      - function: horizon_smooth
+        objects:
+          input_horizon: {obj_name: "U1_seis_trend", obj_type: "Horizon"}
+          output_horizon: {obj_name: "U1_seis_trend_smooth", obj_type: "Horizon"}
+      # МАРКЕРЫ БЕРУТСЯ ИЗ ИМПОРТА (Welltop.txt: колонка Marker = BAJ, J1(1+2), J2),
+      # а не выдумываются: иначе «cannot find object "Well Marker ..."».
+      # ТРЕНД + ОСТАТОЧНЫЙ IDW: use_residual_idw=True — тНав интерполирует НЕВЯЗКИ
+      # (отбивка − тренд в скважине) и прибавляет их к тренду: сейсмика задаёт форму
+      # между скважинами, а в точках скважин поверхность ТОЧНО садится на отбивки.
+      # Проверено: без residual медиана |ΔZ| 8.6 м, максимум 46 м (полосы тренда).
+      # РИСК: у тренда пустой СЗ край (бланк 9999900) — невязка там не считается.
+      - function: horizon_interpolate_by_marker_idw
+        parameters: {use_trend_horizon: True, use_residual_idw: True}
+        objects:
+          result_horizon: {obj_name: "U1_top", obj_type: "Horizon"}
+          well_marker: {obj_name: "BAJ", obj_type: "WellMarker"}
+          trend_horizon: {obj_name: "U1_seis_trend_smooth", obj_type: "Horizon"}
+          residual_idw: {obj_name: "Residual_U1_top", obj_type: "WellAttribute"}
+        replace:
+          # Переименование подписи шага (в шаблоне — чужое имя резервуара S001).
+          'name = "Сейсмика C1tl"': 'name = "Кровля Ю1 (тренд + residual IDW)"'
+      # ПОДОШВА ОТ КРОВЛИ (замечание заказчика: «бычьи глаза» на U1_bot).
+      # Факт: кровля строится как «тренд + residual IDW» (гладко), а подошва шла
+      # СВОБОДНЫМ IDW без тренда — поэтому «садилась» на каждую скважину отдельным
+      # куполком. Теперь подошва строится ТЕМ ЖЕ проверенным способом, что и кровля:
+      # трендом служит УЖЕ ПОСТРОЕННАЯ кровля U1_top (структурно-согласованная форма),
+      # а остаточный IDW доводит её до отбивок маркера J2. Новых функций и аргументов
+      # не вводится — форма параметров идентична шагу кровли выше; тренд — ДАННЫЕ.
+      - function: horizon_interpolate_by_marker_idw
+        parameters: {use_trend_horizon: True, use_residual_idw: True}
+        objects:
+          result_horizon: {obj_name: "U1_bot", obj_type: "Horizon"}
+          well_marker: {obj_name: "J2", obj_type: "WellMarker"}
+          trend_horizon: {obj_name: "U1_top", obj_type: "Horizon"}
+          residual_idw: {obj_name: "Residual_U1_bot", obj_type: "WellAttribute"}
+        replace:
+          'name = "Сейсмика C1tl"': 'name = "Подошва Ю1 (тренд от кровли + residual IDW)"'
+      # --- ЭКСПОРТ СТРУКТУРЫ (триады E5 из машинного эталона v26.1) --------------
+      # Вызовы и аргументы — ДОСЛОВНО из reference_workflow.py:
+      #   * horizon_export_cps_format — стр. 195/593/650/1048/1105;
+      #   * marker_export_well_marker_table_format — стр. 109.
+      # Имя файла экспорта — ДАННЫЕ (parameters.file_name), не литерал шаблона.
+      # СТАТУС: подготовлено по эталону, на лицензии НЕ проверено (правило 8):
+      # подтверждение — прогоном `--execute`; падение фиксируется как блокер.
+      - function: horizon_export_cps_format
+        parameters: {file_name: "U1_top_cps.txt"}
+        objects:
+          horizon: {obj_name: "U1_top", obj_type: "Horizon"}
+      # ВЫГРУЗКА ПОДОШВЫ — чтобы QA/QC-контроль «бычьих глаз»
+      # (tools/check_surface_bullseye.py) измерял ОБЕ поверхности, а не только кровлю.
+      # Замечание заказчика: подошва получилась с локальной подсадкой на скважины.
+      - function: horizon_export_cps_format
+        parameters: {file_name: "U1_bot_cps.txt"}
+        objects:
+          horizon: {obj_name: "U1_bot", obj_type: "Horizon"}
+      - function: marker_export_well_marker_table_format
+        parameters: {file_name: "BAJ_markers.txt"}
+        objects:
+          marker: {obj_name: "BAJ", obj_type: "WellMarker"}
+  # --- 2. ТОЛЩИНЫ И 2D-ТРЕНДЫ (ПОСЛЕ структурных поверхностей) ----------------
+  # Карты толщин считаются ПОСЛЕ построения КРОВЛИ (этап 1); здесь же из кровли и
+  # толщины строится ПОДОШВА (horizon_calculator → U1_bot), поэтому к стадии сетки
+  # готовы оба объекта. Толщина Ю1 = кровля − подошва по ОДНОМУ объекту: маркеры
+  # BAJ (кровля) … J2 (подошва) — как в эталонном воркфлоу ≈ полный разрез Ю1.
+  # Бокс и сетка — ЛОКАЛЬНАЯ СК Герасимовского (шаблон несёт чужой min_x=2221900).
+  - stage: "2. Толщины и 2D-тренды"
+    # ТОЛЩИНА = КРОВЛЯ − ПОДОШВА (U1_top − U1_bot), считается из ПОСТРОЕННЫХ
+    # горизонтов (не из отбивок скважин). Модель в альтитудах (Z<0): кровля выше
+    # подошвы, поэтому U1_top − U1_bot > 0. Бокс — ЛОКАЛЬНАЯ СК Герасимовского.
+    steps:
+      - function: map_2d_calculator
+        # ТОЛЩИНА = КРОВЛЯ − ПОДОШВА через формулу: horizon("U1_top")−horizon("U1_bot")
+        # (горизонты в формуле map_2d_calculator задаются функцией horizon("...")).
+        parameters: {autodetect_box: False,
+                     min_x: 63754.458879, min_y: 304597.452304,
+                     length_x: 12500.0, length_y: 15550.0,
+                     autodetect_grid: False,
+                     step_x: 50, step_y: 50,
+                     counts_x: 0, counts_y: 0,
+                     formula: 'horizon("U1_top")-horizon("U1_bot")'}
+        objects:
+          result_map_2d: {obj_name: "Tl_thick", obj_type: "Map2d"}
+      - function: map_2d_smooth
+        objects:
+          input_map: {obj_name: "Tl_thick", obj_type: "Map2d"}
+          output_map: {obj_name: "Tl_thick_smooth", obj_type: "Map2d"}
+      - function: map_2d_calculator
+        parameters: {autodetect_box: False,
+                     min_x: 63754.458879, min_y: 304597.452304,
+                     length_x: 12500.0, length_y: 15550.0,
+                     autodetect_grid: False,
+                     step_x: 50, step_y: 50,
+                     counts_x: 0, counts_y: 0,
+                     formula: "Tl_thick-Tl_thick_smooth"}
+        objects:
+          result_map_2d: {obj_name: "Tl_thick_vrez", obj_type: "Map2d"}
+      # --- ЭКСПОРТ ТОЛЩИН И АТРИБУТОВ (триады E5 из машинного эталона v26.1) -----
+      # Вызовы и аргументы — ДОСЛОВНО из reference_workflow.py:
+      #   * map_2d_export_cps_format — стр. 79/553/1008 (карта толщин CPS-3 Grid);
+      #   * wells_attribute_export   — стр. 235/690 (таблица атрибутов скважин).
+      # Имя файла экспорта — ДАННЫЕ (parameters.file_name). Атрибут `Residual_U1_top`
+      # реально создаётся этапом 1 (residual IDW кровли) — выдуманных объектов нет.
+      # СТАТУС: подготовлено по эталону, на лицензии НЕ проверено (правило 8):
+      # подтверждение — прогоном `--execute`; падение фиксируется как блокер.
+      - function: map_2d_export_cps_format
+        parameters: {file_name: "Tl_thick_cps.txt"}
+        objects:
+          map_2d: {obj_name: "Tl_thick", obj_type: "Map2d"}
+      - function: wells_attribute_export
+        parameters: {file_name: "Residual_U1_top.txt"}
+        objects:
+          attribute_name: {obj_name: "Residual_U1_top", obj_type: "WellAttribute"}
+  - stage: "3. Полигон вреза (эрозия)"
+    # Нужен ли этот этап — решает АГЕНТ по покрытию отбивками (см. `structural:`):
+    # при coverage >= порога шаги пропускаются (skipped_by_policy).
+    steps:
+      - function: polygon_create_by_map_intersection
+        objects:
+          top: {obj_name: "Tl_thick_vrez", obj_type: "Map2d"}
+          result_polygon: {obj_name: "Vrez", obj_type: "Curve3d"}
+  # СЕТКА — ПРОВЕРЕННЫЙ рецепт: grid_3d_create_by_horizons даёт рабочую сетку
+  # 250×311×22 (x=[63754.5..76254.5], y=[304597.5..320147.5], z=[-2529.8..-2360.3]).
+  # ПРИМЕЧАНИЕ про разломы: шаблоны `fault_import_sticks_xyz_format` и
+  # `grid_3d_create_by_horizons_with_faults` подготовлены (domain/templates +
+  # rules) и помечены «проверить на лицензии» (правило 8), НО в сетку НЕ подключены:
+  # непроверенный импорт разломов блокировал построение сетки (в проекте не было
+  # `main_grid`), поэтому связка откачена. Включение — после верификации сигнатур
+  # импорта/типа объекта `Faults` на живом тНаве (см. README, раздел 7).
+  - stage: "4. Структурная 3D-модель и сетка (corner-point)"
+    steps:
+      - function: grid_3d_create_by_horizons
+        #  * ПОРЯДОК ГОРИЗОНТОВ инвертирован (bottom-first): первая строка — ПОДОШВА
+        #    (`U1_bot`), вторая — КРОВЛЯ (`U1_top`). Модель в альтитудах (Z<0); при
+        #    естественном порядке мощности выходят нулевыми -> «The resulting grid
+        #    has no elements!» (проверено экспериментально, правило 4).
+        #  * БОКС по локальной СК (origin 63754.458879/304597.452304, 12500×15550, шаг 50).
+        #  * обрезка регионом выключена; без `horizons_group_box` и объекта-образца.
+        parameters: {autodetect_box: False,
+                     min_x: 63754.458879, min_y: 304597.452304,
+                     length_x: 12500.0, length_y: 15550.0,
+                     autodetect_angle: False,
+                     angle: 0,
+                     autodetect_grid: False,
+                     step_x: 50, step_y: 50,
+                     use_minimum_thickness: False,
+                     use_minimum_zone_thickness: False,
+                     autodetect_during_wf_calculation: False,
+                     use_region: False}
+        objects:
+          mesh: {obj_name: "main_grid", obj_type: "Grid3d"}
+          region: {obj_name: "Boundary", obj_type: "Curve3d"}
+        replace:
+          # Свап имён: строка-«Top» шаблона -> ПОДОШВА, строка-«Bot» -> КРОВЛЯ.
+          'name="Top"': 'name="U1_bot"'
+          'name="Bot"': 'name="U1_top"'
+          '"zone" : "Zone_4"': '"zone" : "Zone_2"'
+  - stage: "5. Апскейлинг ГИС на сетку (blocked wells)"
+    steps:
+      # ДИСКРЕТНАЯ ПАЛИТРА ЛИТОЛОГИИ (LIT): без неё create_blocked_well_log падает
+      # «Wrong averaging method (Most of) for continuous log!» — лог LIT из LAS
+      # остаётся НЕПРЕРЫВНЫМ (флаг override_discreteness не помогает). Создаём
+      # дискретную палитру (create_object_template) и привязываем её к логу LIT
+      # (object_template_mapping) — эталон CLOUD1.2 (палитры Facies/Litho/Res).
+      - function: create_object_template
+      - function: object_template_mapping
+      - function: create_blocked_well_log
+        # LIT = литология (коды 0..8). Лог из LAS приходит НЕПРЕРЫВНЫМ, поэтому
+        # «most_of» падает («Wrong averaging method (Most of) for continuous log!»).
+        # Апскейлинг делаем «midpoint» (совместим с непрерывным логом), а дискретность
+        # навязываем следующим шагом blocked_well_log_change_type.
+        parameters: {averaging_method: "midpoint",
+                     use_override_discreteness: True, override_discreteness: "discrete"}
+        objects:
+          input_log: {obj_name: "LIT", obj_type: "WellLog"}
+      # Блокированный лог FaciesU делаем ДИСКРЕТНЫМ — иначе фации SIS падают с
+      # «Object "Blocked Wells FaciesU" has inappropriate template ("Continuous palette")».
+      # Способ взят из эталонного воркфлоу (blocked_well_log_change_type).
+      - function: blocked_well_log_change_type
+        objects:
+          grid: {obj_name: "main_grid", obj_type: "Grid3d"}
+        replace:
+          'name="paleo_Litho"': 'name="FaciesU"'
+      # ПЕТРОФИЗИКА (вход для кубов PORO/PERM): блокируем ГИС-кривые на сетку.
+      # Мнемоники — ДАННЫЕ LAS (RIGIS/*.las): PHIE (пористость), KINT (проницаемость).
+      - function: create_blocked_well_log
+        # PHIE (пористость) — НЕПРЕРЫВНЫЙ лог: апскейлинг «midpoint» (most_of падает).
+        parameters: {averaging_method: "midpoint",
+                     use_override_discreteness: True, override_discreteness: "continuous"}
+        objects:
+          BlockedWells: {obj_name: "Poro", obj_type: "BlockedWells"}
+          input_log: {obj_name: "PHIE", obj_type: "WellLog"}
+      - function: create_blocked_well_log
+        # KINT (проницаемость) — НЕПРЕРЫВНЫЙ лог: апскейлинг «midpoint».
+        parameters: {averaging_method: "midpoint",
+                     use_override_discreteness: True, override_discreteness: "continuous"}
+        objects:
+          BlockedWells: {obj_name: "Perm", obj_type: "BlockedWells"}
+          input_log: {obj_name: "KINT", obj_type: "WellLog"}
+  # --- 6. ФАЦИИ: ДИСКРЕТНЫЙ КУБ FACIES + ПАЛИТРА -------------------------------
+  # МЕТОД фаций → ФУНКЦИЯ тНава выбирается ПО ДАННЫМ: карта «метод → функция» —
+  # `ontology/facies_methods.yaml` (метод — `geostat.facies_method` выше).
+  # ПОДТВЕРЖДЁННЫЙ ПУТЬ (проба на живой лицензии 26.2, `tools/probe_facies.py`,
+  # `runs/_probe_facies_k_*.txt`): `grid_property_interpolate_by_wells_log_sgs_multilayer_facies`
+  # («Послойное Фациальное моделирование: Послойный SGS», мануал 26.2 раздел 57.3.12,
+  # стр. 2692: «Сетка. Выбор сетки для СОЗДАНИЯ СВОЙСТВА») — функция САМА создаёт
+  # свойство по КРИВОЙ ГИС (вход — лог `LIT`, не Blocked Wells), поэтому предсозданный
+  # дискретный куб не нужен (это снимает блокер B4 «нужен готовый куб с палитрой»).
+  # Проба: вызов с `mesh/result_grid_property/well_log` (typed_object_name) + `variogram`
+  # → OK; свойство FACIES существует и непусто: min 0.0, max 8.0, mean 2.6015
+  # (коды литологии поля {0,1,2,3,8}).
+  # ПАЛИТРА: `create_object_template` (дискретный шаблон) создаётся ДО расчёта, а
+  # привязка шаблона к кубу (`object_template_mapping`, папка «3D-Grids», тип «Property»,
+  # `use_grid=True`) — ПОСЛЕ расчёта, как предписывает мануал 26.2: «В конце расчёта
+  # присвойте шаблон литологии к свойству для визуализации фаций».
+  # Неподтверждённый ранее `grid_property_facies_modeling` в пайплайн НЕ включён
+  # (его шаблон и правило сохранены как «проверить»): конкурентная ветка зон/регионов
+  # упирается в пустой список зон («No zones or regions are selected for interpolation!»).
+  - stage: "6. Фации (дискретный куб FACIES)"
+    steps:
+      # 6.1 Дискретная палитра куба фаций (шаблон create_object_template; имя LIT→FACIES).
+      - function: create_object_template
+        replace:
+          'name="LIT"': 'name="FACIES"'
+      # 6.2 Куб FACIES: функция САМА создаёт свойство по кривой ГИС (мануал 26.2, 57.3.12).
+      # Объекты — типизированные ссылки (typed_object_name), как в машинных шаблонах 26.2.
+      - function: grid_property_interpolate_by_wells_log_sgs_multilayer_facies
+        objects:
+          mesh: {obj_name: "main_grid", obj_type: "Grid3d"}
+          result_grid_property: {obj_name: "FACIES", obj_type: "Grid3dProperty"}
+          well_log: {obj_name: "LIT", obj_type: "WellLog"}
+      # 6.3 Привязка дискретного шаблона к свойству сетки (папка «3D-Grids», «Property»):
+      # эталон CLOUD1.2 (object_template_mapping, use_grid=True) + мануал 26.2 (57.3.12).
+      - function: object_template_mapping
+        objects:
+          grid: {obj_name: "main_grid", obj_type: "Grid3d"}
+        replace:
+          'name="Logs"': 'name="3D-Grids"'
+          'use_grid=False': 'use_grid=True'
+          '"object" : "LIT"': '"object" : "FACIES"'
+          '"template_data" : "LIT"': '"template_data" : "FACIES"'
+          '"object_type" : "Well Log"': '"object_type" : "Property"'
+  # --- 6.1 ГЕОЛОГИЧЕСКИЕ ТЕЛА (geobodies) -------------------------------------
+  # ВЫДЕЛЕНИЕ ГЕОЛОГИЧЕСКИХ ТЕЛ на основе структуры: связные 3D-тела (geobody)
+  # извлекаются из дискретного свойства FACIES на построенной структурной сетке;
+  # тела видны в проекте тНав как объекты Geobody. Шаблон geobody_create_by_property
+  # написан в стиле v26.1 — ПРОВЕРИТЬ вызов на лицензированной машине (правило 8).
+  # Зависит от этапа 6: если куб фаций не создан, шаг деградирует по политике гейта.
+  - stage: "6.1 Геологические тела (geobodies из фаций)"
+    steps:
+      - function: geobody_create_by_property
+        # ЗАВИСИМОСТЬ ПО ДАННЫМ (F-20): геотела строятся ТОЛЬКО если куб FACIES
+        # реально создан (свидетельство `grid_properties` от пробника). Иначе шаг
+        # пропускается по данным (`skipped_by_policy`) с причиной в отчёте, а не
+        # падает в тНаве («Property is not specified») и не роняет весь воркфлоу.
+        requires_object: "FACIES"
+        requires_kind: "grid_property"
+        on_missing: "skip"
+        objects:
+          grid: {obj_name: "main_grid", obj_type: "Grid3d"}
+          property: {obj_name: "FACIES", obj_type: "Grid3dProperty"}
+          result_geobody: {obj_name: "Geobodies_FACIES", obj_type: "Geobody"}
+  # --- 7. ПЕТРОФИЗИКА: КУБЫ PORO/PERM из ГИС ----------------------------------
+  # РЕАЛЬНАЯ интерполяция по ГИС: grid_property_interpolate_by_wells_log_3d в
+  # БЕЗзонной форме — ZoneRegionFilter(zone=None) + ZoneRegionParameters(use=True,
+  # zone=None). Форма ПРОВЕРЕНА реальным прогоном (v7, docs/tasks/B3_petrophysics.md):
+  # PORO/PERMX созданы, G-PETRO passed, STOIIP посчитан. Зонная форма
+  # (use_zone=True + zone=<куб зон>) PORO НЕ создаёт — откатана.
+  # Замены zone=/use_zone/current_facies — ПОШАГОВО (шаблон остаётся сырым,
+  # правило 2); чужие имена (zone_id/Litho3D/CS/Res3D) гасит глобальный replace
+  # секции functions: (правило 7).
+  # Метод/вариограмма/диапазоны φ,k/учёт фаций — политика agents/petrophysics.py
+  # (AG_PETROPHYSICS); пороги физичности — данные `thresholds.poro/perm`.
+  - stage: "7. Петрофизика (PORO, PERM)"
+    steps:
+      - function: grid_property_interpolate_by_wells_log_3d
+        objects:
+          mesh: {obj_name: "main_grid", obj_type: "Grid3d"}
+          blocked_wells: {obj_name: "Poro", obj_type: "BlockedWells"}
+          result_grid_property: {obj_name: "PORO", obj_type: "Grid3dProperty"}
+        replace:
+          'use_zone=True': 'use_zone=False'
+          'zone=1,': 'zone=None,'
+          'zone=4,': 'zone=None,'
+          'current_facies=None,': 'current_facies=0,'
+      - function: grid_property_interpolate_by_wells_log_3d
+        objects:
+          mesh: {obj_name: "main_grid", obj_type: "Grid3d"}
+          blocked_wells: {obj_name: "Perm", obj_type: "BlockedWells"}
+          result_grid_property: {obj_name: "PERM", obj_type: "Grid3dProperty"}
+        replace:
+          'use_zone=True': 'use_zone=False'
+          'zone=1,': 'zone=None,'
+          'zone=4,': 'zone=None,'
+          'current_facies=None,': 'current_facies=0,'
+  # --- 8. НАСЫЩЕНИЕ: КОНТАКТ ------------------------------------------------
+  # Контакт задаётся ЗНАЧЕНИЕМ отметки (`source_type="z_value"`): модель в
+  # альтитудах (Z < 0), поэтому z_value отрицательный. Значение — ДАННЫЕ поля:
+  # ВНК = медиана TVDSS кровли интервала (отбивки BAJ из Welltop.txt, TVDSS =
+  # KB − MD, KB из Wellhead.txt) − `contacts.owc_offset_m` = −2523.4 − 20 = −2543.4 м.
+  # Политика агента насыщения (agents/saturation.py, AG_PVT_SCAL) пересчитывает
+  # эту же величину из свидетельств этапа (welltops) и фиксирует способ задания
+  # контакта + контроль (диапазон Sw, сумма насыщенностей, контакт vs ЗСВ).
+  # Чужие ссылки на куб зон (zone_id) шаблона гасятся (правило 7).
+  - stage: "8. Насыщение (контакты OWC/GOC)"
+    steps:
+      - function: contact_create_by_horizon
+        objects:
+          grid_3d: {obj_name: "main_grid", obj_type: "Grid3d"}
+          result_contact: {obj_name: "OWC", obj_type: "Contact"}
+        # discrete_cube_1/2 в шаблоне = zone_id (куба зон у нас нет) → пустые имена
+        replace:
+          'name="zone_id"': 'name=""'
+          '"z_value" : 1696': '"z_value" : -2543.4'
+  - stage: "9. Волюметрия (запасы)"
+    steps:
+      - function: grid_property_create_volumetric_properties
+        # F-18: свойство STOIIP создавалось, но НЕ заполнялось — в шаблоне флаг
+        # `stoiip_use_in_table=False` (у заполняемых HCPV/PoreVolume/NetVolume
+        # соответствующие флаги True). Значения пишутся только при True; значение —
+        # ДАННЫЕ (проверяется свидетельством property_stats.STOIIP: count > 0).
+        parameters: {stoiip_use_in_table: true}
+        objects:
+          poro_cube: {obj_name: "PORO", obj_type: "Grid3dProperty"}
+
+  # --- 10. ЭКСПОРТ КАРТ: CONSOLE-SAFE ПУТЬ ----------------------------------
+  # Нативный путь через UI (`create_screenshot` + `select_geometry_object` /
+  # `contour_line_settings_*`) в консольном тНаве НЕДОСТУПЕН — проверено реальным
+  # прогоном («select_geometry_object … not available in the console version!»).
+  # Console-safe путь (ПОДТВЕРЖДЁН пробой на живой лицензии 26.2, tools/probe_maps.py):
+  #   1) map_2d_create_by_grid_property — объект 2D-карты (Map2d) из куба свойств
+  #      сетки: карта видна в дереве проекта тНава;
+  #   2) map_2d_export_ascii_format / map_2d_export_cps_format — выгрузка карты
+  #      файлом в <папка проекта>/Maps/. Внутри элемента воркфлоу ДОПУСТИМЫ ТОЛЬКО
+  #      вызовы функций тНава (реальный прогон: «Could not recognize python code as
+  #      workflow item» на Python-инструкции; безымпортная форма тоже отвергнута
+  #      пробой) — поэтому каталог Maps создаёт ОРКЕСТРАТОР в папке проекта
+  #      (runs/run_<поле>/Maps для базы, models/<vid>/Maps для ветвей) ДО этапов;
+  #   3) domain/qc/maps.py + domain/map_render.py — PNG с изолиниями в runs/<id>/maps/.
+  # Карты структурных поверхностей (горизонты) сюда не входят: их экспорт —
+  # отдельные триады horizon_export_* + фолбэк `checks.map_sources` (дендро структур).
+  # Дискретные кубы (фации/литология): схема дискретной таблицы
+  # `discrete_cube_and_map_table` НЕ подтверждена (методы average/most_of отвергнуты
+  # пробой) → шаг не выдумывается (правило 8), карты FACIES/LIT идут фолбэком.
+  # `map_2d_statistic` в этап НЕ включён: пробой подтверждён только результат
+  # (`result_map`), схема таблицы исходных карт (`maps_table`) — нет (5 вариантов
+  # строки → «Bad value given for argument "maps_table"»). Открытый вопрос.
+  # Имена кубов (PORO/PERM/STOIIP/HCPV/PoreVolume/NetVolume) — свойства стадий 7 и 9.
+  # F-18 (исправлено): куб метрики (STOIIP) тНав СОЗДАЁТ ПУСТЫМ по ячейкам —
+  # `property_stats.STOIIP = {count: 0, nulls: 1710500}` при сумме 2.039e8
+  # (агрегат читается из таблицы объёмов). Проба на живой лицензии: НИ
+  # `stoiip_use_in_table` (true/false), НИ `use_table=False`, НИ `use_oil_hcpv=True`
+  # не заполняют ячейки (OilHCPV тоже пуст); заполнены GeomVolume/NetVolume/
+  # PoreVolume/HCPV. Поэтому карта метрики строится из ВЫЧИСЛЕННОГО свойства
+  # (штатный `grid_property_calculator`, формула — ДАННЫЕ): STOIIP_calc = HCPV/Bo.
+  # Проверено пробой на копии проекта: выгрузка карты метрики 0 → 41 035 непустых
+  # ячеек (то же покрытие, что у HCPV). Имя карты/PNG (STOIIP) и файл выгрузки
+  # (Maps/STOIIP.txt) НЕ меняются; куб метрики для проверки запасов не перезаписывается.
+  - stage: "10. Экспорт карт"
+    steps:
+      - function: grid_property_calculator
+        # Производное свойство для карты метрики: формула и имена — ДАННЫЕ шага.
+        # `variables=variables` берётся из шаблона (в элементе воркфлоу переменные
+        # воркфлоу доступны — подтверждено пробой).
+        parameters: {formula: "HCPV/1.2"}
+        objects:
+          mesh: {obj_name: "main_grid", obj_type: "Grid3d"}
+          result_grid_property: {obj_name: "STOIIP_calc", obj_type: "Grid3dProperty"}
+          user_cut_for_filter: {obj_name: "", obj_type: "Grid3dProperty"}
+      - function: map_2d_create_by_grid_property
+        objects:
+          grid: {obj_name: "main_grid", obj_type: "Grid3d"}
+          cube: {obj_name: "PORO", obj_type: "Grid3dProperty"}
+          map_2d: {obj_name: "PORO", obj_type: "Map2d"}
+        replace:
+          'obj_name="zone_id"': 'obj_name=""'
+          'obj_name="Geomechanical Boundary"': 'obj_name=""'
+          'obj_name="boundary"': 'obj_name="Boundary"'
+      - function: map_2d_export_ascii_format
+        parameters: {file_name: "Maps/PORO.txt", default_value: 9999900}
+        objects:
+          map_2d: {obj_name: "PORO", obj_type: "Map2d"}
+      - function: map_2d_export_cps_format
+        parameters: {file_name: "Maps/PORO_cps.txt", default_value: 9999900}
+        objects:
+          map_2d: {obj_name: "PORO", obj_type: "Map2d"}
+      - function: map_2d_create_by_grid_property
+        objects:
+          grid: {obj_name: "main_grid", obj_type: "Grid3d"}
+          cube: {obj_name: "PERM", obj_type: "Grid3dProperty"}
+          map_2d: {obj_name: "PERM", obj_type: "Map2d"}
+        replace:
+          'obj_name="zone_id"': 'obj_name=""'
+          'obj_name="Geomechanical Boundary"': 'obj_name=""'
+          'obj_name="boundary"': 'obj_name="Boundary"'
+      - function: map_2d_export_ascii_format
+        parameters: {file_name: "Maps/PERM.txt", default_value: 9999900}
+        objects:
+          map_2d: {obj_name: "PERM", obj_type: "Map2d"}
+      - function: map_2d_create_by_grid_property
+        # Источник карты метрики — ВЫЧИСЛЕННОЕ свойство (куб метрики пуст по ячейкам,
+        # см. комментарий к этапу): имя источника — ДАННЫЕ шага.
+        objects:
+          grid: {obj_name: "main_grid", obj_type: "Grid3d"}
+          cube: {obj_name: "STOIIP_calc", obj_type: "Grid3dProperty"}
+          map_2d: {obj_name: "STOIIP", obj_type: "Map2d"}
+        replace:
+          'obj_name="zone_id"': 'obj_name=""'
+          'obj_name="Geomechanical Boundary"': 'obj_name=""'
+          'obj_name="boundary"': 'obj_name="Boundary"'
+      - function: map_2d_export_ascii_format
+        parameters: {file_name: "Maps/STOIIP.txt", default_value: 9999900}
+        objects:
+          map_2d: {obj_name: "STOIIP", obj_type: "Map2d"}
+      - function: map_2d_create_by_grid_property
+        objects:
+          grid: {obj_name: "main_grid", obj_type: "Grid3d"}
+          cube: {obj_name: "HCPV", obj_type: "Grid3dProperty"}
+          map_2d: {obj_name: "HCPV", obj_type: "Map2d"}
+        replace:
+          'obj_name="zone_id"': 'obj_name=""'
+          'obj_name="Geomechanical Boundary"': 'obj_name=""'
+          'obj_name="boundary"': 'obj_name="Boundary"'
+      - function: map_2d_export_ascii_format
+        parameters: {file_name: "Maps/HCPV.txt", default_value: 9999900}
+        objects:
+          map_2d: {obj_name: "HCPV", obj_type: "Map2d"}
+      - function: map_2d_create_by_grid_property
+        objects:
+          grid: {obj_name: "main_grid", obj_type: "Grid3d"}
+          cube: {obj_name: "PoreVolume", obj_type: "Grid3dProperty"}
+          map_2d: {obj_name: "PoreVolume", obj_type: "Map2d"}
+        replace:
+          'obj_name="zone_id"': 'obj_name=""'
+          'obj_name="Geomechanical Boundary"': 'obj_name=""'
+          'obj_name="boundary"': 'obj_name="Boundary"'
+      - function: map_2d_export_ascii_format
+        parameters: {file_name: "Maps/PoreVolume.txt", default_value: 9999900}
+        objects:
+          map_2d: {obj_name: "PoreVolume", obj_type: "Map2d"}
+      - function: map_2d_create_by_grid_property
+        objects:
+          grid: {obj_name: "main_grid", obj_type: "Grid3d"}
+          cube: {obj_name: "NetVolume", obj_type: "Grid3dProperty"}
+          map_2d: {obj_name: "NetVolume", obj_type: "Map2d"}
+        replace:
+          'obj_name="zone_id"': 'obj_name=""'
+          'obj_name="Geomechanical Boundary"': 'obj_name=""'
+          'obj_name="boundary"': 'obj_name="Boundary"'
+      - function: map_2d_export_ascii_format
+        parameters: {file_name: "Maps/NetVolume.txt", default_value: 9999900}
+        objects:
+          map_2d: {obj_name: "NetVolume", obj_type: "Map2d"}
+      # Существующая 2D-карта толщин (стадия 2, map_2d_calculator): без создания —
+      # только выгрузка (карта уже есть в проекте).
+      - function: map_2d_export_ascii_format
+        parameters: {file_name: "Maps/Tl_thick.txt", default_value: 9999900}
+        objects:
+          map_2d: {obj_name: "Tl_thick", obj_type: "Map2d"}
+      # КАРТА ФАЦИЙ (E7): куб FACIES создаёт этап 6 (подтверждено пробой на лицензии);
+      # шаг — ТОЧНАЯ КОПИЯ образца PORO (без новых аргументов): создание карты по кубу
+      # свойства сетки + выгрузка ASCII (по ней локальный рендер даёт PNG maps/FACIES.png).
+      - function: map_2d_create_by_grid_property
+        objects:
+          grid: {obj_name: "main_grid", obj_type: "Grid3d"}
+          cube: {obj_name: "FACIES", obj_type: "Grid3dProperty"}
+          map_2d: {obj_name: "FACIES", obj_type: "Map2d"}
+        replace:
+          'obj_name="zone_id"': 'obj_name=""'
+          'obj_name="Geomechanical Boundary"': 'obj_name=""'
+          'obj_name="boundary"': 'obj_name="Boundary"'
+      - function: map_2d_export_ascii_format
+        parameters: {file_name: "Maps/FACIES.txt", default_value: 9999900}
+        objects:
+          map_2d: {obj_name: "FACIES", obj_type: "Map2d"}
+
+# === ВАРИАЦИИ ПОСТРОЕНИЯ (ансамбль реализаций) ===============================
+# Каждая ветка = набор ПАРАМЕТРОВ ФУНКЦИЙ тНава: {function: {param_code: value}}.
+# Параметры реально меняют воркфлоу (radius/power_parameter/kriging_radius и т.д.).
+variations:
+  - id: "S001"
+    label: "базовая"
+    parameters: {}
+  - id: "S002"
+    label: "структура: сглаживание 100 м"
+    parameters: {horizon_smooth: {radius: 100}}
+  - id: "S003"
+    label: "структура: сглаживание 400 м"
+    parameters: {horizon_smooth: {radius: 400}}
+  - id: "S004"
+    label: "структура: IDW степень 3"
+    parameters: {horizon_interpolate_by_marker_idw: {power_parameter: 3}}
+  - id: "S005"
+    label: "тренд-карта: сглаживание карты, радиус 2500 м"
+    # F-24: прежняя цель `map_2d_interpolate` в пайплайне ОТСУТСТВУЕТ, поэтому
+    # ветвь была бит-в-бит равна базовой. Цель и параметр — из подтверждённой
+    # триады `map_2d_smooth` (domain/templates/map_2d_smooth.txt: radius=1500).
+    parameters: {map_2d_smooth: {radius: 2500}}
+
+

@@ -1,0 +1,20 @@
+# ВНИМАНИЕ (правило 8): сигнатура НЕ из эталона (машинный reference_workflow.py) —
+# функции в эталоне нет. Источник — мануал Дизайнера тНава 26.2, раздел 57.3.12
+# («Послойное Фациальное моделирование: Послойный SGS», стр. 2692–2700) и ПРОБА на
+# живой лицензии 26.2 (`tools/probe_facies.py`, `runs/_probe_facies_k_*.txt`).
+#
+# ПОДТВЕРЖДЕНО (проба, проект приёмки Герасимовского):
+#   grid_property_interpolate_by_wells_log_sgs_multilayer_facies (
+#       mesh=typed_object_name (..., "Grid3d"),
+#       result_grid_property=typed_object_name (..., "Grid3dProperty"),
+#       well_log=typed_object_name (..., "WellLog"),
+#       variogram=VariogramParameters (sill/nugget_effect/range_main/range_normal/
+#                                      range_vertical/azimuth/dip))  -> OK
+#   Свойство FACIES СОЗДАЁТСЯ функцией и непусто: min 0.0, max 8.0, mean 2.6015
+#   (коды литологии поля {0,1,2,3,8}). Дискретная палитра назначается ПОСЛЕ расчёта
+#   (`create_object_template` + `object_template_mapping`).
+#   Отвергнуты тНавом (в шаблон не включены): `i3_params`, `statistics`,
+#   `facies_parameters`, `use_global_random_seed`, `space_type`.
+<https://example.org/tnav#computational-function__grid_property_interpolate_by_wells_log_sgs_multilayer_facies> <http://www.w3.org/2000/01/rdf-schema#label> "grid_property_interpolate_by_wells_log_sgs_multilayer_facies" .
+<https://example.org/tnav#computational-function__grid_property_interpolate_by_wells_log_sgs_multilayer_facies> <https://example.org/tnav#code> "grid_property_interpolate_by_wells_log_sgs_multilayer_facies" .
+<https://example.org/tnav#computational-function__grid_property_interpolate_by_wells_log_sgs_multilayer_facies> <https://example.org/tnav#шаблон_кода> "templates/grid_property_interpolate_by_wells_log_sgs_multilayer_facies.txt" .

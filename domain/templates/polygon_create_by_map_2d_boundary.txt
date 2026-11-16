@@ -1,0 +1,18 @@
+# ЭТАЛОН (правило 8): domain/ontology_rules/reference_workflow.py,
+# тНавигатор v26.1 (api_version=v0_0_300a), стр. 32 — «Подгон полигона под
+# сейсмику» (first wf item эталонного воркфлоу Structure_modeling).
+# Аргументы скопированы ДОСЛОВНО; полигон и горизонт — ДАННЫЕ
+# (objects.polygon + objects.horizon проектного YAML). Роль полигона в эталоне —
+# `polygon` (НЕ `boundary`): в проектном YAML роль должна называться так же,
+# иначе рендер сообщает «object role не найден».
+# СТАТУС: подготовлено по машинному эталону, на лицензии НЕ проверено —
+# подтверждение только прогоном `--execute`.
+begin_wf_item (index = 1, name = "Подгон полигона под границу горизонта")
+    polygon_create_by_map_2d_boundary (polygon=typed_object_name (obj_name="Boundary",
+          obj_type="Curve3d"),
+          func_type="horizon",
+          map_2d=typed_object_name (obj_name="",
+          obj_type="Map2d"),
+          horizon=typed_object_name (obj_name="C1tl_Z",
+          obj_type="Horizon"))
+    end_wf_item (index = 1)

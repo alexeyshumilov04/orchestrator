@@ -1,0 +1,3 @@
+<https://example.org/tnav#computational-function__grid_3d_create_by_horizons> <http://www.w3.org/2000/01/rdf-schema#label> "grid_3d_create_by_horizons" .
+<https://example.org/tnav#computational-function__grid_3d_create_by_horizons> <https://example.org/tnav#code> "grid_3d_create_by_horizons" .
+<https://example.org/tnav#computational-function__grid_3d_create_by_horizons> <https://example.org/tnav#шаблон_кода> "templates/grid_3d_create_by_horizons.txt" .

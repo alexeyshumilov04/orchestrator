@@ -1,0 +1,23 @@
+    begin_wf_item (index = 6)
+    polygon_import_txt_format (use_tags_to_assign=False,
+          tags_to_assign=[],
+          use_folder=False,
+          folder="",
+          splitter=True,
+          files_table=[{"file_name" : "Polygons/Boundary.txt", "prefix" : "Boundary"}],
+          splitter2=True,
+          splitter3=True,
+          file_datum_info=CrsInfo (crs_type="not_specified",
+          crs_code=None,
+          library_crs_info=LibraryCrsInfo (auth_name="not_specified",
+          code=""),
+          crs_name=None),
+          is_closed=True,
+          invert_z=False,
+          use_domain=False,
+          domain="depth",
+          use_xy_units=False,
+          xy_units="metres",
+          use_z_units=False,
+          z_units="metres")
+    end_wf_item (index = 6)

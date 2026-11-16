@@ -1,0 +1,12 @@
+begin_wf_item (index = 22, name = "Извлечение чернового полигона вреза")
+    polygon_create_by_map_intersection (result_polygon=typed_object_name (obj_name="Vrez_auto",
+          obj_type="Curve3d"),
+          top_z_type="map",
+          top=typed_object_name (obj_name="BB_vrez_mapping",
+          obj_type="Map2d"),
+          top_depth=0,
+          bottom_z_type="depth",
+          bottom=typed_object_name (obj_name="",
+          obj_type="Map2d"),
+          bottom_depth=0)
+    end_wf_item (index = 22)

@@ -1,0 +1,71 @@
+# ОНТОЛОГИЯ: правила структурного моделирования, сетки и геостатистики
+#
+# Принцип (замечание заказчика, раунды 86–87): здесь — ОБЩИЕ правила и методы, применимые
+# к любому полю. В проектном графе (ontology_project/<поле>.yaml) остаются только ПОЛЕВЫЕ
+# значения: какие маркеры/файлы/координаты у конкретного поля.
+schema_version: 1
+knowledge_base: KB_STRUCTURAL_GEOSTAT
+
+# ── 1. Структурные поверхности ───────────────────────────────────────────────────
+structural:
+  activity: "ACT_STRUCT_03"
+  # Порядок построения: сначала КРОВЛЯ, затем ПОДОШВА (bottom-first по глубине модели).
+  surface_order: ["top", "base"]
+  # ПОДОШВА СТРОИТСЯ ОТ КРОВЛИ (замечание заказчика: «бычьи глаза» на подошве).
+  base_from_top:
+    enabled: true
+    method: "trend_from_top_plus_residual_idw"
+    trend_source: "top"                 # тренд — уже построенная кровля
+    residual: "idw_by_base_marker"      # остаточный IDW доводит до отбивок подошвы
+    rationale: "свободный IDW подошвы даёт локальную подсадку на каждую скважину (bull's eye)"
+    evidence: "живой прогон: до правки — подсадка на скважины; после — 4 из 36 (как у кровли)"
+  # Врез (эрозия): решение агента по ДАННЫМ, порог — здесь (общее правило)
+  erosion:
+    enabled_when_top_coverage_lt: 0.80   # доля скважин с отбивкой кровли
+    decision: "если покрытие >= порога → врез не требуется (шаг пропускается)"
+    steps: ["polygon_create_by_map_intersection"]   # состав метода вреза
+    on_skip: "skipped_by_policy"                    # прогон не падает (правило 6)
+  # Контроль качества поверхностей (bull's eye — локальная подсадка на скважины)
+  qc:
+    check_id: "surface.well_bullseye"
+    method: "сравнение ячейки скважины с медианой кольца радиуса R"
+    radius_cells: 3            # ДАННЫЕ (переопределяемо на уровне поля/чеклиста)
+    threshold: 10.0            # м; ДАННЫЕ
+    verdicts: {ok: "passed", превышение: "failed", нет свидетельств: "unverified"}
+
+# ── 2. Сетка и её качество ──────────────────────────────────────────────────────
+grid:
+  method: "corner_point_by_horizons"
+  quality:
+    orthogonality_check: true      # RULE_LIT_GRID_060 (ортогональность у разломов)
+    tensor_permeability_for_nonorthogonal: true   # RULE_LIT_GRID_070
+    check_ids: ["grid.geometry", "grid.quality"]
+
+# ── 3. Геостатистика: метод выбирает агент, ЗНАЧЕНИЯ ПО УМОЛЧАНИЮ — здесь ────────
+geostatistics:
+  activity: "ACT_GSTAT_04"
+  variogram:
+    type: "exponential"
+    range_main: 3500.0
+    range_normal: 3500.0
+    range_vertical: 1750.0
+    nugget_effect: 0.15
+    sill: 1.0
+  method_selection:
+    rule: "непрерывные свойства — kriging/SGS; дискретные (фации) — sgs/grfs с проверкой типов"
+    allowed_interpolators: ["kriging", "sgs", "grfs"]   # sis отвергнут тНавом (проба)
+    on_unknown_interpolator: "failed"
+  constraints:
+    - "RULE_LIT_GSTAT_100"    # не выдавать оценку тренда за данные: фиксировать неопределённость
+    - "RULE_LIT_GRID_040"     # контроль гистограмм при апскейлинге (связность)
+
+# ── 4. Проверки, потребляющие эти правила (регистрируются из данных) ─────────────
+checks:
+  - id: "struct.well_tie"
+    needs: ["structural.surface_order", "structural.base_from_top"]
+  - id: "surface.well_bullseye"
+    needs: ["structural.qc"]
+  - id: "grid.quality"
+    needs: ["grid.quality"]
+  - id: "geostat.variogram_reported"
+    needs: ["geostatistics.variogram", "geostatistics.constraints"]

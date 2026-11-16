@@ -1,0 +1,37 @@
+﻿stage,register,kind,required_fields
+S01,ASSUMPTION_REGISTER_S01,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S01,UNCERTAINTY_REGISTER_S01,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S02,ASSUMPTION_REGISTER_S02,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S02,UNCERTAINTY_REGISTER_S02,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S03,ASSUMPTION_REGISTER_S03,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S03,UNCERTAINTY_REGISTER_S03,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S04,ASSUMPTION_REGISTER_S04,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S04,UNCERTAINTY_REGISTER_S04,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S05,ASSUMPTION_REGISTER_S05,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S05,UNCERTAINTY_REGISTER_S05,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S06,ASSUMPTION_REGISTER_S06,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S06,UNCERTAINTY_REGISTER_S06,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S07,ASSUMPTION_REGISTER_S07,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S07,UNCERTAINTY_REGISTER_S07,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S08,ASSUMPTION_REGISTER_S08,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S08,UNCERTAINTY_REGISTER_S08,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S09,ASSUMPTION_REGISTER_S09,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S09,UNCERTAINTY_REGISTER_S09,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S10,ASSUMPTION_REGISTER_S10,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S10,UNCERTAINTY_REGISTER_S10,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S11,ASSUMPTION_REGISTER_S11,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S11,UNCERTAINTY_REGISTER_S11,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S12,ASSUMPTION_REGISTER_S12,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S12,UNCERTAINTY_REGISTER_S12,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S13,ASSUMPTION_REGISTER_S13,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S13,UNCERTAINTY_REGISTER_S13,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S14,ASSUMPTION_REGISTER_S14,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S14,UNCERTAINTY_REGISTER_S14,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S15,ASSUMPTION_REGISTER_S15,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S15,UNCERTAINTY_REGISTER_S15,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S16,ASSUMPTION_REGISTER_S16,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S16,UNCERTAINTY_REGISTER_S16,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S17,ASSUMPTION_REGISTER_S17,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S17,UNCERTAINTY_REGISTER_S17,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status
+S18,ASSUMPTION_REGISTER_S18,assumption,statement; owner; created_at; valid_scope; evidence; impact; review_date; falsifier; status
+S18,UNCERTAINTY_REGISTER_S18,uncertainty,source; aleatory_or_epistemic; distribution; correlation; decision_impact; mitigation; posterior; status

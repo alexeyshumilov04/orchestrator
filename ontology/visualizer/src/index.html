@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2316313b'/%3E%3Cpath d='M5 22c5-10 9 4 14-7 3-6 6-5 8-2v12H5z' fill='%2339b8a5'/%3E%3Ccircle cx='22' cy='9' r='3' fill='%23f3b44b'/%3E%3C/svg%3E">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Интерактивный просмотр 60-летнего процесса комплексного геологического моделирования, данных, QA/QC, BDI-решений и программных привязок.">
+  <title>Навигатор эволюционной онтологии КГМ</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand" aria-label="Навигатор онтологии">
+      <div class="brand-mark" aria-hidden="true"><span>G</span><sup>3</sup></div>
+      <div>
+        <div class="brand-title">Навигатор онтологии</div>
+        <div class="dataset-name" id="dataset-name">Загрузка встроенной модели…</div>
+      </div>
+    </div>
+
+    <label class="search-box" for="global-search">
+      <span class="search-icon" aria-hidden="true">⌕</span>
+      <input id="global-search" type="search" autocomplete="off" placeholder="Найти действие, решение, критерий, API или параметр…">
+      <kbd>Ctrl K</kbd>
+    </label>
+
+    <div class="source-actions">
+      <input id="rdf-files" type="file" accept=".rdf,.nt,.owl,text/plain" multiple hidden>
+      <button class="button" id="load-files" type="button">Открыть RDF</button>
+      <button class="button button-quiet" id="load-default" type="button">Вернуть v4.1</button>
+    </div>
+  </header>
+
+  <nav class="viewbar" aria-label="Режим просмотра">
+    <div class="view-tabs" role="tablist" aria-label="Представление онтологии">
+      <button class="view-tab is-active" type="button" role="tab" aria-selected="true" data-view="process">Процесс</button>
+      <button class="view-tab" type="button" role="tab" aria-selected="false" data-view="subprocess">Подпроцесс</button>
+      <button class="view-tab" type="button" role="tab" aria-selected="false" data-view="decisions">Решения BDI</button>
+      <button class="view-tab" type="button" role="tab" aria-selected="false" data-view="graph">Граф связей</button>
+      <button class="view-tab" type="button" role="tab" aria-selected="false" data-view="catalog">Каталог</button>
+    </div>
+    <div class="graph-control" id="graph-control" hidden>
+      <label for="graph-depth">Глубина</label>
+      <select id="graph-depth">
+        <option value="1">1 связь</option>
+        <option value="2" selected>2 связи</option>
+        <option value="3">3 связи</option>
+      </select>
+      <button class="icon-button" id="graph-fit" type="button" aria-label="Вписать граф">Вписать</button>
+    </div>
+    <div class="top-stats" id="top-stats" aria-live="polite"></div>
+  </nav>
+
+  <div class="app-shell" id="app-shell">
+    <aside class="navigation-pane" aria-label="Навигация по онтологии">
+      <div class="pane-heading">
+        <div>
+          <span class="eyebrow">Структура</span>
+          <h2>Уровни процесса</h2>
+        </div>
+        <button class="icon-button" id="collapse-tree" type="button">Свернуть</button>
+      </div>
+      <div class="tree" id="ontology-tree"></div>
+    </aside>
+
+    <main class="workspace" id="workspace">
+      <div class="workspace-heading">
+        <nav class="breadcrumbs" id="breadcrumbs" aria-label="Путь по онтологии"></nav>
+        <div class="workspace-tools">
+          <button class="icon-button" id="history-back" type="button" disabled>Назад</button>
+          <button class="icon-button" id="show-in-graph" type="button">Показать связи</button>
+        </div>
+      </div>
+      <section class="view-root" id="view-root" aria-live="polite"></section>
+      <div class="drop-overlay" id="drop-overlay" aria-hidden="true">
+        <div><strong>Открыть набор онтологий</strong><span>Перетащите сюда один или несколько N-Triples RDF-файлов</span></div>
+      </div>
+    </main>
+
+    <aside class="detail-pane" id="detail-pane" aria-label="Сведения о выбранном узле">
+      <div class="detail-empty">
+        <div class="empty-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
+        <strong>Выберите узел</strong>
+        <p>Связанные сущности станут переходами на следующий уровень.</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="search-results" id="search-results" hidden role="listbox" aria-label="Результаты поиска"></div>
+  <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
+
+  <script src="ontology-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

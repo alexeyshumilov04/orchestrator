@@ -1,0 +1,20 @@
+# ЭТАЛОН (правило 8): domain/ontology_rules/reference_workflow.py, тНавигатор v26.1
+# (api_version=v0_0_300a), стр. 79/553/1008 — map_2d_export_cps_format.
+# Параметры/объекты — из вызова эталона; шаблон — domain/templates/<fn>.txt.
+<https://example.org/tnav#computational-function__map_2d_export_cps_format> <http://www.w3.org/2000/01/rdf-schema#label> "map_2d_export_cps_format" .
+<https://example.org/tnav#computational-function__map_2d_export_cps_format> <https://example.org/tnav#code> "map_2d_export_cps_format" .
+<https://example.org/tnav#computational-function__map_2d_export_cps_format> <https://example.org/tnav#шаблон_кода> "templates/map_2d_export_cps_format.txt" .
+<https://example.org/tnav#computational-function__map_2d_export_cps_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_export_cps_format__file_name> .
+<https://example.org/tnav#function-entity__map_2d_export_cps_format__file_name> <https://example.org/tnav#code> "file_name" .
+<https://example.org/tnav#function-entity__map_2d_export_cps_format__file_name> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#computational-function__map_2d_export_cps_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_export_cps_format__default_value> .
+<https://example.org/tnav#function-entity__map_2d_export_cps_format__default_value> <https://example.org/tnav#code> "default_value" .
+<https://example.org/tnav#function-entity__map_2d_export_cps_format__default_value> <https://example.org/tnav#тип_данных> "float" .
+<https://example.org/tnav#computational-function__map_2d_export_cps_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_export_cps_format__units_system> .
+<https://example.org/tnav#function-entity__map_2d_export_cps_format__units_system> <https://example.org/tnav#code> "units_system" .
+<https://example.org/tnav#function-entity__map_2d_export_cps_format__units_system> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__map_2d_export_cps_format__units_system> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_export_cps_format__metric> .
+<https://example.org/tnav#function-entity__map_2d_export_cps_format__metric> <https://example.org/tnav#code> "metric" .
+<https://example.org/tnav#computational-function__map_2d_export_cps_format> <https://example.org/tnav#использует> <https://example.org/tnav#function-entity__map_2d_export_cps_format__map_2d%28obj_name%29> .
+<https://example.org/tnav#function-entity__map_2d_export_cps_format__map_2d%28obj_name%29> <https://example.org/tnav#code> "map_2d(obj_name)" .
+<https://example.org/tnav#function-entity__map_2d_export_cps_format__map_2d%28obj_name%29> <https://example.org/tnav#тип_данных> "map_2d" .

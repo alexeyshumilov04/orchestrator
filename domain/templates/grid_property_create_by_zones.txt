@@ -1,0 +1,25 @@
+# ВНИМАНИЕ (правило 8): сигнатура НЕ из эталона (машинный v26.1 reference_workflow.py) —
+# функции там нет; вызов разобран пробами и мануалом.
+# tNavigator 26.2 — «Создать свойство по таблице зон» (grid_property_create_by_zones).
+# Источник (правило 8): мануал Дизайнера 26.2, стр. 2733–2734:
+#   «Этот расчёт позволяет создать зоны по Z. Созданное ДИСКРЕТНОЕ свойство может
+#    быть использовано как фильтр … Созданному свойству АВТОМАТИЧЕСКИ присваивается
+#    дискретный шаблон.» Настройки: Сетка, Свойство зон, Исп., Имя зоны, Значение,
+#    K1 (первый слой зоны), K2 (последний слой зоны).
+#
+# СТАТУС (пробы `tools/probe_facies.py`, 26.2): сигнатура `mesh` +
+# `result_grid_property` + `zones_table` принята; строка таблицы — типизированная
+# запись с колонками `use`, `value`, `K1`, `K2`. Проверено: dict-строка принимает
+# ТОЛЬКО ключ `use` (`value` → «Unknown value for table column "value"»);
+# позиционная строка `(True, 1, 2, 1, 2)` принимается, но расчёт читает K1=0 →
+# «Parameter "K1" of table "zones_table" at row 0: the value (0) is less than
+# allowed minimum (1)». СХЕМА СТРОКИ НЕ ЗАКРЫТА (см. B4_facies.md, 44 раунда) —
+# в пайплайн НЕ подключена (правило 8: не выдаётся за рабочий вызов).
+# Имена объектов подставляются из проектного YAML (objects: mesh/result_grid_property).
+    begin_wf_item (index = 1)
+    grid_property_create_by_zones (mesh=find_object (name="",
+          type="Grid3d"),
+          result_grid_property=find_object (name="",
+          type="Grid3dProperty"),
+          zones_table=[{"use" : True}])
+    end_wf_item (index = 1)

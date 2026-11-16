@@ -1,0 +1,14 @@
+begin_wf_item (index = 4, name = "Сгладить сейсмический горизонт")
+        horizon_smooth (input_horizon=typed_object_name (obj_name="C1tl_Z",
+              obj_type="Horizon"),
+              output_horizon=typed_object_name (obj_name="C1tl_Z_smooth",
+              obj_type="Horizon"),
+          smoothing_method="moving_average",
+              radius=100,
+              seed=1,
+              use_polygon_container=False,
+              io_values="inside",
+              input_polygon=typed_object_name (obj_name="",
+              obj_type="Curve3d"),
+              smooth_transition=False)
+        end_wf_item (index = 4)

@@ -1,0 +1,4 @@
+# Эталон: tNavigator 26.2, manual 57.4.1 Создать свойство по Blocked Wells.
+<https://example.org/tnav#computational-function__grid_property_interpolate_by_blocked_wells_trivial_3d> <http://www.w3.org/2000/01/rdf-schema#label> "grid_property_interpolate_by_blocked_wells_trivial_3d" .
+<https://example.org/tnav#computational-function__grid_property_interpolate_by_blocked_wells_trivial_3d> <https://example.org/tnav#code> "grid_property_interpolate_by_blocked_wells_trivial_3d" .
+<https://example.org/tnav#computational-function__grid_property_interpolate_by_blocked_wells_trivial_3d> <https://example.org/tnav#шаблон_кода> "templates/grid_property_interpolate_by_blocked_wells_trivial_3d.txt" .

@@ -1,0 +1,12 @@
+# ВНИМАНИЕ (правило 8): сигнатура НЕ из эталона (машинный v26.1 reference_workflow.py) —
+# функции в эталоне нет. Источник — мануал Дизайнера 26.2, стр. 2733 («Созданному
+# свойству автоматически присваивается дискретный шаблон») + пробы на живой
+# лицензии (`tools/probe_facies.py`).
+#
+# СТАТУС: СХЕМА СТРОКИ `zones_table` НЕ ЗАКРЫТА (dict-колонки: принят только `use`;
+# позиционная строка читается с K1=0 → «the value (0) is less than allowed
+# minimum (1)»). В пайплайн шаг НЕ подключён — ожидается GUI-снимок вызова либо
+# следующий раунд проб (см. `orchestrator_v7/orchestrator/docs/tasks/B4_facies.md`).
+<https://example.org/tnav#computational-function__grid_property_create_by_zones> <http://www.w3.org/2000/01/rdf-schema#label> "grid_property_create_by_zones" .
+<https://example.org/tnav#computational-function__grid_property_create_by_zones> <https://example.org/tnav#code> "grid_property_create_by_zones" .
+<https://example.org/tnav#computational-function__grid_property_create_by_zones> <https://example.org/tnav#шаблон_кода> "templates/grid_property_create_by_zones.txt" .

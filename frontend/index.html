@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>orchestrator-v5 — построение 3D ГМ</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>orchestrator-v5</h1>
+    <span class="sub">3D геологическая модель · tNavigator · онтология v4</span>
+    <span id="pill" class="pill">offline</span>
+  </header>
+
+  <nav class="tabs" id="viewTabs">
+    <button class="tab on" data-view="run">Прогон</button>
+    <button class="tab" data-view="model-graph">Граф моделирования</button>
+  </nav>
+
+  <main id="viewRun">
+    <section class="col chatc">
+      <div id="messages" class="messages"></div>
+      <div class="composer">
+        <div class="crow">
+          <input id="field" value="Герасимовское" title="месторождение" />
+          <input id="ensemble" type="number" min="0" max="32" value="0"
+                 title="реализаций ансамбля (0 — все из проекта)" />
+          <label class="chk"><input type="checkbox" id="execute" /> реальный прогон</label>
+          <button id="btnRun" class="mbtn" title="Запустить прогон (без LLM)">▶ Запустить</button>
+          <button id="btnReset" class="mbtn" title="Очистить все сообщения и прогоны (запуск с нуля)">⌫ Сбросить</button>
+        </div>
+        <div class="crow">
+          <textarea id="message" rows="2" placeholder="Напишите задачу: «построй 3D геологическую модель», «собери ансамбль из 8 моделей», «какие методы фаций доступны?»"></textarea>
+          <button id="btnSend" class="primary">▶</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="col panels">
+      <div class="card"><h2>Онтология v4</h2><div id="onto" class="kv">…</div></div>
+      <div class="card"><h2>Гейты и байпас <span id="gatesSaved" class="mono"></span></h2>
+        <label class="chk"><input type="checkbox" id="gateBypass" /> байпас при исчерпании попыток</label>
+        <div id="gatesList" class="gates">…</div>
+        <div class="crow"><button id="gatesSave" class="mbtn">Сохранить политики</button></div>
+        <div id="gatesRun" class="gates-run"><span class="mono empty">—</span></div>
+      </div>
+      <div class="card"><h2>Прогресс <span id="phaseName" class="mono"></span></h2>
+        <div class="bar"><div id="pbar" class="bar-fill"></div></div>
+        <div id="phaseInfo" class="stats mono">—</div>
+      </div>
+      <div class="card"><h2>Шаги построения</h2>
+        <div class="bar"><div id="bar" class="bar-fill"></div></div>
+        <div id="stats" class="stats mono">—</div>
+        <div id="steps" class="steps">…</div>
+      </div>
+      <div class="card"><h2>Карты <span id="mapsRun" class="mono"></span></h2>
+        <div id="maps" class="maps"><span class="mono empty">карты появятся после реального прогона</span></div>
+      </div>
+      <div class="card"><h2>Карты по версиям <span id="mapsetRun" class="mono"></span></h2>
+        <div id="verTabs" class="vertabs"></div>
+        <div id="mapset" class="maps-by-ver">
+          <span class="mono empty">карты версий (структура и фации) появятся после реального прогона</span>
+        </div>
+      </div>
+      <div class="card"><h2>Ансамбль ветвей <span id="bestId" class="mono"></span></h2>
+        <div id="graph" class="graph"><span class="mono empty">ветки появятся после прогона</span></div>
+      </div>
+      <div class="card"><h2>Проект <span id="projName" class="mono"></span></h2><div id="project" class="project">—</div></div>
+      <div class="card"><h2>Логи тНава</h2><pre id="log" class="log"></pre></div>
+    </section>
+  </main>
+
+  <section id="viewGraph" class="view hidden">
+    <div class="graphbar">
+      <label class="mono">прогон:
+        <select id="graphRun" title="прогон (поле · id · статус)"></select>
+      </label>
+      <label class="mono" id="graphSourceBox">отчёт:
+        <select id="graphSource" title="какой отчёт показывать (если в каталоге оба)"></select>
+      </label>
+      <button id="graphRefresh" class="mbtn">↻ Обновить</button>
+      <span id="graphMeta" class="mono"></span>
+      <span id="graphLegend" class="legend"></span>
+    </div>
+    <div id="graphSummary" class="gsummary mono"></div>
+    <div class="graphwrap">
+      <div id="graphCanvas" class="gcanvas">
+        <span class="mono empty">выберите прогон — граф появится после этапа QA/QC</span>
+      </div>
+      <aside id="graphDetails" class="gdetails">
+        <span class="mono empty">кликните узел графа, чтобы увидеть детали</span>
+      </aside>
+    </div>
+  </section>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "assets": [
+    "index.html",
+    "styles.css",
+    "app.js",
+    "ontology-data.js"
+  ],
+  "embedded_data_bytes": 56053727,
+  "javascript_syntax": "PASS",
+  "views": [
+    "process",
+    "subprocess",
+    "decisions",
+    "graph",
+    "catalog"
+  ],
+  "agent_extension": "v4.1",
+  "responsive_breakpoints": 4
+}

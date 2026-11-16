@@ -1,0 +1,44 @@
+# Применимость шагов онтологического вывода, которых нет в выверенном составе поля.
+# ДАННЫЕ (правило 1): решение принимает агент-владелец по СВОЕМУ решению, а не код.
+# Шаг включается в воркфлоу ТОЛЬКО если решение владельца включено
+# (decision_key == true). Нет правила → шаг не включается, причина записывается
+# в отчёт (неизвестное != ложь).
+#
+# Режим включается данными: workflow.ontology_extra_steps: "agent".
+#
+# ВАЖНО (проверено живыми прогонами в режиме agent): шаги онтологического вывода
+# приходят из каталога БЕЗ объектных привязок поля, поэтому включённый шаг падает
+# на отсутствующей привязке. Каждый такой шаг помечен `verified: false` с точной
+# ошибкой тНава; чтобы включить шаг, нужно подать привязки объектов (objects) в
+# данные шага и подтвердить вызов пробой на живой лицензии (правило 8).
+# Отсутствие правила у функции тоже означает «не включать» (неизвестное != ложь).
+steps:
+  map_2d_interpolate:                                   {gate: G-STRUCT, decision_key: enabled}
+  map_2d_distance_to_marker:                            {gate: G-STRUCT, decision_key: enabled}
+  map_2d_thickness_map:                                 {gate: G-STRUCT, decision_key: enabled}
+  horizon_calculator:                                   {gate: G-STRUCT, decision_key: enabled}
+  create_screenshot:                                    {gate: G-MAPS,   decision_key: enabled}
+  # ПРИВЯЗКИ НЕ ПОДТВЕРЖДЕНЫ (verified: false): живой прогон в режиме agent —
+  # «Create Property by Values Table»: Parameter "Grid" is not specified!
+  # Объектные привязки поля не поданы → до подтверждения пробой не включаем.
+  grid_property_create_by_values:                       {gate: G-PETRO,  decision_key: enabled,
+                                                         verified: false,
+                                                         reason: "не подана привязка сетки (Parameter \"Grid\" is not specified)"}
+  grid_property_create_by_zones:                        {gate: G-PETRO,  decision_key: enabled}
+  # НЕПОДТВЕРЖДЁННАЯ ВЕТКА ФАЦИЙ (зоны/регионы): схема вызова разобрана, но расчёт
+  # не стартует — список зон пуст, а дискретное свойство зон средствами API не
+  # создаётся (схема строки `zones_table` не закрыта). В выверенный состав НЕ включён:
+  # подтверждённый путь к кубу фаций — `grid_property_interpolate_by_wells_log_sgs_multilayer_facies`
+  # (см. `ontology/facies_methods.yaml` и `docs/08_ЗАПРОС_E7_фации.md`).
+  grid_property_facies_modeling:                        {gate: G-FACIES, decision_key: enabled,
+                                                         verified: false,
+                                                         reason: "расчёт не стартует: список зон пуст (No zones or regions are selected for interpolation!); шаг в составе не включать (правило 8)"}
+  grid_property_interpolate_by_blocked_wells_trivial_3d: {gate: G-PETRO, decision_key: enabled}
+  # ПРИВЯЗКИ НЕ ПОДТВЕРЖДЕНЫ (verified: false): шаг ссылается на объект «Top»,
+  # которого нет в проекте — живой прогон: «Object "Top" in the column "Horizon"
+  # at table row 1 is not found in the project». До подтверждения пробой не включаем.
+  grid_3d_create_by_horizons_with_faults:               {gate: G-GRID,   decision_key: enabled,
+                                                         verified: false,
+                                                         reason: "ссылка на отсутствующий объект «Top» (чужой/служебный токен — правило 7)"}
+  wells_attribute_thickness_calculation:                {gate: G-DATA,   decision_key: enabled}
+  map_2d_import_ascii_format:                           {gate: G-DATA,   decision_key: enabled}

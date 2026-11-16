@@ -1,0 +1,24 @@
+# ИСТОЧНИК СИГНАТУРЫ (правило 8 — проба на живой лицензии, не догадка):
+#   tools/probe_maps.py, отчёты _probe_maps4.txt / _probe_maps5.txt (tNav 26.2):
+#     «EA8 ascii: file_name+map_2d+default_value+units_system: OK»
+#     «EA3 ascii: file_name+map_2d: OK» — файл выгрузки создан (928 809 байт),
+#     формат = «полный irap» (первая строка: novalue nx dx dy), читается
+#     domain/irap.py без доработок.
+#   Перебор опроверг: folder / path / splitter / use_tags_to_assign / maps_table
+#     («Unknown argument …»), т.е. выгружается ОДНА карта, а не набор.
+# ВАЖНО (реальный прогон 26.2, базовый и все 5 ветвей):
+#   «Error near line N: Could not recognize python code as workflow item» —
+#   внутри элемента воркфлоу НЕДОПУСТИМЫ Python-инструкции (подключение модулей,
+#   создание каталогов; безымпортная форма тоже отвергнута пробой): тНав разбирает
+#   файл как последовательность workflow-item'ов и распознаёт только вызовы своих
+#   функций. Поэтому элемент состоит РОВНО из одного вызова, а каталог выгрузки
+#   создаёт ОРКЕСТРАТОР в папке проекта ДО исполнения этапов.
+#   Целевой каталог: <папка проекта>/Maps (база — runs/run_<поле>/Maps,
+#   ветви ансамбля — models/<vid>/Maps).
+    begin_wf_item (index = 1)
+    map_2d_export_ascii_format (file_name="__FILE__",
+          map_2d=find_object (name="__MAP__",
+          type="Map2d"),
+          default_value=99999,
+          units_system="metric")
+    end_wf_item (index = 1)

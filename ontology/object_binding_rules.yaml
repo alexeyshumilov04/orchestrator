@@ -1,0 +1,204 @@
+# ОНТОЛОГИЯ: правила ПРИВЯЗКИ ОБЪЕКТОВ (роль поля → аргумент функции tNavigator)
+#
+# Зачем (измерено, раунд 150): у работающего поля 39 объектных аргументов шаблонов остаются
+# НЕпривязанными, и в них «протекают» значения демо-проекта (конкретные имена демо-объектов
+# здесь намеренно не перечисляются — они не должны попадать в онтологию). Подход «пропускать
+# такие шаги» отвергнут:
+# эти же значения встречаются у поля, которому шаги НУЖНЫ (построение кровли), поэтому
+# массовый пропуск ломает приёмку. Правильное решение — ВЫВОДИТЬ привязки из данных поля:
+# распознанные роли онтологии подставляются в аргументы функций. Здесь описано соответствие
+# «роль → аргумент» и политика при неразрешимой привязке. Всё — ДАННЫЕ.
+schema_version: 1
+knowledge_base: KB_OBJECT_BINDING
+
+policy:
+  mode: "bind_from_field"                  # значения аргументов берутся из данных поля
+  replace_template_values: true            # «протёкшие» значения шаблонов ЗАМЕНЯЮТСЯ
+  on_unresolved_required: "failed"         # обязательная привязка не найдена → провал гейта
+  on_unresolved_optional: "skip_step"      # необязательный шаг без привязки → skipped_by_policy
+  report: ["функция", "аргумент", "роль поля", "значение", "вердикт"]
+
+# Роли поля (ключи — из данных поля/онтологии распознавания входов)
+roles:
+  # РОЛЬ = ОБЪЕКТ (round 158: обобщённая роль `surface` склеивала разные объекты — кровлю,
+  # тренд, остаток — и все получали имя маркера). Теперь у каждого объекта своя роль.
+  horizon_top:        {kind: horizon,  source: "markers.reservoir_top",  required: true}
+  horizon_base:       {kind: horizon,  source: "markers.reservoir_base", required: false}
+  trend_surface:      {kind: horizon,  source: "inputs.surface",         required: false}
+  residual_map:       {kind: attribute, source: "horizon_top",           required: false}
+  map_thickness:      {kind: map,      source: "horizon_top",            required: false}
+  surface_input:      {kind: horizon,  source: "inputs.surface",         required: false}
+  reservoir_top:      {kind: marker,   source: "markers.reservoir_top",  required: true}
+  reservoir_base:     {kind: marker,   source: "markers.reservoir_base", required: false}
+  well_header:        {kind: wells,    source: "inputs.wellhead",        required: true}
+  well_tops:          {kind: markerset, source: "inputs.welltop",        required: true}
+  well_attribute:     {kind: attribute, source: "wells_attribute_thickness_calculation", required: false}
+  well_logs:          {kind: logs,     source: "inputs.well_logs",       required: false}
+  boundary:           {kind: polygon,  source: "inputs.boundary",        required: false}
+  grid:               {kind: grid,     source: "grid.name",              required: false}
+
+# Соответствие «аргумент функции → КОНКРЕТНАЯ роль-объект» (round 158: каждая привязка
+# указывает на своего производителя, а не на обобщённую роль).
+bindings:
+  horizon:                      {role: "horizon_top",     required: true}
+  result_horizon:               {role: "horizon_top",     required: true}
+  input_horizon:                {role: "horizon_top",     required: true}
+  output_horizon:               {role: "horizon_top",     required: false}
+  trend_horizon:                {role: "trend_surface",   required: false}
+  residual_idw:                 {role: "residual_map",    required: false}
+  well_marker:                  {role: "reservoir_top",   required: true}
+  reservoir_marker:             {role: "reservoir_top",   required: true}
+  current_marker_set:           {role: "well_tops",       required: false}
+  well_filter_selector:         {role: "well_header",     required: false}
+  wells:                        {role: "well_header",     required: true}
+  # АРГУМЕНТЫ-СПИСКИ И ФАЙЛЫ (round 175–176): импорт маркеров берёт ДЕМО-путь
+  # (`file_names=["Markers/markers.txt"]`, `columns=["Well","Marker","MD"]`) — поэтому
+  # маркеры поля не попадают в проект, и потребители роли `reservoir_top` падают
+  # («Well Marker is not valid»). Контракт описан, но ВЫКЛЮЧЕН (`enabled: false`), пока
+  # рендер не умеет подставлять списки/пути: включать только вместе с шагом конвертации
+  # отбивок в плоскую таблицу (форматы — в `input_recognition_rules.formats`).
+  file_names:                   {role: "well_tops",       required: true,
+                                 value_kind: "list", enabled: true}
+  columns:                      {role: "well_tops",       required: false,
+                                 value_kind: "list", enabled: false}
+# Путь подготовленной таблицы отбивок ОТНОСИТЕЛЬНО КАТАЛОГА ПРОГОНА (данные).
+# Адаптер (`tools/prepare_marker_table.py`) пишет её туда перед этапом импорта маркеров.
+prepared_trajectories:
+  path: "Wells/trajectories.txt"
+  columns: ["Well", "MD", "X", "Y", "Z"]
+# Привязки, зависящие от ФУНКЦИИ: один и тот же аргумент в разных шагах берёт разные данные
+# (импорт маркеров — таблицу отбивок, импорт траекторий — таблицу траекторий).
+bindings_by_function:
+  wells_import_path_deviation_format:
+    file_names: {role: "deviation", value_kind: "list", enabled: true}
+prepared_marker_table:
+  path: "Markers/markers.txt"
+  columns: ["Well", "Marker", "MD"]
+  input_log:                    {role: "well_logs",       required: false}
+  source_log:                   {role: "well_logs",       required: false}
+  map_2d:                       {role: "map_thickness",   required: false}
+  input_map:                    {role: "map_thickness",   required: false}
+  output_map:                   {role: "map_thickness",   required: false}
+  result_map_2d:                {role: "map_thickness",   required: false}
+  polygon:                      {role: "boundary",        required: false}
+  input_polygon:                {role: "boundary",        required: false}
+  output_polygon:               {role: "boundary",        required: false}
+  grid:                         {role: "grid",            required: false}
+  main_grid:                    {role: "grid",            required: false}
+
+# Шаги, отсутствие привязки у которых НЕ является ошибкой (шаг пропускается по политике)
+optional_steps:
+  - "polygon_create_by_map_intersection"     # врез — только когда покрытие ниже порога
+  - "polygon_create_by_map_2d_boundary"      # граница участка — при наличии полигона
+  - "fault_import_sticks_xyz_format"         # разломы — если данные есть
+  - "map_2d_thickness_map"                   # карта толщин — если интервал задан
+  - "create_screenshot"
+
+# ── РОЛИ, несущие ИМЯ объекта границы модели (для подготовки контура) ──────────
+# Имя объекта «граница модели» — ДАННЫЕ поля: берётся из объектов шагов графа по
+# этим ролям (сверху вниз). В коде имени объекта нет (правило 1); не найдено →
+# контур не пишется, и это честный unknown (правило 6).
+boundary_name_roles: ["region", "output_polygon", "input_polygon", "polygon"]
+
+# ПРАВИЛА ИМЕНОВАНИЯ ОБЪЕКТОВ (данные): по ним генератор объектной модели создаёт имена
+# для ролей, когда план поля их не задаёт. Источник (round 156): у выведенного плана ТЕСТ2
+# привязок объектов НЕТ ВООБЩЕ, поэтому имена нужно порождать из данных поля.
+naming:
+  pattern_style: "role_based"          # имя собирается из роли и источника данных
+  # Ключи ОБЯЗАНЫ совпадать с ролями из раздела `roles` (round 159: в правилах оставались
+  # устаревшие обобщённые имена `surface`/`surface_base`/`thickness_map` — убраны).
+  rules:
+    horizon_top:    {template: "{marker}",        source: "markers.reservoir_top"}
+    horizon_base:   {template: "{marker}",        source: "markers.reservoir_base"}
+    trend_surface:  {template: "{source}_trend",  source: "inputs.surface"}
+    residual_map:   {template: "Residual_{source}", source: "markers.reservoir_top"}
+    map_thickness:  {template: "{reservoir}_thick", source: "reservoir_horizon"}
+    surface_input:  {template: "{file}",          source: "inputs.surface"}
+  on_missing_source: "unresolved"      # нет источника в данных → привязка не создаётся
+  name_forbidden_tokens: ["__todo__"]  # заглушка НИКОГДА не попадает в имя объекта
+  allow_unicode: true                  # имена поля могут быть кириллицей (ЮП1-1_TOP_S)
+
+# СВЯЗЫВАНИЕ «ПРОИЗВОДИТЕЛЬ → ПОТРЕБИТЕЛЬ»: шаг, создающий объект для роли, питает
+# последующие шаги, потребляющие эту роль. Пока не реализовано в сборке (round 156),
+# описано как контракт генератора объектной модели.
+wiring:
+  # ── СОСТАВ КОМПОЗИЦИИ: моделирование vs выгрузка (раунды 186–187) ──────────────
+  # Проверено на ТЕСТ2: выведенный из онтологии состав начинался с ДЕМО-шагов выгрузки
+  # (`map_2d_export_ascii_format` первым элементом, с плейсхолдерами __MAP__/__FILE__),
+  # поэтому tNavigator падал на item 1 — экспортировать ещё нечего. У поля с проектным
+  # графом выгрузки законны (объекты заданы данными) и стоят там, где нужно.
+  composition:
+    export_functions:
+      - "map_2d_export_ascii_format"
+      - "map_2d_export_cps_format"
+      - "horizon_export_cps_format"
+      - "marker_export_well_marker_table_format"
+      - "wells_attribute_export"
+      - "create_screenshot"
+    policy:
+      export_requires_resolved_object: true      # выгрузка допускается только с привязкой
+      on_unresolved_object: "exclude"            # иначе шаг НЕ включается в состав
+      export_order: "after_producers"            # выгрузки — после построения объектов
+      modeling_first: true                       # шаги моделирования идут раньше выгрузок
+  producers:
+    # Роль — КОНКРЕТНАЯ (round 158–165): производитель объявляет, какой объект он создаёт.
+    # `discriminate_by` — аргумент, по значению которого выбирается роль (маркер кровли/подошвы).
+    # `order: later_wins` — построенный горизонт важнее импортированного тренда.
+    horizon_interpolate_by_marker_idw:
+      role: "horizon_top"
+      from: "result_horizon"
+      discriminate_by: "well_marker"
+      order: "later_wins"
+      # остаток создаётся по тому же маркеру, что и горизонт: остаток кровли и остаток
+      # подошвы — РАЗНЫЕ роли (уточнено в раунде 167)
+      also_produces:
+        residual_idw:
+          role_by_marker: {"reservoir_top": "residual_map", "reservoir_base": "residual_map_base"}
+    horizon_import_ascii_format:       {role: "horizon_top", from: "result_horizon",
+                                        order: "later_wins"}
+    horizon_calculator:                {role: "horizon_top", from: "result_horizon",
+                                        order: "later_wins"}
+    horizon_smooth:                    {role: "horizon_top", from: "output_horizon",
+                                        role_if_name_matches: {"_trend": "trend_surface"}}
+    map_2d_calculator:                 {role: "map_thickness", from: "result_map_2d",
+                                        role_if_name_matches: {"_vrez": "map_vrez",
+                                                               "_smooth": "map_thickness_smooth"}}
+    map_2d_smooth:                     {role: "map_thickness_smooth", from: "output_map"}
+    map_2d_thickness_map:              {role: "map_thickness", from: "result_map_2d"}
+    wells_attribute_thickness_calculation: {role: "well_attribute", from: "result_well_attribute"}
+    create_blocked_well_log:           {role: "well_logs", from: "blocked_well_log"}
+    # ИМПОРТ МАРКЕРОВ — производитель объектов-маркеров (round 190): без этой записи
+    # контроль потока считал, что у поля нет производителя роли `reservoir_top`, и давал
+    # ложные нарушения у РАБОЧЕГО поля (4 штуки), хотя его маркеры импортируются раньше
+    # потребителей. Имя маркеров приходит из таблицы отбивок (данные), а не из шаблона,
+    # поэтому `from` не задаётся.
+    marker_import_txt_format:          {role: "reservoir_top"}
+  consumers:
+    horizon_export_cps_format:       {arg: "horizon",         role: "horizon_top"}
+    # ВЫГРУЗКИ — тоже ПОТРЕБИТЕЛИ (round 190): без этого контроль потока молчал, и
+    # выведенный состав мог начинаться с экспорта ещё не созданного объекта (проверено
+    # на ТЕСТ2: падал item 1 «2D-Map Distances To Well Marker»).
+    # Импорты карт/горизонтов, которым нужен ОБЪЕКТ-МАРКЕР (round 197–198): без этих
+    # записей контроль потока не видел зависимости, и шаг оказывался первым в воркфлоу,
+    # хотя маркеры ещё не импортированы (tNavigator: «Well Marker is not valid»).
+    map_2d_import_ascii_format:      {arg: "well_marker",     role: "reservoir_top"}
+    map_2d_export_ascii_format:      {arg: "map_2d",          role: "map_thickness"}
+    map_2d_export_cps_format:        {arg: "map_2d",          role: "map_thickness"}
+    marker_export_well_marker_table_format: {arg: "marker",   role: "reservoir_top"}
+    wells_attribute_export:          {arg: "wells_attribute", role: "residual_map"}
+    horizon_calculator:              {arg: "input_horizon",   role: "horizon_top"}
+    horizon_smooth:                  {arg: "input_horizon",   role: "horizon_top"}
+    map_2d_distance_to_marker:       {arg: "well_marker",     role: "reservoir_top"}
+    horizon_interpolate_by_marker_idw: {arg: "well_marker",   role: "reservoir_top"}
+  on_missing_producer: "failed"        # потребитель есть, производителя нет → ошибка плана
+  order: "pipeline_order"              # связывание — по порядку шагов в плане
+
+checks:
+  - id: "objects.bindings_resolved"
+    needs: ["policy.mode", "bindings"]
+  - id: "objects.no_template_leaks"
+    needs: ["policy.replace_template_values", "bindings"]
+  - id: "objects.naming_rules_applied"
+    needs: ["naming.rules"]
+  - id: "objects.wiring_complete"
+    needs: ["wiring.producers", "wiring.consumers", "wiring.on_missing_producer"]

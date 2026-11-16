@@ -1,0 +1,79 @@
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts> <http://www.w3.org/2000/01/rdf-schema#label> "counts" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__grid_adjust_mode> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__step> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_y%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "step_y >= 1" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_x> <https://example.org/tnav#code> "counts_x" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_y%20%3C%3D%20100> <https://example.org/tnav#code> "step_y <= 100" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__result_map_2d%28obj_name%29> <https://example.org/tnav#тип_данных> "map_2d" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_y%20%3C%3D%20500> <http://www.w3.org/2000/01/rdf-schema#label> "counts_y <= 500" .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__autodetect_angle> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_y> <http://www.w3.org/2000/01/rdf-schema#label> "step_y" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_y> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_y%20%3C%3D%20500> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__grid_adjust_mode> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_y%20%3C%3D%20500> <https://example.org/tnav#code> "counts_y <= 500" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_y> <http://www.w3.org/2000/01/rdf-schema#label> "counts_y" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_x%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "step_x <= 100" .
+<https://example.org/tnav#создает> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_y> <https://example.org/tnav#code> "counts_y" .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <https://example.org/tnav#code> "map_2d_distance_to_marker" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_y%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "counts_y >= 1" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_x> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_x%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_x> <https://example.org/tnav#code> "step_x" .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <https://example.org/tnav#создает> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__result_map_2d%28obj_name%29> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_y%20%3E%3D%201> <https://example.org/tnav#code> "counts_y >= 1" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__autodetect_angle> <http://www.w3.org/2000/01/rdf-schema#label> "autodetect_angle" .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__grid_adjust_mode> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_x%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "step_x >= 10" .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_y> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__grid_adjust_mode> <https://example.org/tnav#code> "grid_adjust_mode" .
+<https://example.org/tnav#тип_данных> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_y%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "step_y <= 100" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_x%20%3C%3D%20500> <http://www.w3.org/2000/01/rdf-schema#label> "counts_x <= 500" .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <https://example.org/tnav#использует> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__well_marker%28obj_name%29> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step> <http://www.w3.org/2000/01/rdf-schema#label> "step" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_x> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_x%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__result_map_2d%28obj_name%29> <https://example.org/tnav#code> "result_map_2d(obj_name)" .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_x> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__autodetect_grid> <https://example.org/tnav#code> "autodetect_grid" .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_y> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_x%20%3C%3D%20500> <https://example.org/tnav#code> "counts_x <= 500" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__well_marker%28obj_name%29> <https://example.org/tnav#тип_данных> "marker" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_x> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step> <https://example.org/tnav#code> "step" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__well_marker%28obj_name%29> <https://example.org/tnav#code> "well_marker(obj_name)" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_x%20%3E%3D%201> <https://example.org/tnav#code> "counts_x >= 1" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts> <https://example.org/tnav#code> "counts" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_y%20%3E%3D%201> <https://example.org/tnav#code> "step_y >= 1" .
+<https://example.org/tnav#ComputationalFunction> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_x> <http://www.w3.org/2000/01/rdf-schema#label> "counts_x" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_y> <https://example.org/tnav#code> "step_y" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_x> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_x%20%3C%3D%20500> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_x%20%3C%3D%20100> <https://example.org/tnav#code> "step_x <= 100" .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__autodetect_grid> .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <https://example.org/tnav#шаблон_кода> "templates/map_2d_distance_to_marker.txt" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_x> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_x> <http://www.w3.org/2000/01/rdf-schema#label> "step_x" .
+<https://example.org/tnav#имеет_условие> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <http://www.w3.org/2000/01/rdf-schema#label> "map_2d_distance_to_marker" .
+<https://example.org/tnav#использует> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__grid_adjust_mode> <http://www.w3.org/2000/01/rdf-schema#label> "grid_adjust_mode" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__grid_adjust_mode> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__result_map_2d%28obj_name%29> <http://www.w3.org/2000/01/rdf-schema#label> "result_map_2d(obj_name)" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__autodetect_angle> <https://example.org/tnav#тип_данных> "boolean" .
+<https://example.org/tnav#имеет_параметр> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/tnav#ComputationalFunction> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_y> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_y%20%3C%3D%20100> .
+<https://example.org/tnav#шаблон_кода> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_y> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_y> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_y%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__well_marker%28obj_name%29> <http://www.w3.org/2000/01/rdf-schema#label> "well_marker(obj_name)" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_x> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_x%20%3C%3D%20100> .
+<https://example.org/tnav#возможное_значение> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_x%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "counts_x >= 1" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__autodetect_angle> <https://example.org/tnav#code> "autodetect_angle" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_x%20%3E%3D%201> <https://example.org/tnav#code> "step_x >= 10" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__step_y> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__autodetect_grid> <http://www.w3.org/2000/01/rdf-schema#label> "autodetect_grid" .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__autodetect_grid> <https://example.org/tnav#тип_данных> "boolean" .
+<https://example.org/tnav#computational-function__map_2d_distance_to_marker> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_x> .
+<https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_y> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__map_2d_distance_to_marker__counts_y%20%3E%3D%201> .
+<https://example.org/tnav#code> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .

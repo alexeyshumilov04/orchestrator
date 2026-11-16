@@ -1,0 +1,23 @@
+# ЭТАЛОН (правило 8): domain/ontology_rules/reference_workflow.py, тНавигатор v26.1
+# (api_version=v0_0_300a), стр. 195/593/650/1048/1105 — horizon_export_cps_format.
+# Параметры/объекты — из вызова эталона; шаблон — domain/templates/<fn>.txt.
+<https://example.org/tnav#computational-function__horizon_export_cps_format> <http://www.w3.org/2000/01/rdf-schema#label> "horizon_export_cps_format" .
+<https://example.org/tnav#computational-function__horizon_export_cps_format> <https://example.org/tnav#code> "horizon_export_cps_format" .
+<https://example.org/tnav#computational-function__horizon_export_cps_format> <https://example.org/tnav#шаблон_кода> "templates/horizon_export_cps_format.txt" .
+<https://example.org/tnav#computational-function__horizon_export_cps_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__horizon_export_cps_format__file_name> .
+<https://example.org/tnav#function-entity__horizon_export_cps_format__file_name> <https://example.org/tnav#code> "file_name" .
+<https://example.org/tnav#function-entity__horizon_export_cps_format__file_name> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#computational-function__horizon_export_cps_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__horizon_export_cps_format__default_value> .
+<https://example.org/tnav#function-entity__horizon_export_cps_format__default_value> <https://example.org/tnav#code> "default_value" .
+<https://example.org/tnav#function-entity__horizon_export_cps_format__default_value> <https://example.org/tnav#тип_данных> "float" .
+<https://example.org/tnav#computational-function__horizon_export_cps_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__horizon_export_cps_format__use_length_unit> .
+<https://example.org/tnav#function-entity__horizon_export_cps_format__use_length_unit> <https://example.org/tnav#code> "use_length_unit" .
+<https://example.org/tnav#function-entity__horizon_export_cps_format__use_length_unit> <https://example.org/tnav#тип_данных> "boolean" .
+<https://example.org/tnav#computational-function__horizon_export_cps_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__horizon_export_cps_format__length_unit> .
+<https://example.org/tnav#function-entity__horizon_export_cps_format__length_unit> <https://example.org/tnav#code> "length_unit" .
+<https://example.org/tnav#function-entity__horizon_export_cps_format__length_unit> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__horizon_export_cps_format__length_unit> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__horizon_export_cps_format__metres> .
+<https://example.org/tnav#function-entity__horizon_export_cps_format__metres> <https://example.org/tnav#code> "metres" .
+<https://example.org/tnav#computational-function__horizon_export_cps_format> <https://example.org/tnav#использует> <https://example.org/tnav#function-entity__horizon_export_cps_format__horizon%28obj_name%29> .
+<https://example.org/tnav#function-entity__horizon_export_cps_format__horizon%28obj_name%29> <https://example.org/tnav#code> "horizon(obj_name)" .
+<https://example.org/tnav#function-entity__horizon_export_cps_format__horizon%28obj_name%29> <https://example.org/tnav#тип_данных> "horizon" .

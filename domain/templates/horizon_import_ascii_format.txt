@@ -1,0 +1,19 @@
+    begin_wf_item (index = 4)
+    horizon_import_ascii_format (use_tags_to_assign=False,
+          tags_to_assign=[],
+          use_folder=False,
+          folder="",
+          splitter=True,
+          files_horizons_table=[{"file_name" : "Horizons/Seis", "horizon" : find_object (name="Seis",
+          type="Horizon")}],
+          splitter2=True,
+          splitter3=True,
+          use_domain=False,
+          domain="depth",
+          novalue=99999,
+          invert_z=False,
+          use_xy_units=False,
+          xy_units="metres",
+          use_z_units=False,
+          z_units="metres")
+    end_wf_item (index = 4)

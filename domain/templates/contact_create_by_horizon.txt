@@ -1,0 +1,14 @@
+    begin_wf_item (index = 29)
+    contact_create_by_horizon (grid_3d=find_object (name="main_grid",
+          type="Grid3d"),
+          result_contact=find_object (name="OWC",
+          type="Contact"),
+          contact_type="oil_water",
+          use_discrete_cube_1=False,
+          discrete_cube_1=find_object (name="zone_id",
+          type="Grid3dProperty"),
+          use_discrete_cube_2=False,
+          discrete_cube_2=find_object (name="zone_id",
+          type="Grid3dProperty"),
+          horizons_table=[{"value_string_1" : "", "value_string_2" : "", "source_type" : "z_value", "o_horizon" : None, "z_value" : 1696}])
+    end_wf_item (index = 29)

@@ -1,0 +1,48 @@
+{
+  "name": "NeurosymbolicAgentKB extension",
+  "version": "4.1.0",
+  "generated": "2026-09-12",
+  "agent_profiles": 22,
+  "agent_groups": 5,
+  "runtime_modules": 18,
+  "new_branch_points": 19,
+  "new_rules": 83,
+  "combined_branch_points": 300,
+  "combined_rules": 1796,
+  "belief_schema_entries": 252,
+  "handoff_contracts": 17,
+  "base_metrics": {
+    "branches": 281,
+    "rules": 1713,
+    "branches_with_owner_kb": 69,
+    "branches_with_activity": 281,
+    "branches_with_missing_policy": 69,
+    "branches_with_conflict_policy": 69,
+    "branches_with_evidence": 69,
+    "branches_with_fallback": 69,
+    "rules_with_formal_guard": 508,
+    "rules_with_human_gate": 1713
+  },
+  "after_metrics": {
+    "branches": 300,
+    "rules": 1796,
+    "branches_with_owner_kb": 300,
+    "branches_with_activity": 300,
+    "branches_with_missing_policy": 300,
+    "branches_with_conflict_policy": 300,
+    "branches_with_evidence": 300,
+    "branches_with_fallback": 300,
+    "rules_with_formal_guard": 1796,
+    "rules_with_human_gate": 1796
+  },
+  "missing_belief_schemas": [],
+  "unparseable_rules": [],
+  "qaqc_unconfirmed": 6117,
+  "tnavigator_verified": 0,
+  "tnavigator_candidates": 3257,
+  "production_autonomy_status": "BLOCKED_PENDING_RULE_APPROVAL_AND_TOOL_VERIFICATION",
+  "sha256": {
+    "BDI_KnowledgeBase_v4_1_AllInOne.rdf": "3ed76afd8f3cb186e03f56e81466bda2cc8446ee884aa636c105ff7f0b0a1420",
+    "GeoModelingEvolutionOntology_v4_1_AgentExtended_AllInOne.rdf": "231709683877cb8b1d96b6a028390cc731716fa08a0813ec931744116dba1725"
+  }
+}

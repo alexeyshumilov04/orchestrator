@@ -1,0 +1,63 @@
+# ИСТОЧНИК: машинный воркфлоу тНава v26.2, сгенерированный самим тНавом —
+#   tutorials/GM1.1_HowToCreateElasticStrengthModel/Data_to_Import/Geomechanics_workflow.py,
+#   элемент воркфлоу №154, функция map_2d_create_by_grid_property.
+#   Мануал Designer: «41.3.6 2D-Карта по кубу свойств», стр. 1812.
+# ОТЛИЧИЯ ОТ ИСТОЧНИКА (правило 7 — чужие ссылки обучения; правило 8 — проба):
+#   * из строки таблицы убрана колонка идентификатора зон проекта обучения: проба
+#     на живой лицензии 26.2 подтвердила вызов без неё (см. tools/probe_maps.py,
+#     отчёт _probe_maps5.txt: «V9 create: строка без колонки зон: OK», «V10 …: OK»);
+#   * имена объектов чужого проекта (Grid1_EXT / BreakoutMWE / Breakout /
+#     Geomechanical Boundary / boundary) заменяются данными шага
+#     (objects/replace в ontology_project/<поле>.yaml).
+    begin_wf_item (index = 1)
+    map_2d_create_by_grid_property (grid=typed_object_name (obj_name="Grid1_EXT",
+          obj_type="Grid3d"),
+          use_user_cut=False,
+          user_cut=typed_object_name (obj_name="zone_id",
+          obj_type="Grid3dProperty"),
+          comparator=Comparator (rule="equals",
+          value=2),
+          use_user_cut_second=False,
+          user_cut_second=typed_object_name (obj_name="Geomechanical Boundary",
+          obj_type="Grid3dProperty"),
+          comparator_second=Comparator (rule="not_equals",
+          value=0),
+          use_zone=False,
+          zone=typed_object_name (obj_name="Geomechanical Boundary",
+          obj_type="Grid3dProperty"),
+          continuous_properties=True,
+          continues_cube_and_map_table=[{"use" : True, "cube" : typed_object_name (obj_name="BreakoutMWE",
+          obj_type="Grid3dProperty"), "map_2d" : typed_object_name (obj_name="Breakout",
+          obj_type="Map2d"), "method" : "average", "smooth" : False, "blocked_wells" : None}],
+          discrete_properties=False,
+          discrete_cube_and_map_table=[],
+          smoothing_radius=10,
+          ignore_faults=False,
+          set_na_instead_of_zero=False,
+          compatibility_options=False,
+          set_na_outside_filter=True,
+          grid_2d_source="from_grid",
+          add_half_cell_offset=True,
+          subdivision=1,
+          grid_2d_settings=Grid2DSettings (grid_2d_settings_shown=True,
+          autodetect_box=True,
+          min_x=0,
+          min_y=0,
+          length_x=1000,
+          length_y=1000,
+          margin_x=0,
+          margin_y=0,
+          consider_blank_nodes=False,
+          autodetect_angle=False,
+          angle=0,
+          autodetect_grid=False,
+          grid_adjust_mode="step",
+          step_x=100,
+          step_y=100,
+          counts_x=10,
+          counts_y=10,
+          sample_object=absolute_object_name (name=None,
+          typed_names=[typed_object_name (obj_name="boundary",
+          obj_type="Curve3d")]),
+          autodetect_during_wf_calculation=True))
+    end_wf_item (index = 1)

@@ -1,0 +1,17 @@
+# ЭТАЛОН (правило 8): domain/ontology_rules/reference_workflow.py,
+# сгенерирован тНавигатором v26.1-4476-g31f410f0db79 (api_version=v0_0_300a).
+# Источник вызова — «Экспорт горизонта <H> в формате CPS-3 Grid (ASCII)»:
+#   стр. 195 (C1tl_top), 593 (C1bb_top_trend), 650 (C1bb_top),
+#   1048 (C1bb_vrez_top_trend), 1105 (C1bb_vrez_top).
+# Аргументы скопированы из эталона ДОСЛОВНО; объект горизонта и имя файла —
+# ДАННЫЕ (objects.horizon + parameters.file_name проектного YAML).
+# СТАТУС: подготовлено по машинному эталону, на лицензии НЕ проверено —
+# подтверждение только прогоном `--execute` (не выдавать за проверенное).
+begin_wf_item (index = 8, name = "Экспорт горизонта в формате CPS-3 Grid (ASCII)")
+        horizon_export_cps_format (file_name="C1tl_top.txt",
+              horizon=typed_object_name (obj_name="C1tl_top",
+              obj_type="Horizon"),
+              default_value=99999,
+              use_length_unit=True,
+              length_unit="metres")
+        end_wf_item (index = 8)

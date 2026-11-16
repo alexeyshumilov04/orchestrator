@@ -1,0 +1,203 @@
+# ============================================================================
+# orchestrator-v5 — конфигурация оркестратора ГГДМ (tNavigator Python API воркфлоу).
+# Запуск: python main.py plan | python main.py run --field Герасимовское
+# Секреты (LLM-ключ, лицензия) — в config.local.yaml (в .gitignore).
+# ============================================================================
+
+service:
+  name: orchestrator-v5
+  host: "127.0.0.1"
+  port: 8770
+  log_file: "logs/service.log"
+
+# --- LLM (advisory + рассуждения): DeepSeek ----------------------------------
+llm:
+  provider: openai_compatible
+  base_url: "https://api.deepseek.com/v1"
+  api_key: ""                       # пусто -> env ORCH_LLM_API_KEY или config.local.yaml
+  model: "deepseek-flash"           # DeepSeek-V4.1-Flash (проверено: GET /models)
+  temperature: 0.1
+  timeout_seconds: 180
+  max_tokens: 4000
+  enabled: true
+
+# --- ЗНАНИЕ: онтология ГГДМ v4 (рекомендованная база) ------------------------
+# Загружается КАК ДАННЫЕ: CSV-каталоги (быстрый путь) + RDF (по запросу).
+ontology:
+  # Онтология v4 лежит ВНУТРИ этой папки (папка `ontology/`) — самодостаточная сборка.
+  root: "ontology"
+  process_csv:  "ontology/process_catalog.csv"
+  functions_csv: "ontology/tnavigator_functions.csv"
+  params_csv:   "ontology/data_parameter_catalog.csv"
+  qaqc_csv:     "ontology/qaqc_rules.csv"
+  software_csv: "ontology/software_mappings.csv"
+  ttl_path:     "ontology/GeoModelingEvolutionOntology_v4_AllInOne.rdf"
+
+# --- ДОМЕН: сборка tNavigator-воркфлоу --------------------------------------
+workflow:
+  templates_dir: "domain/templates"          # сырые шаблоны функций (данные)
+  wrapper: "domain/templates/template_wf.txt" # обёртка файла воркфлоу
+  rules_dir: "domain/ontology_rules"          # <function>.rdf — правила функций (GA, 12 шт.)
+  ontology_rdf: "domain/ontology_rules/ontology.rdf"  # группы операций + hasNextStep
+  transitions: "domain/ontology_rules/transitions.xlsx"  # таблица переходов (объекты/формулы)
+  reference: "domain/ontology_rules/reference_workflow.py"  # машинный эталон v26.1
+  render_name: "Structure_modeling"
+  # P2.4: источник СОСТАВА пайплайна. `template` — порядок и состав из шаблона,
+  # но состав сверяется с каталогом онтологии (`pipeline_audit` в спеке);
+  # `ontology` — состав заменяется скелетом, выведенным из каталогов онтологии
+  # (объекты/параметры берутся из шаблона через merge_with_template).
+  pipeline_source: "template"
+  # Чужие значения обучающего поля, недопустимые в рендере объекта (проверка
+  # contract.foreign_tokens; список пополняется данными, не кодом).
+  foreign_tokens: ["Litho3D", "paleo_Litho", "zone_id", "CS_trend",
+                   "2221900", "6022300", "491125", "7873501"]
+  # P0.3: UI-функции тНава, НЕДОСТУПНЫЕ в консольной версии (проверено прогоном:
+  # «function "contour_line_settings_step" is not available in the console version!»).
+  # Их шаги не рендерятся; карты рисует фолбэк (`checks.map_sources` → maps/*.png).
+  console_unavailable: ["create_screenshot", "contour_line_settings_step",
+                        "contour_line_settings_style", "show_palette", "adjust_size",
+                        "select_geometry_object"]
+
+# --- ПРОЕКТНЫЙ граф (ABox): значения, зависящие от месторождения --------------
+# НЕ хардкод в коде: маркеры/PVT/SCAL/CRS/пороги задаются данными.
+project:
+  graph_dir: "ontology_project"
+  default_field: "Герасимовское"
+  snp_path: "runs/geology.snp"     # путь по умолчанию (если не задан models_dir)
+  models_dir: "models"             # КОРНЕВАЯ папка моделей (по ветке): models/<vid>/<field>.snp
+  grid_name: "main_grid"           # имя 3D-сетки в проекте тНава (для чтения запасов)
+  # P0.3: чтение модели — сниппеты берут РЕАЛЬНЫЕ имена свойств
+  # (`grid.get_all_properties()`), а эти списки — только кандидаты для отбора
+  # (данные, не код): в проекте свойства могут называться `PHIE_bw`/`KINT_bw`.
+  stoiip_candidates: ["STOIIP", "STOIP", "OIP", "OOIP", "KINT", "KINIT", "HCPV", "HC_OIL"]
+  property_candidates: ["PORO", "PHIE", "PHI", "PERMX", "PERM", "NTG", "SW"]
+
+# --- Данные: наборы (подпапка = набор) --------------------------------------
+# Данные поля лежат ВНУТРИ папки: data/<месторождение>/Source/…
+data:
+  root: "data"
+
+# --- Результаты --------------------------------------------------------------
+runs:
+  root: "runs"
+
+# --- Исполнение --------------------------------------------------------------
+execution:
+  build_gm: true
+  build_gdm: true
+  adaptation: false
+  ensemble_size: 0                # число реализаций: 0 = ВСЕ вариации из проектного графа
+                                  # (5 веток S001…S005 — проверенная конфигурация);
+                                  # 2 = базовая + 1 вариация (быстрый прогон)
+  plan_mode: "by_data"
+  render_workflow: true          # рендерить tNavigator-воркфлоу (основной путь)
+  dry_run: true                  # true = без реального запуска тНава
+  stage_mode: "staged"           # staged = агенты+гейты (новый контур) | monolithic = как раньше
+  gate_bypass: true              # прототип: при исчерпании попыток продолжать (best/skip/ask)
+  agent_llm: true                # LLM-план/объяснение гейтов (agents/advisor, следующий срез)
+
+# --- АГЕНТЫ: профили BDI v4.1 (данные, не код) -------------------------------
+agents:
+  bdi_dir: "ontology/bdi_knowledge/neurosymbolic_agents"
+
+# --- ГЕЙТЫ передачи между агентами (данные; переключаются из интерфейса) ------
+# on_exhausted: best — лучшая ревизия + degraded | skip — пропуск этапа |
+#               halt — остановка | ask — пауза с решением из UI.
+gates:
+  - {id: G-DATA,   agent: AG_DATA_STEWARD,    stages: [0],       on_exhausted: best, max_attempts: 3}
+  - {id: G-STRUCT, agent: AG_STRUCTURAL,       stages: [1, 2, 3], on_exhausted: best, max_attempts: 3, evidence: [{kind: well_tie}]}
+  - {id: G-GRID,   agent: AG_GRID_VOLUMETRICS, stages: [4, 5],    on_exhausted: best, max_attempts: 3, evidence: [{kind: grid}]}
+  - {id: G-FACIES, agent: AG_FACIES,           stages: [6],       on_exhausted: skip, max_attempts: 3}
+  # G-PETRO: evidence: [{kind: property_mean, name: PORO, as: poro_mean}] — включить после верификации compute_statistics(type=...) на 26.1
+  - {id: G-PETRO,  agent: AG_PETROPHYSICS,     stages: [7],       on_exhausted: best, max_attempts: 3}
+  - {id: G-SAT,    agent: AG_PVT_SCAL,         stages: [8],       on_exhausted: best, max_attempts: 3}
+  - {id: G-VOL,    agent: AG_GRID_VOLUMETRICS, stages: [9],       on_exhausted: best, max_attempts: 3, evidence: [{kind: stoiip}]}
+  # G-MAPS: стадия 10 «Экспорт карт» — картинки с изолиниями для интерфейса
+  - {id: G-MAPS,   agent: AG_GRID_VOLUMETRICS, stages: [10],      on_exhausted: best, max_attempts: 1, evidence: [{kind: maps}]}
+
+# --- Пороги проверок гейтов (данные; переопределяются в config.local.yaml) ---
+checks:
+  # Веса свёртки фитнеса QA/QC: ff = alpha·kq + beta·kc (данные, не код).
+  fitness_alpha: 0.5
+  fitness_beta: 0.5
+  map_blank_max: 0.95          # макс. доля бланка структурной карты (выше — находка)
+  map_extent_tol_m: 100.0      # допуск расхождения extent карты и бокса модели, м
+  well_tie_median_m: 10.0      # допуск медианы |наблюдение − модель| по скважинам, м
+  well_tie_rmse_m: 15.0        # допуск RMSE сходимости поверхности с отбивками, м
+  blank_abs: 1000000.0         # |значение| >= — «нет данных», если novalue не найден в данных
+  map_files:                   # ожидаемые карты стадии 10 (PNG в runs/<id>/maps/)
+    - U1_top                   # кровля Ю1 (BAJ) — единый объект Ю1
+    - U1_bot                   # подошва Ю1 (J2)
+    - Tl_thick                 # толщина Ю1 (BAJ − J2)
+    - LIT
+    - PORO
+    - STOIIP
+    - FACIES
+    # P0.5: карты, для которых источник ЕСТЬ в данных поля (рисует фолбэк).
+    - U1_top_std               # сглаженная кровля (структурный тренд)
+    - U1_top_nt                # кровля без сшивки (QC сходимости)
+    - Fault_map                # карта разломов
+  map_sources:                 # фолбэк (matplotlib), если нативный PNG тНава не получен
+    U1_top: "struct/depth_u1.irap"
+    U1_top_std: "struct/std_depth_u1.irap"
+    U1_top_nt: "struct/depth_u1_not_tued.irap"
+    Fault_map: "struct/fault_map.irap"
+    U1_bot: ""
+    Tl_thick: ""
+    LIT: ""
+    PORO: ""
+    STOIIP: ""
+    FACIES: ""
+  facies_methods: ["sis"]      # разрешённые методы фациального моделирования (политика G-FACIES)
+  grid_max_aspect_ratio: 200.0 # макс. max(dx,dy)/dz — ячейка-«блин» (ошибка бокса/слоёв)
+  grid_max_xy_ratio: 20.0      # макс. dx/dy — сильно вытянутые ячейки в плане
+  grid_max_cells: 20000000     # макс. nx·ny·nz — защита от раздувания бокса/числа слоёв
+  grid_count_tol_cells: 2      # допуск |nx − round(length_x/step_x)| и то же по Y, ячеек
+  facies_min_classes: 2        # мин. число классов фаций для распространения (SIS)
+  map_kinds:                   # классификация карт для панели «Карты по версиям»
+    structural: [U1_top, U1_bot, Tl_thick, U1_top_std, U1_top_nt, Fault_map]
+    facies: [FACIES]
+  package_blocks:              # привязка гейт → блоки пакета QA/QC (652 проверки)
+    G-DATA: ["02", "03"]
+    G-STRUCT: ["04"]
+    G-GRID: ["04"]
+    G-PETRO: ["13"]
+    G-FACIES: ["05", "06"]
+
+# --- Интерфейс: панель «Гейты и байпас» --------------------------------------
+ui:
+  decision_timeout_sec: 0      # 0 = ждать решение оператора (ask) без таймаута
+
+# --- Ансамбль и свёртка ------------------------------------------------------
+# Метрика отбора — STOIIP (суммарные запасы из волюметрии тНава) для статической ГМ.
+ensemble:
+  metric: "STOIIP"
+  # свёртка по НЕСКОЛЬКИМ метрикам (сценарная ось): запасы + свойства модели.
+  # `metric` — основная (совместимость), `metrics` — полный набор для p10/p50/p90.
+  metrics: ["STOIIP", "PORO"]
+  rollup: "best"
+
+# --- tNavigator: КОНСОЛЬНЫЙ tNavigator-con.exe (путь из «Путь до тнав и пароль.txt»)
+tnavigator:
+  install_dir: "C:/Users/Alexey/AppData/Local/Programs/tNavigator/26.3"
+  executable: "C:/Users/Alexey/AppData/Local/Programs/tNavigator/26.3/tNavigator-con.exe"
+  api_cache_dir: ".tnav_api"  # каталог РАСПАКОВАННОГО Python API (zip не исполняется напрямую)
+  flags:
+    - "--no-gui"
+    - "--physics=auto"
+    - "--ecl-unsmry"
+    - "--ecl-egrid"
+    - "--ecl-init"
+    - "--touch-after"
+    - "eclend"
+  cpu_num: 4
+  cpu_flag: "--cpu-num"
+  license_features: ["FEAT_GEOLOGY_DESIGNER"]   # лицензия для построения модели
+  license_settings: ""           # явный .ini; пусто -> из config.local.yaml license.*
+  license_settings_file: ""      # файл настроек лицензии; пусто -> системный temp (ASCII-safe)
+  timeout_sec: 3600
+  preflight_timeout_sec: 60
+  dry_run: false
+
+
+

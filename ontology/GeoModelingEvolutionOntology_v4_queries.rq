@@ -1,0 +1,27 @@
+PREFIX gm: <https://example.org/geomodel/evolution/v4#>
+PREFIX bdi: <https://example.org/geomodel/evolution/v4/bdi#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+# 1. Drill down from a process stage to substages and handoff parameters.
+SELECT ?stage ?substage ?label ?parameter WHERE {
+  ?stage a gm:ProcessStage ; gm:hasSubstage ?substage .
+  ?substage rdfs:label ?label .
+  OPTIONAL { ?activity gm:refinesSubstage ?substage ; gm:passesParameter ?parameter }
+}
+
+# 2. QA/QC rules, criteria and escalation routes for an ontology node.
+SELECT ?rule ?condition ?action ?route WHERE {
+  ?rule gm:targetsNode ?target ; gm:conditionText ?condition ; gm:actionText ?action ; gm:hasEscalationRoute ?route .
+}
+
+# 3. Versioned software implementation alternatives for an abstract operation.
+SELECT ?operation ?binding ?software ?version ?locator ?status WHERE {
+  ?binding a gm:SoftwareBinding ; gm:implementsOperation ?operation ; gm:targetsSoftware ?software ;
+    gm:targetsVersion ?version ; gm:implementationLocator ?locator ; gm:bindingStatus ?status .
+}
+
+# 4. Ordered BDI rules and their explicit human-approval requirements.
+SELECT ?branch ?rule ?priority ?guard ?outcome ?approval WHERE {
+  ?branch a bdi:BranchPoint ; bdi:hasRule ?rule .
+  ?rule bdi:priority ?priority ; bdi:guardExpression ?guard ; bdi:outcomeText ?outcome ; bdi:requiresHumanApproval ?approval .
+} ORDER BY ?branch ?priority

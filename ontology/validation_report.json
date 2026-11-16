@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "triples": 234946,
+  "modules": 21,
+  "distinct_local_nodes": 19992,
+  "checks": 61,
+  "note": "N-Triples lexical structure, modular closure, imports, catalogs and coverage thresholds validated."
+}

@@ -1,0 +1,9 @@
+# orchestrator-v5 — зависимости
+rdflib>=7.0        # загрузка онтологии v4 (RDF, опционально)
+PyYAML>=6.0        # config.yaml / config.local.yaml / проектный граф
+fastapi>=0.110     # веб-слой (вариант B)
+uvicorn[standard]>=0.27   # ASGI-сервер
+# pyshacl>=0.40    # SHACL-валидация плана (опционально, этап 2)
+numpy>=1.24        # пакет QA/QC (652 проверки) и адаптеры гейтов; без numpy — деградация
+matplotlib>=3.7   # фолбэк отрисовки карт (domain/map_render.py); без него — деградация
+# scipy            # геостатистика (опционально; есть fallback на stdlib)

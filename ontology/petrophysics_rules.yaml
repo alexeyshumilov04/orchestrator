@@ -1,0 +1,107 @@
+# ОНТОЛОГИЯ: правила петрофизики (единственное место правил, а не проектный граф)
+#
+# Замечание заказчика (раунд 86): правила петрофизики, записанные в
+# ontology_project/<поле>.yaml, НЕ попадают в план, собираемый из онтологии, — это подгонка
+# под тестовый кейс. Здесь, в онтологии, лежат ПРАВИЛА (применимые к любому полю), а в
+# проектном графе остаются только ПОЛЕВЫЕ значения (какие мнемоники у поля, где данные).
+#
+# Приоритет источников зависимости k(φ) — по экспериментальным данным скважин
+# (уточнение заказчика, раунд 86): керн → литература (со статусом) → unknown.
+schema_version: 1
+knowledge_base: KB_PETROPHYSICS
+
+# 1. Обработка данных ГИС ДО построения кубов (правило 6: нет данных != ноль)
+log_preparation:
+  null_values: [-999.2, -999.25, -999.0, -999.0, -999.25]   # бланки LAS: исключать
+  null_policy: "exclude_before_stats_and_interpolation"
+  unit_check:
+    enabled: true
+    rule: "измеренный диапазон кривой должен попадать в ожидаемый (units+min+max)"
+    on_mismatch: "failed"        # гейт G-PETRO валит этап, а не строит куб молча
+  scale_from_data: true          # масштаб (например, проценты → доли) берётся из данных поля
+
+# НЕПРЕРЫВНОСТЬ КРИВОЙ (измерено на реальном объекте, раунд 143): кривая пористости
+# имела всего 9 значений, все целые проценты, из них 65 % — ровно 3 %; кривая,
+# объявленная непроницаемостной, — 78 % замеров равны 1.0. Такие кривые
+# непригодны как непрерывные свойства для 3D-модели: куб получается ступенчатым/фоновым.
+# Правило проверяется автоматически; пороги — ДАННЫЕ.
+curve_continuity:
+  min_unique: 20                 # меньше уникальных значений → кривая дискретизирована
+  dominant_share_max: 0.5        # одна величина больше половины замеров → флаг/нормировка
+  on_detect: "unverified"        # это свойство ДАННЫХ, а не ошибка конвейера
+  action: "не выдавать куб за непрерывное свойство; требовать исходную непрерывную кривую/керн"
+  report: ["кривая", "уникальных", "доля доминанты", "вердикт"]
+
+# 2. Зависимость «пористость–проницаемость»: источник выбирает АГЕНТ по данным
+permeability_model:
+  activity: "ACT_PETRO_05"
+  source_ladder:                 # порядок обязателен: сначала ЭКСПЕРИМЕНТ
+    - id: "core"
+      condition: "phi_perm_pairs_available = true"
+      method: "fit_from_experimental_pairs"
+      fit: "per_lithotype"       # RULE_LIT_PETRO_110: единая k-φ НЕДОПУСТИМА
+      transform: "log10"         # лог-линейная регрессия (обычная практика для k-φ)
+      min_pairs: 30              # достаточность выборки (ДАННЫЕ; меньше — к литературе)
+      output: "relation coefficients a,b + r2 + n_pairs + lithotype"
+      execution_eligibility: "SANDBOX_OR_SHADOW"
+    - id: "literature"
+      condition: "phi_perm_pairs_available = false"
+      method: "kozeny_carman"
+      source_rule: "RULE_LIT_PETRO_020"
+      source_ids: ["LIT-0201#p14"]        # Меркулов, стр. 14 (уравнение Козени-Кармена)
+      knowledge_status: "EVIDENCE_BACKED_CANDIDATE"
+      needs_review: true
+      output: "форма зависимости; коэффициенты НЕ подставляются без керна"
+      execution_eligibility: "SANDBOX_OR_SHADOW"
+    - id: "unknown"
+      condition: "нет ни керна, ни подтверждённой литературы"
+      method: "declare_unknown"
+      knowledge_status: "UNKNOWN"
+      output: "проницаемость не публикуется как физичная карта (правило 6)"
+  constraints:                    # обязательны при любом источнике
+    - "RULE_LIT_PETRO_110"        # единая зависимость k-φ недопустима
+    - "RULE_LIT_PETRO_080"        # cut-off обосновывать по керну/ГИС, не константой
+    - "RULE_LIT_PETRO_040"        # физическая основа — распределение пор (ЯМР/капиллярометрия)
+  applied_by: "grid_property_calculator"    # подтверждён пробой на живой лицензии
+
+# 3. Контракт ЭКСПЕРИМЕНТАЛЬНЫХ данных (пары «пористость–проницаемость» по скважинам).
+#    Путь/формат — данные поля; правила подгонки — выше, в permeability_model.
+core_data_contract:
+  required_columns: [well, depth, porosity, permeability, lithotype]
+  optional_columns: [facies, sample_type, porosity_units, permeability_units]
+  fit: "per_lithotype"
+  min_pairs: 30
+  on_insufficient: "literature"          # недостаточно пар → литературная форма со статусом
+  on_absent: "unknown"                   # данных нет → unknown, не подбор
+
+# 4. Проверки QA/QC, потребляющие эти правила (регистрируются в реестре из данных)
+checks:
+  - id: "petro.log_units_and_range"
+    level_from_data: true               # уровень — checks.check_severity
+    needs: ["log_preparation.unit_check"]
+  - id: "petro.perm_relation_source"
+    level_from_data: true
+    needs: ["permeability_model.source_ladder"]
+    reports: ["источник k-φ", "n_pairs", "r2", "lithotype", "knowledge_status"]
+  - id: "petro.perm_physical"
+    level_from_data: true
+    needs: ["checks.perm_range_from_data"]
+    reports: ["медиана", "доля непустых", "число уникальных значений", "дисперсия"]
+
+# 5. Литературные основания (источники уже проиндексированы: ontology/literature_index.csv)
+literature_basis:
+  - rule_id: "RULE_LIT_PETRO_020"
+    statement: "проницаемость оценивать через связь с пористостью (Козени-Карман/регрессия)"
+    source: "LIT-0201#p14"
+  - rule_id: "RULE_LIT_PETRO_110"
+    statement: "единая зависимость k-φ недопустима при литолого-фациальной изменчивости"
+    source: "LIT-0201#p3"
+  - rule_id: "RULE_LIT_PETRO_080"
+    statement: "cut-off проницаемых интервалов обосновывать по керну/ГИС, не константой"
+    source: "LIT-0625#p2"
+  - rule_id: "RULE_LIT_PETRO_040"
+    statement: "физическая основа k-φ — распределение пор по размерам (ЯМР/капиллярометрия)"
+    source: "LIT-0202#p20"
+  - rule_id: "RULE_LIT_PETRO_010"
+    statement: "пористость калибровать по керну, 3D-распределение — SGS"
+    source: "LIT-0199#p5"

@@ -1,0 +1,27 @@
+# ЭТАЛОН (правило 8): domain/ontology_rules/reference_workflow.py,
+# тНавигатор v26.1 (api_version=v0_0_300a). Источник вызова — «Экспорт 2D-карты
+# <M> в формате CPS-3 Grid (ASCII)»: стр. 79 (Dist_to_well), 553 и 1008
+# (C1tl_top_thick / C1bb_top_thick).
+# Аргументы скопированы ДОСЛОВНО; объект карты и имя файла — ДАННЫЕ
+# (objects.map_2d + parameters.file_name проектного YAML).
+# СТАТУС: ПОДТВЕРЖДЕНО ПРОБОЙ на живой лицензии тНав 26.2 (tools/probe_maps.py,
+# _probe_maps4.txt: «E2 cps: эталон …: OK», файл 856 105 байт; формат CPS-3 Grid
+# ASCII: FSASCI / FSATTR / FSLIMI / FSNROW / FSXINC).
+# ОТЛИЧИЯ ОТ ЭТАЛОНА (обязательны для консольного прогона):
+#   * `file_name` — placeholder `__FILE__` (имя файла — данные шага).
+# ВАЖНО (реальный прогон 26.2, базовый и все 5 ветвей):
+#   «Error near line N: Could not recognize python code as workflow item» —
+#   внутри элемента воркфлоу НЕДОПУСТИМЫ Python-инструкции (подключение модулей,
+#   создание каталогов; безымпортная форма тоже отвергнута пробой): тНав распознаёт
+#   в элементе только вызовы своих функций. Каталог выгрузки тНав сам НЕ создаёт
+#   («Can't open file '<проект>/Maps/…'!») → его создаёт ОРКЕСТРАТОР в папке проекта
+#   ДО исполнения этапов.
+#   Целевой каталог: <папка проекта>/Maps (база — runs/run_<поле>/Maps,
+#   ветви ансамбля — models/<vid>/Maps).
+begin_wf_item (index = 3, name = "Экспорт 2D-карты в формате CPS-3 Grid (ASCII)")
+        map_2d_export_cps_format (file_name="__FILE__",
+              map_2d=typed_object_name (obj_name="C1tl_top_thick",
+              obj_type="Map2d"),
+              default_value=99999,
+              units_system="metric")
+        end_wf_item (index = 3)

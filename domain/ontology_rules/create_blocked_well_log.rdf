@@ -1,0 +1,3 @@
+<https://example.org/tnav#computational-function__create_blocked_well_log> <http://www.w3.org/2000/01/rdf-schema#label> "create_blocked_well_log" .
+<https://example.org/tnav#computational-function__create_blocked_well_log> <https://example.org/tnav#code> "create_blocked_well_log" .
+<https://example.org/tnav#computational-function__create_blocked_well_log> <https://example.org/tnav#шаблон_кода> "templates/create_blocked_well_log.txt" .

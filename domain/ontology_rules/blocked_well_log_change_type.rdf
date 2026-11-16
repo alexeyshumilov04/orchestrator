@@ -1,0 +1,3 @@
+<https://example.org/tnav#computational-function__blocked_well_log_change_type> <http://www.w3.org/2000/01/rdf-schema#label> "blocked_well_log_change_type" .
+<https://example.org/tnav#computational-function__blocked_well_log_change_type> <https://example.org/tnav#code> "blocked_well_log_change_type" .
+<https://example.org/tnav#computational-function__blocked_well_log_change_type> <https://example.org/tnav#шаблон_кода> "templates/blocked_well_log_change_type.txt" .

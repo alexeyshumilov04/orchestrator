@@ -1,0 +1,32 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix gm: <https://example.org/geomodel/evolution/v4#> .
+@prefix bdi: <https://example.org/geomodel/evolution/v4/bdi#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gm:ParameterDefinitionShape a sh:NodeShape ;
+  sh:targetClass gm:ParameterDefinition ;
+  sh:property [ sh:path gm:dataType ; sh:minCount 1 ] ;
+  sh:property [ sh:path gm:unitSymbolV4 ; sh:minCount 1 ] ;
+  sh:property [ sh:path gm:typicalRange ; sh:minCount 1 ] ;
+  sh:property [ sh:path gm:typicalUncertainty ; sh:minCount 1 ] ;
+  sh:property [ sh:path gm:hasTechnologyMetadataProfile ; sh:minCount 1 ] ;
+  sh:property [ sh:path gm:hasUncertaintyProfile ; sh:minCount 1 ] .
+
+gm:QAQCRuleShape a sh:NodeShape ;
+  sh:targetClass gm:QAQCRule ;
+  sh:property [ sh:path gm:conditionText ; sh:minCount 1 ] ;
+  sh:property [ sh:path gm:actionText ; sh:minCount 1 ] ;
+  sh:property [ sh:path gm:targetsNode ; sh:minCount 1 ] ;
+  sh:property [ sh:path gm:hasEscalationRoute ; sh:minCount 1 ] .
+
+gm:SoftwareBindingShape a sh:NodeShape ;
+  sh:targetClass gm:SoftwareBinding ;
+  sh:property [ sh:path gm:implementsOperation ; sh:minCount 1 ] ;
+  sh:property [ sh:path gm:targetsVersion ; sh:minCount 1 ] ;
+  sh:property [ sh:path gm:bindingStatus ; sh:minCount 1 ] .
+
+gm:BDIRuleShape a sh:NodeShape ;
+  sh:targetClass bdi:DecisionRule ;
+  sh:property [ sh:path bdi:guardExpression ; sh:minCount 1 ] ;
+  sh:property [ sh:path bdi:outcomeText ; sh:minCount 1 ] ;
+  sh:property [ sh:path bdi:requiresHumanApproval ; sh:minCount 1 ] .

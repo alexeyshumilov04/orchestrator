@@ -1,0 +1,9 @@
+# ВНИМАНИЕ (правило 8): сигнатура НЕ из эталона (машинный v26.1 reference_workflow.py) —
+# функции в эталоне нет. Источник — мануал Дизайнера 26.2, стр. 2734 + пробы на
+# живой лицензии (`tools/probe_facies.py`).
+#
+# СТАТУС: СХЕМА СТРОКИ `zones_table` НЕ ЗАКРЫТА (та же, что у
+# `grid_property_create_by_zones`: K1 читается как 0). В пайплайн шаг НЕ подключён.
+<https://example.org/tnav#computational-function__grid_property_create_by_values> <http://www.w3.org/2000/01/rdf-schema#label> "grid_property_create_by_values" .
+<https://example.org/tnav#computational-function__grid_property_create_by_values> <https://example.org/tnav#code> "grid_property_create_by_values" .
+<https://example.org/tnav#computational-function__grid_property_create_by_values> <https://example.org/tnav#шаблон_кода> "templates/grid_property_create_by_values.txt" .

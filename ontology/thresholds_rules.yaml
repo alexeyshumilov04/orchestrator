@@ -1,0 +1,63 @@
+# ОНТОЛОГИЯ: правила ПОРОГОВ ПРИЁМКИ (критерии QA/QC, а не полевые значения)
+#
+# Зачем: в проектном графе пороги лежали как `thresholds.{poro,perm,swl}` — то есть
+# КРИТЕРИИ ПРИЁМКИ хранились как полевое значение. Здесь они описаны как правила с
+# обязательным ПРОВЕНАНСОМ (откуда взято: чеклист, литература, заказчик) и с явным
+# поведением при отсутствии свидетельства (правило 6: unknown != false).
+schema_version: 1
+knowledge_base: KB_ACCEPTANCE_THRESHOLDS
+
+# Общие принципы
+policy:
+  severity_from_data: "checks.check_severity"     # уровень проверки задаётся данными
+  provenance_required: true                       # порог без источника недействителен
+  on_missing_provenance: "unverified"             # нет источника → не выдаём за норму
+  on_out_of_range: "failed"                       # значение вне диапазона → провал гейта
+  report: ["величина", "диапазон", "источник", "вердикт"]
+
+# Пороги по свойствам. `source` — обязательное поле: чеклист | литература | заказчик |
+# текущая конфигурация (временная, подлежит подтверждению).
+thresholds:
+  poro:
+    range: [0.02, 0.35]                  # д.ед.
+    source: "current_config"             # ВРЕМЕННО: перенесено из проектного графа
+    provenance: "pending"                # подтвердить по чеклисту/литературе
+    checklist_refs: ["06", "07"]         # блоки чеклиста QA/QC
+    on_violation: "failed"
+  perm:
+    range: [0.1, 5000.0]                 # мД
+    source: "current_config"
+    provenance: "pending"
+    note: "широкий диапазон не ловит «слишком низко»: нужен порог по коллектору (net)"
+    checklist_refs: ["07", "13"]
+    on_violation: "failed"
+  swl:
+    range: [0.0, 1.0]                    # д.ед.
+    source: "current_config"
+    provenance: "pending"
+    checklist_refs: ["09", "10"]
+    on_violation: "failed"
+
+# Пороги, которые обязаны браться из ДАННЫХ поля, а не задаваться в коде
+from_field_data:
+  - id: "surface.well_bullseye.radius_cells"    # радиус кольца контроля локальной подсадки
+    default: 3
+  - id: "surface.well_bullseye.threshold"       # порог отклонения, м
+    default: 10.0
+  - id: "checks.metric_vs_table_tolerance"      # допуск сверки метрики с таблицей
+    default: 0.15
+  - id: "petro.perm_physical.median_min"        # минимальная медиана проницаемости (net)
+    default: null                               # null → unverified, а не «норма»
+
+# Сверка с источником критериев (чеклист QA/QC заказчика)
+checklist:
+  source: "QAQC/QA_QC_чеклист.xlsx"
+  blocks_in_scope: ["06", "07", "08", "13", "09", "10"]
+  digitalized: "ontology/qa_checks/*.csv"
+  rule: "каждая проверка гейта обязана ссылаться на пункт чеклиста либо литературный источник"
+
+checks:
+  - id: "qaqc.thresholds_provenance"
+    needs: ["policy.provenance_required", "thresholds"]
+  - id: "qaqc.checklist_traceability"
+    needs: ["checklist.blocks_in_scope", "checklist.digitalized"]

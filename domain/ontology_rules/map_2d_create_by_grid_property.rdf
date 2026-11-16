@@ -1,0 +1,27 @@
+# ПРАВИЛО 2 (триада): шаблон + правило + блок этапа в ontology_project/<поле>.yaml.
+# ПРАВИЛО 8: сигнатура ПОДТВЕРЖДЕНА пробой на живой лицензии 26.2 —
+#   tools/probe_maps.py, отчёты _probe_maps2.txt («V3 create: grid+cube+map (таблица): OK»,
+#   «V7 create: непрерывная таблица без grid_2d_settings: OK»), _probe_maps5.txt
+#   («V9 create: строка без zone_id: OK», «V10 …: OK»).
+# Источник сырого шаблона — машинный воркфлоу тНава v26.2 (GM1.1, index 154);
+# мануал Designer: «41.3.6 2D-Карта по кубу свойств», стр. 1812.
+<https://example.org/tnav#computational-function__map_2d_create_by_grid_property> <http://www.w3.org/2000/01/rdf-schema#label> "map_2d_create_by_grid_property" .
+<https://example.org/tnav#computational-function__map_2d_create_by_grid_property> <https://example.org/tnav#code> "map_2d_create_by_grid_property" .
+<https://example.org/tnav#computational-function__map_2d_create_by_grid_property> <https://example.org/tnav#шаблон_кода> "templates/map_2d_create_by_grid_property.txt" .
+<https://example.org/tnav#computational-function__map_2d_create_by_grid_property> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_create_by_grid_property__continuous_properties> .
+<https://example.org/tnav#function-entity__map_2d_create_by_grid_property__continuous_properties> <https://example.org/tnav#code> "continuous_properties" .
+<https://example.org/tnav#function-entity__map_2d_create_by_grid_property__continuous_properties> <https://example.org/tnav#тип_данных> "bool" .
+<https://example.org/tnav#computational-function__map_2d_create_by_grid_property> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_create_by_grid_property__continues_cube_and_map_table> .
+<https://example.org/tnav#function-entity__map_2d_create_by_grid_property__continues_cube_and_map_table> <https://example.org/tnav#code> "continues_cube_and_map_table" .
+<https://example.org/tnav#function-entity__map_2d_create_by_grid_property__continues_cube_and_map_table> <https://example.org/tnav#тип_данных> "table" .
+<https://example.org/tnav#function-entity__map_2d_create_by_grid_property__continues_cube_and_map_table> <https://example.org/tnav#описание> "строки: use, cube (объект), map_2d (объект), method (average); колонка zone_id НЕ требуется — проверено пробой" .
+<https://example.org/tnav#computational-function__map_2d_create_by_grid_property> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__map_2d_create_by_grid_property__grid_2d_settings> .
+<https://example.org/tnav#function-entity__map_2d_create_by_grid_property__grid_2d_settings> <https://example.org/tnav#code> "grid_2d_settings" .
+<https://example.org/tnav#function-entity__map_2d_create_by_grid_property__grid_2d_settings> <https://example.org/tnav#тип_данных> "Grid2DSettings" .
+<https://example.org/tnav#function-entity__map_2d_create_by_grid_property__grid_2d_settings> <https://example.org/tnav#описание> "autodetect_box=True покрывает бокс модели; без блока настройка по умолчанию (0..1000 м) — проверено пробой" .
+<https://example.org/tnav#computational-function__map_2d_create_by_grid_property> <https://example.org/tnav#использует> <https://example.org/tnav#function-entity__map_2d_create_by_grid_property__grid%28obj_name%29> .
+<https://example.org/tnav#function-entity__map_2d_create_by_grid_property__grid%28obj_name%29> <https://example.org/tnav#code> "grid(obj_name)" .
+<https://example.org/tnav#function-entity__map_2d_create_by_grid_property__grid%28obj_name%29> <https://example.org/tnav#тип_данных> "grid_3d" .
+<https://example.org/tnav#computational-function__map_2d_create_by_grid_property> <https://example.org/tnav#создаёт> <https://example.org/tnav#function-entity__map_2d_create_by_grid_property__map_2d%28obj_name%29> .
+<https://example.org/tnav#function-entity__map_2d_create_by_grid_property__map_2d%28obj_name%29> <https://example.org/tnav#code> "map_2d(obj_name)" .
+<https://example.org/tnav#function-entity__map_2d_create_by_grid_property__map_2d%28obj_name%29> <https://example.org/tnav#тип_данных> "map_2d" .

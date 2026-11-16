@@ -1,0 +1,21 @@
+# ЭТАЛОН (правило 8): domain/ontology_rules/reference_workflow.py, тНавигатор v26.1
+# (api_version=v0_0_300a), стр. 32 — polygon_create_by_map_2d_boundary.
+# Параметры/объекты — из вызова эталона; шаблон — domain/templates/<fn>.txt.
+# Роль полигона в эталоне — `polygon` (в проектном YAML роль должна совпадать).
+<https://example.org/tnav#computational-function__polygon_create_by_map_2d_boundary> <http://www.w3.org/2000/01/rdf-schema#label> "polygon_create_by_map_2d_boundary" .
+<https://example.org/tnav#computational-function__polygon_create_by_map_2d_boundary> <https://example.org/tnav#code> "polygon_create_by_map_2d_boundary" .
+<https://example.org/tnav#computational-function__polygon_create_by_map_2d_boundary> <https://example.org/tnav#шаблон_кода> "templates/polygon_create_by_map_2d_boundary.txt" .
+<https://example.org/tnav#computational-function__polygon_create_by_map_2d_boundary> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__func_type> .
+<https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__func_type> <https://example.org/tnav#code> "func_type" .
+<https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__func_type> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__func_type> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__horizon> .
+<https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__horizon> <https://example.org/tnav#code> "horizon" .
+<https://example.org/tnav#computational-function__polygon_create_by_map_2d_boundary> <https://example.org/tnav#создает> <https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__polygon%28obj_name%29> .
+<https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__polygon%28obj_name%29> <https://example.org/tnav#code> "polygon(obj_name)" .
+<https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__polygon%28obj_name%29> <https://example.org/tnav#тип_данных> "curve3d" .
+<https://example.org/tnav#computational-function__polygon_create_by_map_2d_boundary> <https://example.org/tnav#использует> <https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__horizon%28obj_name%29> .
+<https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__horizon%28obj_name%29> <https://example.org/tnav#code> "horizon(obj_name)" .
+<https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__horizon%28obj_name%29> <https://example.org/tnav#тип_данных> "horizon" .
+<https://example.org/tnav#computational-function__polygon_create_by_map_2d_boundary> <https://example.org/tnav#использует> <https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__map_2d%28obj_name%29> .
+<https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__map_2d%28obj_name%29> <https://example.org/tnav#code> "map_2d(obj_name)" .
+<https://example.org/tnav#function-entity__polygon_create_by_map_2d_boundary__map_2d%28obj_name%29> <https://example.org/tnav#тип_данных> "map_2d" .

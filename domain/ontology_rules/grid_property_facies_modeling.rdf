@@ -1,0 +1,16 @@
+# ВНИМАНИЕ (правило 8): сигнатура НЕ из эталона (машинный v26.1 reference_workflow.py) —
+# функции в эталоне нет. Источник — мануал Дизайнера 26.2, стр. 2581 (функция
+# создаёт ДИСКРЕТНОЕ свойство по Blocked Wells) + пробы на живой лицензии
+# (`tools/probe_facies.py`).
+#
+# СТАТУС: полного подтверждения прогоном НЕТ. Пробы установили: имена
+# `mesh`/`blocked_wells`/`result_grid_property`, беззонную форму
+# `zone_region_filter`/`zone_region_filter_args`/`ZoneRegionParameters` и значения
+# `interpolator_type` (`kriging`/`sgs`/`grfs`). Аргумент со списком параметров по
+# фациям не найден (20 имён → «Unknown argument»); без него задача тНава падает
+# (`Fatal error: access violation`). Шаблон сохранён с машинным аргументом
+# `parameters=[…]` — тНав 26.2 отвечает ЧИСТОЙ ошибкой, гейт G-FACIES = skip.
+# Требует GUI-снимка вызова (как в `B4_facies.md`) либо следующего раунда проб.
+<https://example.org/tnav#computational-function__grid_property_facies_modeling> <http://www.w3.org/2000/01/rdf-schema#label> "grid_property_facies_modeling" .
+<https://example.org/tnav#computational-function__grid_property_facies_modeling> <https://example.org/tnav#code> "grid_property_facies_modeling" .
+<https://example.org/tnav#computational-function__grid_property_facies_modeling> <https://example.org/tnav#шаблон_кода> "templates/grid_property_facies_modeling.txt" .

@@ -1,0 +1,314 @@
+# ============================================================================
+# ОНТОЛОГИЯ: методики петрофизики и фаций, перенесённые из GeoMate +
+# доведённые до расчётных контрактов наших модулей (ДАННЫЕ, правило 1).
+#
+# Источник методик: D:/Documents/ChatGPT/Геомейт_десктоп/GeoMatePython/src/geomate
+#   * domain/analysis.py  — регрессия (slope/intercept/r2), корреляции, вариограмма,
+#                           k-means, Монте-Карло P10/P50/P90, Арчи, волюметрика;
+#   * domain/cleanup.py   — validate_intervals (мощность/перекрытие/литология/насыщение),
+#                           property_statistics;
+#   * domain/units.py     — реестр единиц и размерностей;
+#   * domain/models.py    — LEGACY_NO_VALUE, normalise_number (бланк -> None);
+#   * domain/grids.py     — поверхности, регрессия по сеткам, статистики;
+#   * presentation/qt/*   — методики в диалогах: корреляции, ЛФА/k-means,
+#                           индекс изученности (веса), Sw по Арчи, P10/P50/P90.
+#
+# ПРАВИЛА (не код) живут ЗДЕСЬ и в уже перенесённых файлах онтологии; файлы
+# сшиваются секцией `sources` (поздний перекрывает ранний). В .py — только КЛЮЧИ.
+#
+# ПРОИСХОЖДЕНИЕ ЗНАЧЕНИЙ: каждый параметр помечен `provenance`. Значения с
+# provenance=engineering_default — инженерные допуски прототипа (НЕ литературный
+# факт) и подлежат замене данными проекта; неопределённость НЕ выдаётся за факт.
+# ============================================================================
+schema_version: 1
+knowledge_base: KB_PETROFACIES_METHODS
+source:
+  root: "D:/Documents/ChatGPT/Геомейт_десктоп/GeoMatePython/src/geomate"
+  docs: "D:/Documents/ChatGPT/Геомейт_десктоп/GeoMatePython/docs/{ARCHITECTURE,USER_GUIDE,LEGACY_COMPATIBILITY}.md"
+  reuse_policy: "переносим КОНТРАКТЫ и ПРОВЕРКИ в онтологию; алгоритмы пишем своими модулями"
+
+# ── 0. СШИВКА ДАННЫХ: какие файлы онтологии образуют набор правил модулей ─────
+# Читает domain/petrofacies_data.py (путь корня — `ontology.root` из config.yaml).
+# Порядок важен: поздний файл перекрывает ранний (deep merge).
+sources:
+  - "petrophysics_rules.yaml"      # min_pairs, source_ladder, curve_continuity
+  - "geomate_reuse_rules.yaml"     # контракты GeoMate, blank_sentinel (1.70141e10)
+  - "facies_methods.yaml"          # пропорции фаций: min_wells, источник, метка
+  - "petrofacies_methods.yaml"     # этот файл: параметры алгоритмов
+
+# ── 1. КОНТРАКТ ТАБЛИЦ КЕРНА/ГИС: роль → имена колонок (ДАННЫЕ, не код) ──────
+# GeoMate CoreSample.properties — словарь со свободными именами свойств; имена
+# мнемоник у каждого поля свои, поэтому в .py их нет: код перебирает кандидатов
+# СВЕРХУ ВНИЗ и берёт первый присутствующий.
+columns:
+  porosity: ["porosity", "poro", "phi", "phie", "por"]
+  permeability: ["permeability", "perm", "kint", "kpr", "k"]
+  lithotype: ["lithotype", "lithology", "facies", "rock_type", "lit"]
+  well: ["well", "well_name", "uwi", "name"]
+  depth: ["depth", "md", "top", "from"]
+  sample: ["sample", "sample_id", "id"]
+  # роль «коллектор / не коллектор» (для cut-off и NTG) задаётся ДАННЫМИ поля:
+  # значение роли берётся из вызывающей стороны (ontology_project/<поле>.yaml).
+  reservoir_label: ["reservoir", "is_reservoir", "net", "pay"]
+
+# ── 1b. КОНТРАКТ ИНТЕРВАЛОВ: роль → ключ словаря интервала (ДАННЫЕ) ──────────
+# Перенесено из GeoMate Interval(top, bottom, layer, lithology, saturation,
+# properties) — проверки интервалов работают по ключам из этого блока.
+interval_fields:
+  top: "top"
+  bottom: "bottom"
+  lithology: "lithology"
+  saturation: "saturation"
+
+# ── 2. БЛАНКИ: «нет данных != ноль» (правило 6) ──────────────────────────────
+# Наследуем log_preparation.null_values (LAS) и validations.blank_sentinel.value
+# (LEGACY_NO_VALUE из GeoMate: 1.70141e10). Здесь — только дополнения и допуск.
+blank_handling:
+  extra_values: []                 # дополнительные бланки конкретного поля (ДАННЫЕ)
+  abs_tolerance: 1.0               # |value - blank| <= допуск → бланк (как в GeoMate)
+  policy: "normalise_to_none_never_zero"
+
+# ── 3. МАСШТАБ ПОРИСТОСТИ: проценты → доли (масштаб берётся ИЗ ДАННЫХ) ───────
+porosity_scale:
+  auto_detection: true             # если максимум > порога — считаем проценты
+  max_above: 1.5
+  factor: 0.01
+  provenance: "GeoMate UI хранил пористость долями (0..1); LAS поля — проценты"
+
+# ── 4. ЛИТОТИПЫ: единая k-φ НЕДОПУСТИМА (RULE_LIT_PETRO_110) ─────────────────
+rock_typing:
+  require_lithotype: true
+  pooled_allowed: false            # общая (неразделённая) подгонка запрещена правилом
+  pooled_label: "unclassified"     # метка для проб без литотипа (не литотип!)
+  on_missing_lithotype: "unknown"  # unknown | pooled_with_flag
+  provenance: "RULE_LIT_PETRO_110 (единая зависимость k-φ недопустима)"
+
+# ── 5. ПОДГОНКА k = f(φ) ПО КЕРНУ (лог-линейная, РАЗДЕЛЬНО по литотипам) ─────
+# Достаточность выборки НЕ дублируется здесь: берётся из
+# petrophysics_rules.yaml → core_data_contract.min_pairs (единый источник правила).
+permeability_fit:
+  transform: "log10"               # log10(k) = a·φ + b  (обычная практика для k-φ)
+  inverse: "pow10"                 # k = 10^(a·φ + b)
+  min_distinct_porosity: 2         # математический минимум для МНК (не доменный порог)
+  r2_min: 0.70                     # качество связи: QA/QC чеклист QC_PERM_001
+  r2_source: "QC_PERM_001 (R²(K-φ) ≥ 0.70)"
+  r2_below_status: "low_r2"        # связь есть (коэффициенты ИЗ КЕРНА), но флаг качества
+  extrapolation_guard: true        # предупреждение вне диапазона φ керна
+  source_ladder: "inherited"       # core → literature → unknown (petrophysics_rules)
+  provenance: "GeoMate domain/analysis.py linear_regression (slope/intercept/r2), доработано: по литотипам + лог-шкала"
+
+# ── 6. CUT-OFF КОЛЛЕКТОРА: обосновывать ДАННЫМИ, не константой (RULE_LIT_PETRO_080)
+cutoff:
+  method: "two_class_balanced_accuracy"   # порог по меченому керну (коллектор/нет)
+  parameter: "log10_permeability"          # порог ищется в лог-проницаемости
+  min_per_class: 5
+  positive_values: [1, "1", "true", "True", "yes", "да", "коллектор"]   # метка «коллектор»
+  negative_values: [0, "0", "false", "False", "no", "нет", "неколлектор"]
+  provenance: "engineering_default (прототип): заменить порогом проекта; правило RULE_LIT_PETRO_080 запрещает константу"
+  on_insufficient: "unknown"               # нет меток/мало данных → unknown, НЕ ноль
+  on_absent: "unknown"
+
+# ── 7. ФАЦИИ: список/порядок, доли, связность, тела (подготовка шага тНава) ──
+# Порядок классов и коды — ДАННЫЕ: order_by=code (сортировка кодов) либо
+# order_by=explicit (перечень кодов проекта в explicit_order — сверху вниз).
+facies_model:
+  order_by: "code"                 # code | explicit
+  explicit_order: []               # коды проекта (ДАННЫЕ поля), сверху вниз
+  unknown_codes_tail: true         # коды вне explicit_order — в конец, с отметкой unknown
+  min_wells: 3                     # согласовано с facies_methods.proportions.min_wells
+  roles_required: true             # без карты ролей (коллектор/нет) NTG = unknown
+  reservoir_role: "reservoir"      # имя роли «коллектор» в карте ролей (ДАННЫЕ)
+  neighbourhood: 6                 # 6 | 18 | 26 — связность тел (лицо/ребро/вершина)
+  neighbourhood_options: [6, 18, 26]
+  min_body_cells: 1                # тела меньше порога не считаются телами (шум)
+  # Ограничение объёма расчёта связности (защита от «повешенного» расчёта):
+  # больше ячеек → связность = unknown с причиной, а не выдуманное число.
+  connectivity_max_cells: 2000000
+  metrics: ["proportions", "net_to_gross", "connectivity", "bodies", "class_order"]
+  source_label: "рассчитано локально (не результат тНава)"
+  provenance: "GeoMate domain/cleanup.validate_intervals + qt ЛФА/кластеры, доработано: связность и тела по кубу кодов"
+  # КОДЫ ПАРАМЕТРОВ ШАБЛОНА тНава для шага фаций.
+  # ПОДТВЕРЖДЕНО ПРОТОКОЛОМ ПРОБ (10.10.2026, живая лицензия 26.2; файлы протокола —
+  # вне онтологии): функция шага
+  # `grid_property_interpolate_by_wells_log_sgs_multilayer_facies` принимает
+  # `variogram=VariogramParameters (sill, nugget_effect, range_main, range_normal,
+  # range_vertical, azimuth, dip)`; `i3_params`, `statistics`, `facies_parameters`,
+  # `use_global_random_seed`, `space_type` — «Unknown argument».
+  # Источника этих значений в АГРЕГАТЕ фаций нет (агрегат даёт доли/классы/NTG/
+  # связность/число тел), поэтому патч по агрегату ПУСТ — вариограмму прокидывает агент
+  # фаций из `geostat` (ontology/facies_methods.yaml:patch_codes). Выдумывать связку
+  # «код шаблона ↔ агрегат» запрещено правилом 8.
+  patch_codes: {}
+
+# ── 8. РЕЕСТР ПЕРЕНОСА: что взято / что доработано / чего нет ────────────────
+transfer:
+  adopted:                         # взято из GeoMate как контракт/правило
+    - id: "geomate.normalise_number"
+      what: "бланк LEGACY_NO_VALUE -> None (не ноль); нечисловое -> None"
+      where: "ontology/geomate_reuse_rules.yaml:validations.blank_sentinel, domain/petrofacies_data.py"
+    - id: "geomate.core_sample_contract"
+      what: "CoreSample(top,bottom,properties,lithology) — пары φ/k + ЛИТОЛОГИЯ"
+      where: "ontology/geomate_reuse_rules.yaml:entities.CoreSample"
+    - id: "geomate.interval_validation"
+      what: "мощность > 0, перекрытие, пропуск литологии/насыщения — проверки интервалов"
+      where: "ontology/geomate_reuse_rules.yaml:validations, domain/facies_model.py"
+    - id: "geomate.regression_contract"
+      what: "регрессия возвращает slope/intercept/r2 (без домена)"
+      where: "domain/petrophysics_fit.py: FitResult"
+    - id: "geomate.units_registry"
+      what: "единицы и размерности (m, mD, дол.ед.) — проверка единиц кривой"
+      where: "ontology/petrophysics_rules.yaml:log_preparation.unit_check"
+    - id: "geomate.sufficiency_weights"
+      what: "индекс изученности = взвешенная доля видов исследований"
+      where: "ontology/petrofacies_methods.yaml:study_sufficiency"
+    - id: "geomate.proportions_from_wells"
+      what: "доли классов по скважинным данным с порогом числа скважин"
+      where: "domain/facies_model.py: proportions_from_wells"
+  reworked:                        # доработано относительно GeoMate
+    - id: "petro.phi_perm_fit"     # закрывает пробел geomate_reuse_rules.missing_to_implement
+      was: "единая линейная регрессия по всем парам (domain/analysis.linear_regression)"
+      now: "лог-линейная регрессия ОТДЕЛЬНО по литотипам + r2 + n_pairs + порог достаточности + статус источника"
+      why: "RULE_LIT_PETRO_110: единая k-φ недопустима при литолого-фациальной изменчивости"
+      where: "domain/petrophysics_fit.py: fit_pairs, fit_from_rows"
+    - id: "petro.perm_to_cube"
+      was: "в GeoMate зависимости не применялись к модели"
+      now: "apply_fit: значения log10(k) по ячейкам + статус источника + флаг экстраполяции; без керна — None"
+      why: "правило 6: коэффициенты литературы не подставляются в куб без керна"
+      where: "domain/petrophysics_fit.py: apply_fit"
+      note: "запись куба в проект тНава выполняет агент/раннер (функция тНава), не этот модуль"
+    - id: "petro.source_ladder_status"
+      was: "в GeoMate статуса источника нет — есть только число"
+      now: "core → literature → unknown; для literature коэффициенты НЕ подставляются"
+      why: "правило 6: нет данных → unknown, а не выдуманное число"
+      where: "domain/petrophysics_fit.py: _fit_one, SOURCE_*"
+    - id: "petro.cutoff_justified"
+      was: "в GeoMate диалоги использовали константные доли/пороги"
+      now: "порог по меченому керну (two-class balanced accuracy), иначе unknown"
+      why: "RULE_LIT_PETRO_080: cut-off обосновывать керном/ГИС, не константой"
+      where: "domain/petrophysics_fit.py: cutoff_from_labelled_core"
+    - id: "facies.bodies_and_connectivity"
+      was: "в GeoMate — доли/кластеры; тел и связности нет"
+      now: "число тел, крупнейшее тело, связность по 6/18/26-соседству, NTG по ролям"
+      why: "карты фаций тНава требуют долей/связности/числа тел — в GeoMate их не было"
+      where: "domain/facies_model.py: connectivity_stats, aggregate_facies"
+    - id: "facies.step_parameters"
+      was: "в GeoMate параметры диалога задавал оператор"
+      now: "подготовка параметров шага фаций с проверкой наличия кода в ШАБЛОНЕ функции"
+      why: "правило 8: коды параметров тНава не выдумывать — патч только если код есть в шаблоне"
+      where: "domain/facies_model.py: facies_step_parameters"
+    - id: "petro.saturation_model"
+      was: "в GeoMate — Sw по Арчи из диалога (Rw/Rt с ползунками), SCAL/J-функции нет"
+      now: "J(Sw) = (Pc/(σ·cosθ))·√(k/φ) по SCAL/керну, подгонка J = A·Sw^(−B) по типам породы, концевые точки; нет SCAL → not_applicable (правило 6)"
+      why: "RULE_LIT_PETRO_060/070 (литература индекса) + RULE_LIT_SCAL_010: концевые точки по керну, а не константой"
+      where: "domain/saturation_model.py: fit_from_rows, from_project_scal, sw_from_j"
+      note: "запись куба Sw выполняет агент/тНав по подтверждённым функциям, не этот модуль"
+  remaining:                       # требует функций тНава (лицензия/проба) или иных данных
+    - id: "facies.modeling_engine"
+      need: "вызов фациального моделирования тНава (typed objects + ZoneRegionFaciesParameters)"
+      blocked_by: "шаг в config.yaml: workflow.unconfirmed_steps (нужна успешная проба на лицензии)"
+    - id: "facies.property_cube_and_maps"
+      need: "дискретный куб фаций и карты (доля песчаника/связность/число тел)"
+      blocked_by: "дискретный куб и палитра создаются только средствами тНава"
+
+# ── 11. НАСЫЩЕНИЕ: J-функция и концевые точки (SCAL / керн) ──────────────────
+# Источник зависимости — ЛИТЕРАТУРА нашего индекса (правило 8: с ссылкой, не из головы):
+#   RULE_LIT_PETRO_060 (LIT-0625#p15, Акиньшин/Кантемиров, практическое руководство по ГИС) —
+#     пересчёт капиллярных кривых с учётом межфазного натяжения (cos θ, σ);
+#   RULE_LIT_PETRO_070 (LIT-0199#p15, Modern_Reservoir_Simulation) — насыщенность по
+#     высоте через капиллярное давление (обращение J(Sw));
+#   RULE_LIT_SCAL_010 (ontology/pvt_scal_rules.yaml) — концевые точки обосновывать
+#     керном/SCAL, НЕ константой (provenance правила = pending → REQUIRES_SOURCE).
+# Конкретные числа (Pc, Sw, k, φ, σ, θ) — ДАННЫЕ поля; здесь только правила и контракт.
+saturation:
+  activity: "ACT_PETRO_06"
+  # Роли таблицы SCAL → имена колонок (мнемоники в коде отсутствуют, правило 1).
+  columns:
+    pc: ["pc", "pc_res", "capillary_pressure", "pk"]
+    sw: ["sw", "water_saturation", "swt"]
+    porosity: ["porosity", "poro", "phi", "phie", "por"]
+    permeability: ["permeability", "perm", "kint", "kpr", "k"]
+    sigma: ["sigma", "ift", "interfacial_tension"]
+    theta: ["theta", "contact_angle"]
+    rock_type: ["rock_type", "rocktype", "lithotype", "facies", "hfu"]
+    sample: ["sample", "sample_id", "id"]
+  # Матрицы SCAL поля (список строк) → роли колонок (ДАННЫЕ; имена матриц — данные поля).
+  tables:
+    swof: ["sw", "krw", "kro", "pc"]
+    sgof: ["sg", "krg", "krog", "pc"]
+  j_function:
+    formula: "(pc / (sigma * cos(theta))) * sqrt(k / phi)"
+    normalisation: "sqrt_k_over_phi"          # нормировка по пористости/проницаемости
+    alternative_normalisation: "pc_over_sigma"  # без k/φ — статус кандидата, не факт
+    requires: ["pc", "sw", "sigma", "theta"]
+    normaliser_requires: ["permeability", "porosity"]
+    on_missing_required: "insufficient"       # нет σ/θ или Pc/Sw → J не строится
+    on_missing_normaliser: "candidate_without_kphi"   # | "insufficient"
+    theta_units: "deg"                        # единицы угла — ДАННЫЕ правила
+    # Приведение к согласованным единицам: множители ДАННЫХ поля (нет ключа → 1.0
+    # и признак units_assumed=true, а не молчаливое «всё сошлось»).
+    unit_scales:
+      pc: 1.0
+      sigma: 1.0
+      permeability: 1.0
+    source_rule: "RULE_LIT_PETRO_060"
+    source_ids: ["LIT-0625#p15"]
+    knowledge_status: "EVIDENCE_BACKED_CANDIDATE"
+    needs_review: true
+  fit:
+    transform: "log10"                        # log10 J = log10 A - B·log10 Sw
+    form: "J = A * Sw^(-B)"
+    group_by: "rock_type"                     # по типу породы; единая J(Sw) — только как кандидат
+    pooled_allowed: false
+    min_pairs: 10
+    min_pairs_provenance: >-
+      engineering_default (прототип): заменить проектным критерием достаточности;
+      RULE_LIT_SCAL_010 требует обоснования концевых точек и кривых по керну/SCAL
+    r2_min: 0.70
+    r2_source: "QC_PERM_001 (R² ≥ 0.70) — критерий качества связи применяется к J(Sw)"
+    source_rule: "RULE_LIT_PETRO_070"
+    source_ids: ["LIT-0199#p15"]
+    knowledge_status: "EVIDENCE_BACKED_CANDIDATE"
+  end_points:
+    sw_irr: {statistic: "min", min_samples: 5}
+    sw_max: {statistic: "max", min_samples: 5}
+    on_insufficient: "unknown"
+    min_samples_provenance: >-
+      engineering_default (прототип): заменить проектным критерием достаточности;
+      правило RULE_LIT_SCAL_010 требует обоснования концевых точек по керну/SCAL
+    source_rule: "RULE_LIT_SCAL_010"
+    knowledge_status: "REQUIRES_SOURCE"       # provenance правила в pvt_scal_rules = pending
+    provenance: "значения берутся из ДАННЫХ SCAL/керна поля; константы недопустимы"
+  applicability:
+    min_rows: 3
+    on_no_rows: "not_applicable"
+    on_missing_section: "not_applicable"
+    report: ["тип породы", "n точек", "A", "B", "r2", "источник", "вердикт"]
+
+# ── 9. Индекс изученности (перенесён из GeoMate qt: веса видов исследований) ──
+# Веса — ДАННЫЕ; в .py их нет. Потребитель — отчётность/агент.
+study_sufficiency:
+  weights:
+    intervals: 1.0
+    logs: 1.0
+    core: 1.5
+    markers: 0.5
+    tests: 1.0
+  provenance: "GeoMate presentation/qt/extended_dialogs.py:_valuation (веса диалога)"
+
+# ── 10. Проверки, которые модули отдают в QA/QC (id — ДАННЫЕ) ────────────────
+checks:
+  - id: "geomate.phi_perm_fit_source"
+    needs: ["permeability_fit", "core_data_contract"]
+    reports: ["литотип", "n_pairs", "r2", "slope", "intercept", "источник"]
+  - id: "geomate.facies_aggregates"
+    needs: ["facies_model"]
+    reports: ["классов", "доли", "связность", "тел", "net_to_gross"]
+  - id: "geomate.rules_are_data"
+    needs: ["sources", "columns", "blank_handling"]
+    reports: ["файлов онтологии", "ролей колонок", "бланков"]
+  - id: "geomate.saturation_jfunction"
+    needs: ["saturation.j_function", "saturation.fit"]
+    reports: ["тип породы", "n точек", "A", "B", "r2", "источник", "knowledge_status"]
+  - id: "geomate.saturation_end_points"
+    needs: ["saturation.end_points"]
+    reports: ["Sw_irr", "Sw_max", "n", "источник"]

@@ -1,0 +1,3 @@
+<https://example.org/tnav#computational-function__contact_create_by_horizon> <http://www.w3.org/2000/01/rdf-schema#label> "contact_create_by_horizon" .
+<https://example.org/tnav#computational-function__contact_create_by_horizon> <https://example.org/tnav#code> "contact_create_by_horizon" .
+<https://example.org/tnav#computational-function__contact_create_by_horizon> <https://example.org/tnav#шаблон_кода> "templates/contact_create_by_horizon.txt" .

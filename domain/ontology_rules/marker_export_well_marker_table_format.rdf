@@ -1,0 +1,30 @@
+# ЭТАЛОН (правило 8): domain/ontology_rules/reference_workflow.py, тНавигатор v26.1
+# (api_version=v0_0_300a), стр. 109 — marker_export_well_marker_table_format.
+# Параметры/объекты — из вызова эталона; шаблон — domain/templates/<fn>.txt.
+<https://example.org/tnav#computational-function__marker_export_well_marker_table_format> <http://www.w3.org/2000/01/rdf-schema#label> "marker_export_well_marker_table_format" .
+<https://example.org/tnav#computational-function__marker_export_well_marker_table_format> <https://example.org/tnav#code> "marker_export_well_marker_table_format" .
+<https://example.org/tnav#computational-function__marker_export_well_marker_table_format> <https://example.org/tnav#шаблон_кода> "templates/marker_export_well_marker_table_format.txt" .
+<https://example.org/tnav#computational-function__marker_export_well_marker_table_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__marker_export_well_marker_table_format__file_name> .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__file_name> <https://example.org/tnav#code> "file_name" .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__file_name> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#computational-function__marker_export_well_marker_table_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__marker_export_well_marker_table_format__scale_type> .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__scale_type> <https://example.org/tnav#code> "scale_type" .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__scale_type> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#computational-function__marker_export_well_marker_table_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__marker_export_well_marker_table_format__units_system> .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__units_system> <https://example.org/tnav#code> "units_system" .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__units_system> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#computational-function__marker_export_well_marker_table_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__marker_export_well_marker_table_format__export_xy> .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__export_xy> <https://example.org/tnav#code> "export_xy" .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__export_xy> <https://example.org/tnav#тип_данных> "boolean" .
+<https://example.org/tnav#computational-function__marker_export_well_marker_table_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__marker_export_well_marker_table_format__delimiter_mode> .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__delimiter_mode> <https://example.org/tnav#code> "delimiter_mode" .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__delimiter_mode> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#computational-function__marker_export_well_marker_table_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__marker_export_well_marker_table_format__delimiter> .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__delimiter> <https://example.org/tnav#code> "delimiter" .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__delimiter> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#computational-function__marker_export_well_marker_table_format> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__marker_export_well_marker_table_format__delimiter_str> .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__delimiter_str> <https://example.org/tnav#code> "delimiter_str" .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__delimiter_str> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#computational-function__marker_export_well_marker_table_format> <https://example.org/tnav#использует> <https://example.org/tnav#function-entity__marker_export_well_marker_table_format__marker%28obj_name%29> .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__marker%28obj_name%29> <https://example.org/tnav#code> "marker(obj_name)" .
+<https://example.org/tnav#function-entity__marker_export_well_marker_table_format__marker%28obj_name%29> <https://example.org/tnav#тип_данных> "marker" .

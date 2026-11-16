@@ -1,0 +1,90 @@
+# ОНТОЛОГИЯ: переиспользование наработок GeoMate (контракты данных и проверки)
+#
+# Источник: D:\Documents\ChatGPT\Геомейт_десктоп\GeoMatePython\src\geomate
+# Изучены модули (round 220): domain/models.py, domain/units.py, domain/analysis.py,
+# application/workbench.py, infrastructure/reporting.py.
+# Переносятся КОНТРАКТЫ И ПРАВИЛА (данные), а не код: домен живёт в онтологии (правило 1).
+schema_version: 1
+knowledge_base: KB_GEOMATE_REUSE
+source:
+  root: "D:/Documents/ChatGPT/Геомейт_десктоп/GeoMatePython/src/geomate"
+  modules_read: ["domain/models.py", "domain/units.py", "domain/analysis.py",
+                 "application/workbench.py", "infrastructure/reporting.py"]
+  reuse_policy: "переносить контракты и проверки в онтологию; код не копировать"
+
+# ── 1. СУЩНОСТИ GeoMate → наши роли и контракты ────────────────────────────────
+entities:
+  CoreSample:
+    fields: [top, bottom, properties, lithology]
+    role: "core_samples"                 # пары «пористость–проницаемость» по литотипам
+    feeds: ["core_data_contract", "permeability_model.source_ladder.core"]
+    note: "готовый контракт керна: свойства + ЛИТОЛОГИЯ (нужна для подгонки по литотипам)"
+  LogCurve:
+    fields: [name, unit, depths, values, description]
+    role: "well_logs"
+    feeds: ["petro.log_units_and_range", "petro.curve_continuity"]
+    note: "кривая с ЕДИНИЦАМИ и описанием — источник проверки единиц и непрерывности"
+  Interval:
+    fields: [top, bottom, layer, lithology, saturation, properties]
+    role: "facies_intervals"
+    feeds: ["facies_methods", "facies property cube"]
+    note: "интервалы с литологией и насыщением — основа фациальной раскладки"
+  Well:
+    fields: [name, x, y, altitude, attributes, survey, intervals, markers, core_samples]
+    role: "wells"
+    note: "единый контейнер: траектория (survey), отбивки (markers), интервалы, керн"
+  SurveyPoint:
+    fields: [measured_depth, x, y, absolute_z, inclination, azimuth]
+    role: "trajectories"
+    note: "MD, X, Y, Z — ровно тот контракт, который мы готовим для импорта траекторий"
+  Marker:
+    fields: [name, measured_depth, absolute_z, kind]
+    role: "well_tops"
+    note: "маркер с MD и абсолютной отметкой — источник ролей кровли/подошвы"
+
+# ── 2. ПРОВЕРКИ ИЗ GeoMate, которые переносим в наши контроли ──────────────────
+validations:
+  measured_depth_non_negative:
+    expression: "SurveyPoint.measured_depth >= 0"
+    rule: "глубина инклинометрии не может быть отрицательной"
+    feeds: "data.trajectories, marker table (MD положительная)"
+    status: "adopted"                     # совпало с нашей правкой MD (Z → MD)
+  curve_depths_monotonic:
+    expression: "depths[i] < depths[i+1]"
+    rule: "глубины каротажной кривой должны возрастать"
+    feeds: "petro.curve_continuity"
+  curve_lengths_equal:
+    expression: "len(depths) == len(values)"
+    rule: "число глубин и значений кривой должно совпадать"
+    feeds: "petro.log_units_and_range"
+  interval_bottom_below_top:
+    expression: "bottom >= top"
+    rule: "подошва интервала (перфорации) не выше кровли"
+    feeds: "структурные и петрофизические проверки интервалов"
+  blank_sentinel:
+    value: 1.70141e10                     # LEGACY_NO_VALUE из GeoMate
+    policy: "normalise_number(value) -> None (нет данных, не ноль)"
+    feeds: "log_preparation.null_values"
+    note: "расширяет наш список бланков (-999.2/-999.25/-999.0); правило 6: бланк != значение"
+
+# ── 3. ЧЕГО В GeoMate НЕТ → реализуем отдельными модулями у нас ────────────────
+missing_to_implement:
+  - id: "petro.phi_perm_fit"
+    need: "регрессия k = f(phi) по керну с подгонкой ПО ЛИТОТИПАМ (лог-линейная), r2, n_pairs"
+    source_contract: "CoreSample.properties + CoreSample.lithology"
+  - id: "petro.perm_to_cube"
+    need: "применение зависимости в модели (grid_property_calculator) + статус источника"
+  - id: "petro.saturation_model"
+    need: "Sw из J-функции/SCAL, концевые точки по керну"
+  - id: "petro.cutoff_justified"
+    need: "cut-off коллектора по керну/ГИС, а не константой (RULE_LIT_PETRO_080)"
+  - id: "facies.modeling_engine"
+    need: "вызов фациального моделирования тНава (typed objects + ZoneRegionFaciesParameters)"
+  - id: "facies.property_cube_and_maps"
+    need: "куб фаций и карты фаций (доля песчаника, связность, число тел)"
+
+checks:
+  - id: "geomate.contracts_adopted"
+    needs: ["entities", "validations"]
+  - id: "geomate.gaps_tracked"
+    needs: ["missing_to_implement"]

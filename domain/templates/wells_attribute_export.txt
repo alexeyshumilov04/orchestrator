@@ -1,0 +1,20 @@
+# ЭТАЛОН (правило 8): domain/ontology_rules/reference_workflow.py,
+# тНавигатор v26.1 (api_version=v0_0_300a). Источник вызова — «Экспорт атрибута
+# скважины <A>»: стр. 235 (C1tl_top_thick), 690 (C1bb_top_thick).
+# Аргументы скопированы ДОСЛОВНО; экспортируемый атрибут (роль
+# `attribute_name`) и имя файла — ДАННЫЕ (objects.attribute_name +
+# parameters.file_name проектного YAML).
+# СТАТУС: подготовлено по машинному эталону, на лицензии НЕ проверено —
+# подтверждение только прогоном `--execute`.
+begin_wf_item (index = 10, name = "Экспорт атрибутов скважин")
+    wells_attribute_export (file_name="C1tl_top_thick.txt",
+          attributes_table=[{"attribute_name" : typed_object_name (obj_name="C1tl_top_thick",
+          obj_type="WellAttribute")}],
+          well_filter_struct=WellFilterParameters (well_filter_type="all_wells",
+          well_filter_selector=typed_object_name (obj_name="",
+          obj_type=""),
+          tags_filter=[],
+          single_well_selector=""),
+          units_system="metric",
+          separation_delimeter="all spaces")
+    end_wf_item (index = 10)

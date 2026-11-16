@@ -1,0 +1,71 @@
+<https://example.org/tnav#function-entity__horizon_calculator__counts_x> <https://example.org/tnav#code> "counts_x" .
+<https://example.org/tnav#function-entity__horizon_calculator__grid_adjust_mode> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__horizon_calculator__counts> .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_y> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__horizon_calculator__grid_adjust_mode> <https://example.org/tnav#code> "grid_adjust_mode" .
+<https://example.org/tnav#computational-function__horizon_calculator> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__horizon_calculator__step_y> .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_y> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__horizon_calculator__counts_y%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__horizon_calculator__step_x> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__horizon_calculator__step_x%20%3C%3D%20100> .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_x> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#computational-function__horizon_calculator> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__horizon_calculator__step_x> .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_y%20%3C%3D%20500> <https://example.org/tnav#code> "counts_y <= 500" .
+<https://example.org/tnav#создает> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_x%20%3C%3D%20500> <https://example.org/tnav#code> "counts_x <= 500" .
+<https://example.org/tnav#computational-function__horizon_calculator> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__horizon_calculator__counts_y> .
+<https://example.org/tnav#function-entity__horizon_calculator__step_y> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__horizon_calculator__step_y%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_y%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "counts_y >= 1" .
+<https://example.org/tnav#computational-function__horizon_calculator> <http://www.w3.org/2000/01/rdf-schema#label> "horizon_calculator" .
+<https://example.org/tnav#function-entity__horizon_calculator__step_y> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#computational-function__horizon_calculator> <https://example.org/tnav#создает> <https://example.org/tnav#function-entity__horizon_calculator__result_horizon%28obj_name%29> .
+<https://example.org/tnav#function-entity__horizon_calculator__step_x%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "step_x <= 100" .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_x> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__horizon_calculator__counts_x%20%3C%3D%20500> .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_y> <http://www.w3.org/2000/01/rdf-schema#label> "counts_y" .
+<https://example.org/tnav#function-entity__horizon_calculator__step_x> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__horizon_calculator__step_x%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__horizon_calculator__result_horizon%28obj_name%29> <https://example.org/tnav#code> "result_horizon(obj_name)" .
+<https://example.org/tnav#function-entity__horizon_calculator__step_y%20%3E%3D%201> <https://example.org/tnav#code> "step_y >= 1" .
+<https://example.org/tnav#function-entity__horizon_calculator__step_x> <https://example.org/tnav#code> "step_x" .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_y> <https://example.org/tnav#code> "counts_y" .
+<https://example.org/tnav#тип_данных> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://example.org/tnav#function-entity__horizon_calculator__step_x%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "step_x >= 10" .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_x%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "counts_x >= 1" .
+<https://example.org/tnav#function-entity__horizon_calculator__grid_adjust_mode> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__horizon_calculator__step> .
+<https://example.org/tnav#function-entity__horizon_calculator__step_x%20%3C%3D%20100> <https://example.org/tnav#code> "step_x <= 100" .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_x> <http://www.w3.org/2000/01/rdf-schema#label> "counts_x" .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_x%20%3E%3D%201> <https://example.org/tnav#code> "counts_x >= 1" .
+<https://example.org/tnav#function-entity__horizon_calculator__grid_adjust_mode> <http://www.w3.org/2000/01/rdf-schema#label> "grid_adjust_mode" .
+<https://example.org/tnav#computational-function__horizon_calculator> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__horizon_calculator__grid_adjust_mode> .
+<https://example.org/tnav#function-entity__horizon_calculator__result_horizon%28obj_name%29> <https://example.org/tnav#тип_данных> "horizon" .
+<https://example.org/tnav#ComputationalFunction> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://example.org/tnav#function-entity__horizon_calculator__step_x%20%3E%3D%201> <https://example.org/tnav#code> "step_x >= 10" .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_y%20%3C%3D%20500> <http://www.w3.org/2000/01/rdf-schema#label> "counts_y <= 500" .
+<https://example.org/tnav#function-entity__horizon_calculator__formula> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_x%20%3C%3D%20500> <http://www.w3.org/2000/01/rdf-schema#label> "counts_x <= 500" .
+<https://example.org/tnav#computational-function__horizon_calculator> <https://example.org/tnav#использует> <https://example.org/tnav#function-entity__horizon_calculator__formula> .
+<https://example.org/tnav#function-entity__horizon_calculator__step_y%20%3C%3D%20100> <http://www.w3.org/2000/01/rdf-schema#label> "step_y <= 100" .
+<https://example.org/tnav#имеет_условие> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#computational-function__horizon_calculator> <https://example.org/tnav#code> "horizon_calculator" .
+<https://example.org/tnav#function-entity__horizon_calculator__step_y%20%3E%3D%201> <http://www.w3.org/2000/01/rdf-schema#label> "step_y >= 1" .
+<https://example.org/tnav#function-entity__horizon_calculator__step_x> <http://www.w3.org/2000/01/rdf-schema#label> "step_x" .
+<https://example.org/tnav#использует> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_x> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__horizon_calculator__counts_x%20%3E%3D%201> .
+<https://example.org/tnav#function-entity__horizon_calculator__formula> <http://www.w3.org/2000/01/rdf-schema#label> "formula" .
+<https://example.org/tnav#function-entity__horizon_calculator__grid_adjust_mode> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__horizon_calculator__step_y> <http://www.w3.org/2000/01/rdf-schema#label> "step_y" .
+<https://example.org/tnav#computational-function__horizon_calculator> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__horizon_calculator__counts_x> .
+<https://example.org/tnav#computational-function__horizon_calculator> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/tnav#ComputationalFunction> .
+<https://example.org/tnav#function-entity__horizon_calculator__formula> <https://example.org/tnav#code> "formula" .
+<https://example.org/tnav#имеет_параметр> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#function-entity__horizon_calculator__step_y> <https://example.org/tnav#code> "step_y" .
+<https://example.org/tnav#function-entity__horizon_calculator__result_horizon%28obj_name%29> <http://www.w3.org/2000/01/rdf-schema#label> "result_horizon(obj_name)" .
+<https://example.org/tnav#function-entity__horizon_calculator__step_y%20%3C%3D%20100> <https://example.org/tnav#code> "step_y <= 100" .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_y%20%3E%3D%201> <https://example.org/tnav#code> "counts_y >= 1" .
+<https://example.org/tnav#function-entity__horizon_calculator__counts_y> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__horizon_calculator__counts_y%20%3C%3D%20500> .
+<https://example.org/tnav#шаблон_кода> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<https://example.org/tnav#function-entity__horizon_calculator__step> <http://www.w3.org/2000/01/rdf-schema#label> "step" .
+<https://example.org/tnav#function-entity__horizon_calculator__counts> <http://www.w3.org/2000/01/rdf-schema#label> "counts" .
+<https://example.org/tnav#computational-function__horizon_calculator> <https://example.org/tnav#шаблон_кода> "templates/horizon_calculator.txt" .
+<https://example.org/tnav#возможное_значение> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://example.org/tnav#function-entity__horizon_calculator__counts> <https://example.org/tnav#code> "counts" .
+<https://example.org/tnav#function-entity__horizon_calculator__step> <https://example.org/tnav#code> "step" .
+<https://example.org/tnav#function-entity__horizon_calculator__step_x> <https://example.org/tnav#тип_данных> "integer" .
+<https://example.org/tnav#function-entity__horizon_calculator__step_y> <https://example.org/tnav#имеет_условие> <https://example.org/tnav#function-entity__horizon_calculator__step_y%20%3C%3D%20100> .
+<https://example.org/tnav#code> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .

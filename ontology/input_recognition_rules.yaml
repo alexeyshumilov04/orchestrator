@@ -1,0 +1,222 @@
+# ОНТОЛОГИЯ: правила распознавания ВХОДНЫХ данных поля
+#
+# Зачем (проверка на втором объекте, раунд 88): состав плана собрался из онтологии,
+# но ВХОДЫ не распознались — детектор искал имена ОДНОГО поля (конкретные файлы
+# устьев/отбивок/поверхностей), то есть был захардкожен под тестовый кейс.
+# Здесь — правила распознавания в ОБЩЕМ виде (ДАННЫЕ): роли сопоставляются по
+# маскам имён и форматам, а не по конкретным файлам. Конкретные имена объектов
+# поля живут ТОЛЬКО в `ontology_project/<поле>.yaml` и в данных набора.
+schema_version: 1
+knowledge_base: KB_INPUT_RECOGNITION
+
+# Маски — регулярные выражения (регистронезависимо), форматы — расширения/семейства.
+# Приоритет: чем выше, тем раньше проверяется (spécифичные роли раньше общих).
+roles:
+  well_header:
+    priority: 10
+    internal_key: "wellhead"          # имя роли внутри конвейера (ДАННЫЕ)
+    patterns: ["^Well[_ ]?Header", "^Wellhead", "^Координаты"]
+    formats: [txt, csv, xlsx]
+    required: true
+  well_tops:
+    priority: 10
+    internal_key: "welltop"
+    patterns: ["^Well[_ ]?Tops?", "^Welltop", "^Отбивки"]
+    formats: [txt, csv]
+    required: true
+  surface_top:
+    priority: 20
+    internal_key: "surface"           # кровля — основная структурная поверхность конвейера
+    patterns: ["кровл", "top", "структурн"]
+    formats: [irap, cps, txt]
+    required: true
+  surface_base:
+    priority: 20
+    internal_key: "surface_base"
+    patterns: ["подошв", "base", "bottom"]
+    formats: [irap, cps, txt]
+    required: false          # подошва может строиться от кровли (structural_rules)
+  deviation:
+    priority: 30
+    internal_key: "inclinometry"    # ключ, который ждёт подготовка данных (_stage_data)
+    # Маска НЕ привязана к началу пути: файлы могут лежать в подкаталоге (проверено на
+    # втором объекте), поэтому используем окончание расширения и сам подкаталог.
+    patterns: ["\\.dev$", "dev[/\\\\]", "deviation", "инклином"]
+    formats: [dev, txt, csv]
+    required: false
+  log_mnemonics:
+    priority: 30
+    patterns: ["Mnemonic", "Мнемоник"]
+    formats: [txt, csv]
+    required: false
+  well_logs:
+    priority: 40
+    # Имена КАТАЛОГОВ выгрузки ГИС — конвенция конкретного поля, поэтому роль
+    # распознаётся по СОДЕРЖИМОМУ (файлы LAS) и по формату, а не по имени каталога.
+    patterns: ["log", "ГИС", "\\.las$"]
+    file_masks: ["*.las"]            # роль ФАЙЛОВАЯ: каталог раскрывается по этой маске
+    prefer: "files"                  # каталог не подставляется вместо файла
+    formats: [las, txt]
+    required: false
+
+# Правила поведения при неполном сопоставлении (правило 6: нет данных != «построим как-нибудь»)
+policy:
+  on_missing_required: "failed"        # гейт G-DATA валит этап и печатает, что найдено
+  on_unmatched_files: "report"         # перечислить нераспознанные файлы в отчёте
+  placeholder_forbidden: ["__todo__"]  # заглушки недопустимы: маркер без отбивок = провал
+  report_roles_matrix: true            # отчёт «роль → найденный файл/формат/нет»
+
+# ── Правило выбора МАРКЕРОВ кровли/подошвы (общее, не под конкретное поле) ──────
+# Зачем: на втором объекте роль кровли осталась заглушкой `__todo__` — правило выбора
+# маркера было привязано к именам ОДНОГО поля. Здесь — правило по ДАННЫМ:
+# маркеры читаются из таблицы отбивок, а роль назначается по порядку глубин и/или
+# по списку имён, заданному ДАННЫМИ поля; при неоднозначности — явная ошибка, не догадка.
+markers:
+  source_role: "well_tops"            # из какой роли берём таблицу отбивок
+  top:
+    select: "shallowest"              # самая верхняя отбивка = кровля целевого интервала
+    explicit_names_from: "markers.reservoir_top_names"   # ДАННЫЕ поля (если заданы — приоритет)
+    suffix_patterns: ["_TOP_", "_TOP", "TOP"]            # правило по именам маркеров (данные)
+  base:
+    select: "next_below_top"          # следующая отбивка ниже кровли = подошва
+    explicit_names_from: "markers.reservoir_base_names"
+    suffix_patterns: ["_BOT_", "_BOT", "BOT"]
+  on_ambiguous: "failed"              # несколько равнозначных кандидатов → ошибка с перечнем
+  on_missing: "failed"                # заглушки недопустимы (policy.placeholder_forbidden)
+  ordering: "by_depth"                # bottom-first соблюдается автоматически (глубины модели)
+
+# ── ФОРМАТЫ ФАЙЛОВ (адаптеры описываются данными, а не кодом под конкретный объект) ──
+# Проверка на втором объекте вскрыла три разных формата:
+#   1) Petrel Well Tops — `#Petrel Well Tops / VERSION 2 / BEGIN HEADER … / BEGIN WELL`;
+#   2) колоночный заголовок скважин — `UWI  X-Coord  Y-Coord  KB  TopDepth  BottomDepth …`;
+#   3) мнемоники ГИС в кодировке cp1251 (отдельный текстовый файл мнемоник).
+# Для каждого формата задаются: как читать отбивки (маркер/глубина), как читать координаты
+# скважин и какая кодировка. Имена колонок — ДАННЫЕ.
+formats:
+  las_logs:
+    detect: {extensions: [las]}
+    kind: "каротаж ГИС"
+    curves_from: "~Curve (мнемоника до разделителя; описание — после него)"
+    encoding: "auto"
+  deviation_dev:
+    detect: {extensions: [dev]}
+    kind: "инклинометрия (траектория скважины)"
+    encoding: "auto"
+  well_header_table:
+    detect: {filename_patterns: ["wellhead", "well_header", "well header", "устья"],
+             header_tokens: ["UWI", "X-Coord", "Y-Coord", "X", "Y"]}
+    kind: "таблица скважин (координаты/альтитуды)"
+    encoding: "auto"
+  well_tops_table:
+    detect: {filename_patterns: ["welltop", "well_top", "well tops", "отбивк"],
+             extensions: [txt]}
+    kind: "таблица отбивок (плоская)"
+    encoding: "auto"
+  petrel_well_tops:
+    detect: {first_line_contains: ["Petrel Well Tops"], sections: ["BEGIN HEADER", "BEGIN WELL"]}
+    marker_name_from: "well_block_name"      # имя маркера — заголовок блока скважины
+    depth_columns: ["Z", "MD"]               # глубина: Z (абс.) либо MD
+    coordinates: ["X", "Y"]
+    encoding: "auto"
+  columnar_well_header:
+    detect: {header_tokens: ["UWI", "X-Coord", "Y-Coord"]}
+    well_name_column: "UWI"
+    x_column: "X-Coord"
+    y_column: "Y-Coord"
+    kb_column: "KB"
+    encoding: "auto"
+  log_mnemonics_txt:
+    detect: {filename_patterns: ["Mnemonic", "Мнемоник"]}
+    encoding: "cp1251"                       # проверка на ТЕСТ2: текст в cp1251
+    parse: "номер:описание"                  # строки вида «19:кровля + подошва»
+  irap_surface:
+    detect: {extensions: [irap, cps], header_tokens: ["FSLIMI", "FSNROW", "-996"]}
+    blank_from_data: true                    # бланк — из заголовка/данных (99999/9999900)
+    encoding: "auto"
+
+# ── ЦЕЛОСТНОСТЬ ИСХОДНЫХ ДАННЫХ (F-28: прогон затирал файл поля на dry-run) ─────
+# Воспроизведено: канонизация отбивок писала «на месте», и при нераспознанном формате
+# (Petrel Well Tops) файл поля сжимался до 2 байт. Исправление в писателе есть; здесь —
+# ПРОВЕРКИ, которые обязаны ловить такое автоматически, без участия человека.
+data_integrity:
+  source_untouched:
+    # Хеши файлов поля снимаются ДО прогона и сверяются ПОСЛЕ.
+    hash: "sha256"
+    scope: "все файлы каталога данных поля (dataset_root), рекурсивно"
+    on_change: "failed"          # любое изменение/удаление/появление файла в каталоге данных
+    report: ["изменённые", "удалённые", "добавленные"]
+    rationale: "прогон не имеет права писать в данные заказчика (правило 5: чистый проект)"
+  export_paths_within_run:
+    # Все выгрузки обязаны разрешаться ВНУТРИ каталога прогона.
+    enforce: "каждый parameters.file_name шагов *export*/*_create_* проверяется на принадлежность runs/<id>/"
+    on_violation: "failed"
+    report: ["шаг", "file_name", "разрешённый путь"]
+    rationale: "иначе имя выгрузки совпадает с именем файла данных и перезаписывает его"
+  writer_guard:
+    # Защита в самом писателе (уже внедрена): не писать «на месте», если ничего не сохранено.
+    rule: "inplace-запись только при непустом результате; правило 6: нет данных != обнулить"
+
+# ── ДЕМО-ЗНАЧЕНИЯ ШАБЛОНОВ (проверено на втором объекте, раунды 112–114) ────────
+# В `domain/templates/*.txt` параметры-объекты содержат имена ДЕМО-ПРОЕКТА
+# (конкретные имена здесь намеренно не перечисляются — они не должны попадать в
+# онтологию). Рендерер подставляет привязки поля, поэтому у поля с графом они не
+# проявляются (проверено: в воркфлоу реального поля — 0 вхождений, формулы свои).
+# Но у поля БЕЗ привязок эти имена попадают в воркфлоу и tNavigator падает:
+#   Identifier '<имя демо-объекта>' is not defined here.
+# Правило: шаблон несёт СИГНАТУРУ, значения приходят только из привязок поля/онтологии;
+# нет привязки → шаг пропускается (`skipped_by_policy`), а не рендерится с чужим именем.
+template_demo_names:
+  # перечень имён демо-проекта, недопустимых в воркфлоу реального поля
+  names: ["BBall_thick", "BBall_trend", "BB_vrez_mapping", "BBall", "BB_vrez"]
+  on_detect: "failed"          # имя демо-проекта в рендере = провал контроля
+  report: ["шаг", "имя", "требуемая привязка"]
+  policy: "bind_or_skip"       # привязка из данных, иначе skipped_by_policy
+
+# ── ТРЕБОВАНИЯ ШАГОВ К ОБЪЕКТАМ (основа для «привязать или пропустить») ─────────
+# Диагноз (раунд 112): выведенный из онтологии шаг без привязки объектов рендерился
+# демо-значениями шаблона → tNavigator: `Identifier 'BBall_thick' is not defined here`.
+# Контракт: для каждой функции объявлены ОБЯЗАТЕЛЬНЫЕ привязки. Если поле их не дало
+# (нет данных/правила) — шаг уходит в `skipped_by_policy` с причиной (правило 6),
+# а не подставляет чужое значение. Механизм пропуска в конвейере уже есть
+# (agents/runner.py: requires_object/requires_kind + on_missing: skip).
+step_object_requirements:
+  map_2d_calculator:                    {requires: [result_map_2d, formula],      policy: bind_or_skip}
+  map_2d_smooth:                        {requires: [input_map, output_map],       policy: bind_or_skip}
+  map_2d_thickness_map:                 {requires: [top_horizon, base_horizon],   policy: bind_or_skip}
+  polygon_create_by_map_intersection:   {requires: [top, base],                   policy: bind_or_skip}
+  polygon_create_by_map_2d_boundary:    {requires: [input_map, output_polygon],   policy: bind_or_skip}
+  horizon_interpolate_by_marker_idw:    {requires: [result_horizon, well_marker], policy: bind_or_skip}
+  horizon_calculator:                   {requires: [result_horizon, formula],    policy: bind_or_skip}
+  horizon_smooth:                       {requires: [input_horizon, output_horizon], policy: bind_or_skip}
+  grid_3d_create_by_horizons:           {requires: [horizons],                    policy: bind_or_skip}
+  grid_property_calculator:             {requires: [result_grid_property, formula], policy: bind_or_skip}
+  wells_log_import_las_format:          {requires: [wells, input_log],            policy: bind_or_skip}
+  create_blocked_well_log:              {requires: [input_log, blocked_well_log], policy: bind_or_skip}
+  map_2d_create_by_grid_property:       {requires: [grid_property, result_map_2d], policy: bind_or_skip}
+  horizon_export_cps_format:            {requires: [input_horizon, file_name],    policy: bind_or_skip}
+
+# ── ПРЕДПОЧТЕНИЯ ПРИ ВЫБОРЕ ВХОДА (генерические маски, НЕ имена объектов поля) ──
+# Правило: если у роли несколько кандидатов, выбирается первый, удовлетворяющий маске
+# сверху вниз. Конкретные имена файлов поля задаются в `ontology_project/<поле>.yaml`
+# (`inputs.*`), а не здесь. Потребитель: `core/datasets.resolve_inputs`.
+preferred_names:
+  surface: ["*depth*.irap", "*top*.irap", "*.irap"]
+  wellheads: ["wellhead*.txt", "*устья*.txt", "*устьев*.txt", "*.txt"]
+  welltops: ["welltop*.txt", "*отбивк*.txt", "*.txt"]
+
+# Проверки, потребляющие правила
+checks:
+  - id: "data.inputs_recognized"
+    needs: ["roles", "policy.on_missing_required"]
+  - id: "data.no_placeholders"
+    needs: ["policy.placeholder_forbidden"]
+  - id: "data.markers_resolved"
+    needs: ["markers.top", "markers.base", "markers.on_missing"]
+  - id: "data.format_adapter_matched"
+    needs: ["formats"]
+  - id: "data.source_untouched"
+    needs: ["data_integrity.source_untouched"]
+  - id: "data.export_paths_within_run"
+    needs: ["data_integrity.export_paths_within_run"]
+  - id: "data.preferred_names_generic"
+    needs: ["preferred_names"]

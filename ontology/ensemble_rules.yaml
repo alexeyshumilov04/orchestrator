@@ -1,0 +1,41 @@
+# ОНТОЛОГИЯ: правила СОСТАВА АНСАМБЛЯ (какие параметры варьируются и как оценивается ветвь)
+#
+# Зачем: в проектном графе `variations` (5 ветвей) — это МЕТОД (как строить ансамбль и
+# как выбирать лучшую ветвь), а не полевое значение. Конкретные значения вариаций берутся
+# из данных поля/онтологии; правила выбора и оценки — здесь.
+schema_version: 1
+knowledge_base: KB_ENSEMBLE
+
+policy:
+  min_branches: 3                  # меньше — не ансамбль (ДАННЫЕ, переопределяемо полем)
+  max_branches: 10
+  require_ok_branches: true        # ветвь без успешного прогона не участвует в выборе
+  on_zero_ok_branches: "failed"    # ни одной успешной ветви → этап не пройден
+  tie_break: "smallest_deviation"  # равенство оценок — берём ветвь с меньшим отклонением
+
+# Какие факторы вообще допустимо варьировать (порядок = приоритет)
+variation_factors:
+  - {id: "variogram_range_main",  kind: "geostatistics", rationale: "неопределённость латеральной выдержанности"}
+  - {id: "variogram_nugget",      kind: "geostatistics", rationale: "влияние эффекта самородка"}
+  - {id: "interpolation_method",  kind: "structural",    rationale: "выбор метода интерполяции поверхностей"}
+  - {id: "map_2d_smooth_radius",  kind: "structural",    rationale: "сглаживание карт (устраняет локальную подсадку)"}
+  - {id: "facies_method",         kind: "facies",        rationale: "метод фациального моделирования"}
+  - {id: "petro_relation",        kind: "petrophysics",  rationale: "источник k-φ: керн/литература"}
+
+# Правила отбора ветви-победителя
+selection:
+  primary: "deviation_from_reference"   # отклонение от эталонной метрики (по данным поля)
+  secondary: ["branch_ok", "render_warnings_empty", "steps_error_zero"]
+  forbidden: ["ручной выбор без критерия", "выбор по числу шагов"]
+  report: ["ветвь", "ok", "отклонение", "обоснование"]
+
+# Сверка со эталоном (правило 8)
+reference_check:
+  source: "domain/ontology_rules/reference_workflow.py"
+  rule: "состав и порядок этапов сверяются с эталонным воркфлоу; расхождения фиксируются"
+
+checks:
+  - id: "ensemble.branches_ok"
+    needs: ["policy.require_ok_branches", "policy.on_zero_ok_branches"]
+  - id: "ensemble.selection_rule"
+    needs: ["selection.primary", "selection.secondary"]

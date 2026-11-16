@@ -1,0 +1,18 @@
+﻿handoff_id,from_stage,from_agent,to_stage,to_agent,gate,required,on_reject
+HANDOFF_S01_S02,S01,AG_ORCHESTRATOR,S02,AG_DATA_STEWARD,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S01; preserve rejected revision
+HANDOFF_S02_S03,S02,AG_DATA_STEWARD,S03,AG_REGIONAL_PLAY,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S02; preserve rejected revision
+HANDOFF_S03_S04,S03,AG_REGIONAL_PLAY,S04,AG_STRATIGRAPHY,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S03; preserve rejected revision
+HANDOFF_S04_S05,S04,AG_STRATIGRAPHY,S05,AG_SEDIMENTOLOGY,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S04; preserve rejected revision
+HANDOFF_S05_S06,S05,AG_SEDIMENTOLOGY,S06,AG_SEISMIC,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S05; preserve rejected revision
+HANDOFF_S06_S07,S06,AG_SEISMIC,S07,AG_STRUCTURAL,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S06; preserve rejected revision
+HANDOFF_S07_S08,S07,AG_STRUCTURAL,S08,AG_PETROPHYSICS,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S07; preserve rejected revision
+HANDOFF_S08_S09,S08,AG_PETROPHYSICS,S09,AG_ROCKTYPE,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S08; preserve rejected revision
+HANDOFF_S09_S10,S09,AG_ROCKTYPE,S10,AG_FACIES,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S09; preserve rejected revision
+HANDOFF_S10_S11,S10,AG_FACIES,S11,AG_PRESSURE_WELLTEST,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S10; preserve rejected revision
+HANDOFF_S11_S12,S11,AG_PRESSURE_WELLTEST,S12,AG_PVT_SCAL,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S11; preserve rejected revision
+HANDOFF_S12_S13,S12,AG_PVT_SCAL,S13,AG_GEOMECHANICS,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S12; preserve rejected revision
+HANDOFF_S13_S14,S13,AG_GEOMECHANICS,S14,AG_GEOSTATISTICS,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S13; preserve rejected revision
+HANDOFF_S14_S15,S14,AG_GEOSTATISTICS,S15,AG_GRID_VOLUMETRICS,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S14; preserve rejected revision
+HANDOFF_S15_S16,S15,AG_GRID_VOLUMETRICS,S16,AG_UNCERTAINTY,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S15; preserve rejected revision
+HANDOFF_S16_S17,S16,AG_UNCERTAINTY,S17,AG_DYNAMIC_4D,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S16; preserve rejected revision
+HANDOFF_S17_S18,S17,AG_DYNAMIC_4D,S18,AG_LIFECYCLE,GATE_RELEASE,artifact revisions; lineage; units/CRS; QA; assumptions; uncertainties; evidence hash,return to S17; preserve rejected revision

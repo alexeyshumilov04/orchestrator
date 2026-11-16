@@ -1,0 +1,47 @@
+# ВНИМАНИЕ (правило 8): сигнатура НЕ из эталона (машинный reference_workflow.py) —
+# функции там нет; источник — мануал Дизайнера тНава 26.2 и ПРОБА на живой лицензии.
+# tNavigator 26.2 — «Послойное Фациальное моделирование: Послойный SGS».
+# Функция API: `grid_property_interpolate_by_wells_log_sgs_multilayer_facies()`.
+#
+# Источник (правило 8), мануал `tNavUserGuideDesignerRussian.pdf`, раздел 57.3.12
+# (стр. 2692–2700, «Послойное Фациальное моделирование»):
+#   * «Сетка. Выбор сетки для СОЗДАНИЯ СВОЙСТВА» — куб создаётся САМОЙ функцией
+#     (предсозданное дискретное свойство и палитра НЕ требуются — снимает блокер B4);
+#   * «Свойство. Выбрать название свойства, для которого интерполируются данные»;
+#   * «Исходные данные: Кривая ГИС. Выбрать кривую ГИС, на основе которой будет
+#     проинтерполирован куб» — входом служит ЛОГ ГИС (не Blocked Wells);
+#   * «В конце расчёта присвойте шаблон литологии к свойству для визуализации
+#     фаций (Настройки шаблонов)» — дискретная палитра назначается ПОСЛЕ расчёта
+#     (`create_object_template` + `object_template_mapping`, шаги 6.1/6.3 этапа 6).
+#
+# ПРОБА на живой лицензии 26.2 (`tools/probe_facies.py`, проект приёмки Герасимовского,
+# `runs/_probe_facies_k_*.txt`):
+#   подтверждённый вызов — сетка + результирующее свойство + кривая ГИС (все три входа
+#   типизированные, класс typed_object_name) плюс группа вариограммы → **OK**;
+#   после вызова свойство FACIES СУЩЕСТВУЕТ и непусто:
+#   min = 0.0, max = 8.0, mean = 2.6015 (коды литологии поля {0,1,2,3,8}).
+#   Проверено также: палитра до расчёта и привязка палитры после расчёта не мешают
+#   (K1/K2/K3 = OK, статистика куба одинаковая);
+#   группа `variogram` (sill, nugget_effect, range_main, range_normal, range_vertical,
+#   azimuth, dip) — ПРИНИМАЕТСЯ (подтверждено: OK);
+#   `i3_params`, `statistics`, `facies_parameters`, `use_global_random_seed`,
+#   `space_type` — «Unknown argument» (в шаблон НЕ включены).
+#
+# Имена объектов (сетка/свойство/лог) подставляются из проектного YAML (`objects:`),
+# доменных имён в шаблоне нет.
+    begin_wf_item (index = 1)
+    grid_property_interpolate_by_wells_log_sgs_multilayer_facies (mesh=typed_object_name (obj_name="",
+          obj_type="Grid3d"),
+          result_grid_property=typed_object_name (obj_name="",
+          obj_type="Grid3dProperty"),
+          well_log=typed_object_name (obj_name="",
+          obj_type="WellLog"),
+          variogram=VariogramParameters (variogram_type="exponential",
+          sill=1,
+          nugget_effect=0.15,
+          range_main=3500,
+          range_normal=3500,
+          range_vertical=1750,
+          azimuth=0,
+          dip=0))
+    end_wf_item (index = 1)

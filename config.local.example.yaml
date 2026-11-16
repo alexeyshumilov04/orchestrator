@@ -1,0 +1,16 @@
+# Заглушка локальных секретов. Скопируйте в `config.local.yaml` и заполните.
+# Реальный `config.local.yaml` в git НЕ хранится (см. .gitignore).
+llm:
+  api_key: ""                       # или переменная окружения ORCH_LLM_API_KEY
+  base_url: "https://api.deepseek.com/v1"
+  model: "deepseek-flash"
+
+tnavigator:
+  # Локальная установка тНава (консольная версия). Пример для 26.1:
+  install_dir: "C:/Users/Alexey/AppData/Local/Programs/tNavigator/26.3"
+  executable: "C:/Users/Alexey/AppData/Local/Programs/tNavigator/26.3/tNavigator-con.exe"
+  license:                          # сетевой сервер лицензий (если используется)
+    url: ""                         # tnav://<license-server>:<port>/<vendor>/
+    login: ""
+    pass: ""
+  dry_run: true

@@ -1,0 +1,16 @@
+    begin_wf_item (index = 15)
+    blocked_well_log_change_type (grid=find_object (name="main_grid",
+          type="Grid3d"),
+          discrete_properties=False,
+          discrete_cube_table_allowed_data=None,
+          discrete_cube_table_autodetect_type="autodetect_type_use_all",
+          discrete_cube_table_tags_filter=[],
+          discrete_cube_table=[],
+          continuous_properties=True,
+          cont_cube_table_allowed_data=None,
+          cont_cube_table_autodetect_type="autodetect_type_use_all",
+          cont_cube_table_tags_filter=[],
+          cont_cube_table=[{"use" : True, "source_cube" : find_object (name="paleo_Litho",
+          type="BlockedWells"), "result_cube" : find_object (name="paleo_Litho",
+          type="BlockedWells"), "template_data" : "Discrete (Auto Generated)", "convertion_type" : "convert_round"}])
+    end_wf_item (index = 15)

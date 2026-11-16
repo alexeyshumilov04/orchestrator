@@ -1,0 +1,6 @@
+# Подтверждено эталоном tNavigator 26.2: tutorial GD2.2 «How to build grid with
+# faults» (Data_Faults/Data_Import_Workflow.py) — files_fault_table, объект Fault3d.
+# Наш struct/faults.irap имеет тот же формат (точки X Y Z, разделитель 999.0).
+<https://example.org/tnav#computational-function__fault_import_sticks_xyz_format> <http://www.w3.org/2000/01/rdf-schema#label> "fault_import_sticks_xyz_format" .
+<https://example.org/tnav#computational-function__fault_import_sticks_xyz_format> <https://example.org/tnav#code> "fault_import_sticks_xyz_format" .
+<https://example.org/tnav#computational-function__fault_import_sticks_xyz_format> <https://example.org/tnav#шаблон_кода> "templates/fault_import_sticks_xyz_format.txt" .

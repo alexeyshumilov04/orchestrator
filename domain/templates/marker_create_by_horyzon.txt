@@ -1,0 +1,21 @@
+begin_wf_item (index = 14, name = "Создать маркер по горизонту C1bb_top")
+    marker_create_by_horizon (horizon=typed_object_name (obj_name="C1bb_top",
+          obj_type="Horizon"),
+          use_current_marker_set=True,
+          current_marker_set=typed_object_name (obj_name="Default Set",
+          obj_type="MarkerSet"),
+          result_marker=typed_object_name (obj_name="Marker_C1bb_top",
+          obj_type="WellMarker"),
+          use_time_attribute=False,
+          time_attribute=typed_object_name (obj_name="",
+          obj_type="WellMarkerAttribute"),
+          time_depth_relation_log=typed_object_name (obj_name="",
+          obj_type="WellLog"),
+          time_depth_relation_type="TWT",
+          append_policy="clear_and_create",
+          well_filter_struct=WellFilterParameters (well_filter_type="all_wells",
+          well_filter_selector=typed_object_name (obj_name="",
+          obj_type=""),
+          tags_filter=[],
+          single_well_selector=""))
+    end_wf_item (index = 14)

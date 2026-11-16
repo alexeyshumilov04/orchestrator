@@ -1,0 +1,231 @@
+# ============================================================================
+# ФАЦИИ: карта «метод → функция тНава» + политика ДИСКРЕТНОГО куба (ДАННЫЕ).
+# Правило 1: в agents/facies.py — только КЛЮЧИ этого файла, ни одного доменного
+# значения поля. Источники (правило 8), в порядке достоверности:
+#
+#   1. машинный эталон `domain/ontology_rules/reference_workflow.py` + templates/;
+#   2. протокол реальных проб `orchestrator_v7/orchestrator/docs/tasks/B4_facies.md`
+#      (52 раунда): `grid_property_facies_by_wells_log_3d` НЕ создаёт куб сам —
+#      нужен ЗАРАНЕЕ существующий дискретный куб с дискретной палитрой, иначе
+#      «Unable to create operation» / «has inappropriate template (Continuous
+#      palette)»; `grid_property_calculator` даёт continuous даже при
+#      `discrete_output=True`; `grid_property_change_type` конверсию не выполняет;
+#   3. мануал Дизайнера тНава 26.2 (`tNavUserGuideDesignerRussian.pdf`):
+#      стр. 2581 — `grid_property_facies_modeling()` «Фациальное моделирование
+#                  (Зоны, Регионы)»: «позволяет создать ДИСКРЕТНОЕ свойство по
+#                  объекту Blocked Wells»; «Дискретные Blocked Wells должны быть
+#                  предварительно созданы»; метод — Классический SIS либо Кубы
+#                  свойств порядка (SIS/GRFS/Кригинг); зоны/регионы опциональны и
+#                  требуют ДИСКРЕТНОГО шаблона;
+#      стр. 2616 — `grid_property_facies_by_wells_log_tgs_3d()` (TGS);
+#      стр. 2628 — `grid_property_facies_by_wells_log_pgs_3d()` (PGS);
+#      стр. 2636 — `grid_property_object_based_simulation()` (объектное);
+#      стр. 2683 — `grid_property_facies_by_wells_log_mps_3d()` (MPS);
+#      стр. 2733 — `grid_property_create_by_zones()`: «Созданному свойству
+#                  автоматически присваивается дискретный шаблон»; настройки —
+#                  Сетка, Свойство зон, Исп., Имя зоны, Значение, K1, K2;
+#      стр. 2734 — `grid_property_create_by_values()` (то же по интервалам K);
+#      стр. 171  — `create_object_template` (шаблоны, в т.ч. Discrete palette);
+#      стр. 3665 — `object_template_mapping` (привязка шаблона к объекту);
+#      стр. 2225 — `geobody_create_by_property` (геологические тела);
+#   4. туториалы тНава 26.2 (машинно-сгенерированный код):
+#      GD3.2 «Фациальное моделирование» — перед расчётом «Фациальное моделирование
+#            (Зоны, Регионы)» свойство создаётся вручную с «Тип свойства – Дискретный»;
+#      CLOUD1.2 `Model_Build.py` — рабочая связка: `grid_property_calculator
+#            (discrete_output=True)` → `object_template_mapping` (папка «3D-Grids»,
+#            `use_grid=True`, `object_type="Property"`, `template_data=<дискретный
+#            шаблон>`) → интерполяция; значения `interpolator_type` в коде:
+#            `"kriging"`/`"sgs"`; осреднение реализаций — `grid_property_calculator`.
+#
+# СТАТУС (не выдумывать успех): вызов `grid_property_facies_modeling` на живой
+# лицензии 26.2 разобран протоколом проб (файлы протокола — вне онтологии); полный
+# успешный прогон (появление дискретного куба) — см. `verified_run` у каждого метода.
+# ============================================================================
+version: 1
+
+# --- идентификаторы СХЕМЫ онтологии -----------------------------------------
+agent: "AG_FACIES"                  # BDI-профиль агента (id схемы, не поле)
+cube_role: "result_grid_property"   # роль объекта шага: имя куба фаций
+blocked_wells_role: "blocked_wells" # роль объекта шага: дискретный blocked well
+mesh_role: "mesh"                   # роль объекта шага: сетка
+
+# --- КЛЮЧИ ДАННЫХ (что и откуда агент читает) --------------------------------
+keys:
+  project_section: "geostat"        # секция проектного графа с методом/классами
+  method: "facies_method"
+  classes: "n_facies"
+  range: "hole_range_m"
+  nugget: "nugget"
+  anisotropy: "anisotropy"
+  allowed_methods: "checks.facies_methods"   # config.yaml: разрешённые методы
+  min_classes: "checks.facies_min_classes"   # config.yaml: мин. число классов
+  templates_dir: "workflow.templates_dir"    # config.yaml: папка шаблонов функций
+  ontology_root: "ontology.root"             # config.yaml: папка данных онтологии
+  logs_dir: "logs"                  # inputs.logs: папка LAS
+  dataset_root: "dataset_root"      # корень набора данных поля
+  pipeline: "pipeline"
+  steps: "steps"
+  function: "function"
+  objects: "objects"
+  obj_name: "obj_name"
+  obj_type: "obj_type"
+  input_log_role: "input_log"       # роль объекта «исходный ГИС-лог» в шаге
+
+# --- СВИДЕТЕЛЬСТВА этапа (ключи ev["..."]) -----------------------------------
+evidence:
+  proportions: "facies_proportions"  # {код: доля} — если уже посчитаны выше
+  grid_policy: "grid_policy"         # решение агента сетки (шаг/бокс/размеры)
+  objects: "objects"                 # подтверждённые объекты проекта
+
+# --- ПАЛИТРА (дискретный шаблон) куба фаций ----------------------------------
+# ВНИМАНИЕ: имя палитры/свойства НЕ является значением поля и НЕ задаётся здесь
+# именем объекта: рендер подставляет имя результата из ДАННЫХ поля
+# (`placeholders.result_grid_property` / объект шага). Здесь — только шаблонное
+# значение-заглушка и правила оформления дискретного шаблона.
+palette:
+  name: "__RESULT_PROPERTY__"       # подставляется из данных поля (не имя объекта)
+  name_from: "result_grid_property" # роль объекта шага — источник имени (ДАННЫЕ)
+  type: "Discrete palette"
+  folder: "3D-Grids"                # папка объектов-свойств сетки (эталон CLOUD1.2)
+  object_type: "Property"           # тип объекта в таблице привязки шаблона
+  units: "no"
+  numeric_precision: 2
+  codes_source: "well_logs"         # коды фаций берутся из данных LAS (дискретный лог)
+
+# --- МЕТОД → ФУНКЦИЯ тНава ---------------------------------------------------
+# creates_cube: true  — функция сама создаёт результирующее свойство (мануал/проба);
+#               false — требуется ЗАРАНЕЕ существующий дискретный куб (палитра).
+# verified_run: true  — подтверждено пробой на живой лицензии 26.2 (см. `probe`).
+methods:
+  sis:
+    function: "grid_property_interpolate_by_wells_log_sgs_multilayer_facies"
+    creates_cube: true
+    manual: "tNavUserGuideDesignerRussian.pdf"
+    manual_pages: "2692-2700"
+    interpolator: "sgs"
+    source: >-
+      мануал 26.2, раздел 57.3.12 «Послойное Фациальное моделирование: Послойный SGS»:
+      «Сетка. Выбор сетки для СОЗДАНИЯ СВОЙСТВА», вход — «Кривая ГИС», в конце —
+      «присвойте шаблон литологии к свойству для визуализации фаций»
+    verified_run: true
+    probe: >-
+      протокол проб на живой лицензии 26.2 (файлы протокола — вне онтологии):
+      вызов (mesh, result_grid_property, well_log) = OK; дискретное свойство фаций
+      создано, min 0.0 / max 8.0 / mean 2.6015 (коды литологии поля {0,1,2,3,8});
+      `variogram=VariogramParameters (...)` принимается; `i3_params`, `statistics`,
+      `facies_parameters`, `use_global_random_seed`, `space_type` — «Unknown argument»
+  # НЕПОДТВЕРЖДЁННАЯ ВЕТКА (в пайплайн не включена): фациальное моделирование по
+  # ЗОНАМ/РЕГИОНАМ. Схема вызова разобрана, но расчёт не запускается: тНав отвечает
+  # «No zones or regions are selected for interpolation!» (список зон пуст — свойство
+  # зон `zone_id` поля непрерывное, а дискретное свойство зон создать средствами API
+  # не удалось: схема строки `zones_table` у `grid_property_create_by_zones`/`by_values`
+  # не закрыта — 28 имён полей класса `ZonesToUpdateTableParameters` дают K1=0).
+  zones_unconfirmed:
+    function: "grid_property_facies_modeling"
+    creates_cube: true
+    manual: "tNavUserGuideDesignerRussian.pdf"
+    manual_pages: "2581-2586"
+    interpolator: "kriging"
+    source: "мануал 26.2 стр.2581: создаёт ДИСКРЕТНОЕ свойство по Blocked Wells (по зонам/регионам)"
+    verified_run: false
+    probe: >-
+      протокол проб (живая лицензия 26.2, файлы протокола — вне онтологии):
+      схема принята (typed_object_name + ZoneRegionParameters с `parameters=[...]`),
+      но расчёт не стартует: «No zones or regions are selected for interpolation!»;
+      без списка параметров по фациям задача тНава падает (access violation)
+  tgs:
+    function: "grid_property_facies_by_wells_log_tgs_3d"
+    creates_cube: false
+    manual: "tNavUserGuideDesignerRussian.pdf"
+    manual_pages: "2616"
+    interpolator: ""
+    source: "мануал 26.2 стр.2616: TGS; результат — «Задайте имя свойства»"
+    verified_run: false
+    probe: >-
+      протокол проб (живая лицензия 26.2): шаг3 даёт «No zones or regions are
+      selected for interpolation!» (тот же блокер списка зон)
+  pgs:
+    function: "grid_property_facies_by_wells_log_pgs_3d"
+    creates_cube: false
+    manual: "tNavUserGuideDesignerRussian.pdf"
+    manual_pages: "2628"
+    interpolator: ""
+    source: "мануал 26.2 стр.2628: PGS; результат — «Задайте имя свойства»"
+    verified_run: false
+    probe: >-
+      протокол проб (живая лицензия 26.2): та же ошибка
+      «No zones or regions are selected»
+  mps:
+    function: "grid_property_facies_by_wells_log_mps_3d"
+    creates_cube: false
+    manual: "tNavUserGuideDesignerRussian.pdf"
+    manual_pages: "2683"
+    interpolator: ""
+    source: "мануал 26.2 стр.2683: MPS; результат — «Задайте имя свойства»"
+    verified_run: false
+    probe: >-
+      протокол проб (живая лицензия 26.2): требует «Training Map» (обучающий образ) —
+      данных обучения в проекте нет
+  object_based:
+    function: "grid_property_object_based_simulation"
+    creates_cube: true
+    manual: "tNavUserGuideDesignerRussian.pdf"
+    manual_pages: "2636"
+    interpolator: ""
+    source: "мануал 26.2 стр.2636: объектное моделирование — «создание дискретной модели фаций»"
+    verified_run: false
+    probe: >-
+      протокол проб (живая лицензия 26.2): аргумент сетки у этой функции НЕ `mesh`
+      («Unknown argument "mesh"»), схема не разобрана
+
+# --- ЗНАЧЕНИЯ ПАРАМЕТРА interpolator_type (подтверждены пробой 26.2) ---------
+# Проба: `InterpolationParametersItem(interpolator_type=...)` принимает
+# kriging / sgs / grfs; значения "sis", "indicator_kriging",
+# "sequential_indicator" отвергнуты («Unknown parameter value»).
+# Примечание: у ПОДТВЕРЖДЁННОЙ функции шага (`..._multilayer_facies`) аргумента
+# `interpolator_type` нет — метод задан именем функции (SGS).
+interpolators: ["kriging", "sgs", "grfs"]
+
+# --- КОДЫ ПАРАМЕТРОВ ШАБЛОНА → источник значения в решении агента -------------
+# Патч применяется ТОЛЬКО если код присутствует в шаблоне функции (иначе рендер
+# даёт предупреждение «param не найден» — и это фиксируется как unknown).
+# Подтверждено пробой 26.2: `..._sgs_multilayer_facies` принимает
+# `variogram=VariogramParameters (sill, nugget_effect, range_main, range_normal,
+# range_vertical, azimuth, dip)` — эти коды и патчатся политикой `geostat`.
+patch_codes:
+  range_main: "range_main"
+  range_normal: "range_normal"
+  range_vertical: "range_vertical"
+  nugget_effect: "nugget"
+
+# --- ВАРИОГРАММА: как считать вторичные радиусы из политики ------------------
+variogram:
+  range_main_from: "range"
+  range_normal_from: "range"
+  range_vertical_from: "range_x_anisotropy"   # диапазон × анизотропия
+  nugget_from: "nugget"
+
+# --- ПОДСТАНОВКА ИМЁН ОБЪЕКТОВ В ШАБЛОНЕ -------------------------------------
+# Подтверждённая функция шага принимает входы ТИПИЗИРОВАННЫМИ объектами
+# (`typed_object_name`), поэтому имена подставляет рендер из блока `objects:` шага
+# проектного YAML (роли mesh / result_grid_property / well_log). Плейсхолдеры ниже
+# оставлены для функций, где имя передаётся строкой (неподтверждённая ветка зон).
+placeholders:
+  mesh: '"__MESH__"'
+  blocked_wells: '"__BLOCKED_WELLS__"'
+  result_grid_property: '"__RESULT_PROPERTY__"'
+
+# --- ГЕОТЕЛА (этап 6.1) ------------------------------------------------------
+geobody:
+  function: "geobody_create_by_property"
+  manual: "tNavUserGuideDesignerRussian.pdf"
+  manual_pages: "2225"
+  verified_run: false
+
+# --- ПРОПОРЦИИ ФАЦИЙ по скважинам (локальный расчёт по ДАННЫМ LAS) -----------
+# Источник помечается в отчёте как «рассчитано локально» (НЕ результат тНава).
+proportions:
+  source: "well_logs"          # well_logs | evidence
+  max_files: 120               # сколько LAS читать (оценка пропорций по полю)
+  min_wells: 3                 # меньше скважин — пропорции НЕ считаются (unknown)
+  source_label: "рассчитано локально: domain/geostat.read_las по inputs.logs"

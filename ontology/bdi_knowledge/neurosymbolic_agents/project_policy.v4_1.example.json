@@ -1,0 +1,17 @@
+{
+  "policy_id": "GeoMAS-project-policy-v4.1-DRAFT",
+  "approved": false,
+  "approval_note": "Демонстрационные пороги. Перед production требуется утверждение владельцем модели, QA/QC и владельцем программных адаптеров.",
+  "parameters": {
+    "project_symbolic_threshold": 0.9,
+    "project_hybrid_threshold": 0.4,
+    "project_analog_threshold": 0.65,
+    "project_minimum": 0.8
+  },
+  "autonomy": {
+    "default": "A2",
+    "production_maximum": "A3",
+    "generative_mode": "sandbox_only",
+    "high_or_critical_risk": "human_approval_required"
+  }
+}

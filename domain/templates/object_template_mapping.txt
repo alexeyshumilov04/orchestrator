@@ -1,0 +1,8 @@
+    begin_wf_item (index = 15)
+    object_template_mapping (folder=find_object (name="Logs",
+          type="TypedFolder"),
+          use_grid=False,
+          grid=find_object (name="main_grid",
+          type="Grid3d"),
+          object_template_table=[{"object" : "LIT", "template_data" : "LIT", "use_local_palette" : False, "object_type" : "Well Log"}])
+    end_wf_item (index = 15)

@@ -1,0 +1,198 @@
+# QA/QC: блоки чеклиста → гейты → агенты → уровни severity (ДАННЫЕ).
+# Источник пунктов: QAQC/QA_QC_чеклист.xlsx, лист «Чек-лист».
+# Реализованные проверки: domain/qaqc/checks_table.csv + ontology/qa_checks/*.csv.
+# Гейты и агенты — из config.yaml (gates:, checks.package_blocks).
+# Файл читается agents/checks/base.py (реестр) и agents/checks/report.py (покрытие).
+
+meta:
+  purpose: Соответствие «блок чеклиста 01..13 → гейт → агент → уровни severity» и покрытие чеклиста. Данные,
+    не код.
+  checklist: ../QAQC/QA_QC_чеклист.xlsx
+  sheet: Чек-лист
+  header_row: 4
+  first_data_row: 5
+  total_items: 6065
+  blocks_total: 13
+  block_column: Обязательная область ГПН / блок
+  id_column: ID проверки / пункта
+  digitized_table: domain/qaqc/checks_table.csv
+  checks_dir: ontology/qa_checks
+  items_outside_blocks: 195
+  note: 'items — факт чеклиста (число пунктов блока; живой источник — ontology/qa_checks/checklist_index.csv).
+    «Реализовано», статус и причины НЕ дублируются здесь: их считает agents/checks/report.py по живому
+    каталогу проверок (domain/qaqc + ontology/qa_checks) и пишет в qaqc_coverage.json. Единственный ручной
+    статус — out_of_scope (вне области итерации).'
+  generated: '2026-10-09'
+severity_levels:
+  critical: 0.9
+  major: 0.75
+  note: значимость >= critical → critical; >= major → major; иначе minor
+gates:
+  G-DATA:
+    agent: AG_DATA_STEWARD
+    stages:
+    - 0
+    blocks:
+    - '01'
+    - '02'
+    - '03'
+  G-FACIES:
+    agent: AG_FACIES
+    stages:
+    - 6
+    blocks:
+    - '05'
+    - '06'
+  G-GRID:
+    agent: AG_GRID_VOLUMETRICS
+    stages:
+    - 4
+    - 5
+    blocks:
+    - '04'
+  G-MAPS:
+    agent: AG_GRID_VOLUMETRICS
+    stages:
+    - 10
+    blocks:
+    - '07'
+    - 08
+  G-PETRO:
+    agent: AG_PETROPHYSICS
+    stages:
+    - 7
+    blocks:
+    - '07'
+    - 08
+    - '13'
+  G-SAT:
+    agent: AG_PVT_SCAL
+    stages:
+    - 8
+    blocks:
+    - 09
+  G-STRUCT:
+    agent: AG_STRUCTURAL
+    stages:
+    - 1
+    - 2
+    - 3
+    blocks:
+    - '04'
+  G-VOL:
+    agent: AG_GRID_VOLUMETRICS
+    stages:
+    - 9
+    blocks:
+    - '10'
+blocks:
+  '01':
+    title: Контроль информации, необходимой для выполнения экспертизы
+    items: 8
+    gates:
+    - G-DATA
+    severity: from_weight
+  '02':
+    title: Контроль полноты использования входных данных
+    items: 618
+    gates:
+    - G-DATA
+    severity: from_weight
+  '03':
+    title: Контроль полноты проработки стратиграфического расчленения
+    items: 173
+    gates:
+    - G-DATA
+    severity: from_weight
+  '04':
+    title: Контроль качества построения структурной модели
+    items: 679
+    gates:
+    - G-STRUCT
+    - G-GRID
+    severity: from_weight
+  '05':
+    title: Контроль качества построения куба фаций
+    items: 1481
+    gates:
+    - G-FACIES
+    severity: from_weight
+  '06':
+    title: Контроль качества построения куба литологии
+    items: 528
+    gates:
+    - G-FACIES
+    severity: from_weight
+  '07':
+    title: Контроль качества построения куба пористости
+    items: 61
+    gates:
+    - G-PETRO
+    - G-MAPS
+    severity: from_weight
+  08:
+    title: Контроль качества построения куба проницаемости
+    items: 69
+    gates:
+    - G-PETRO
+    - G-MAPS
+    severity: from_weight
+  09:
+    title: Контроль качества построения куба насыщения
+    items: 737
+    gates:
+    - G-SAT
+    severity: from_weight
+  '10':
+    title: Контроль качества подсчёта запасов
+    items: 86
+    gates:
+    - G-VOL
+    severity: from_weight
+  '11':
+    title: Контроль качества оценки неопределённостей
+    items: 399
+    gates: []
+    severity: from_weight
+    status: out_of_scope
+    reason: оценка неопределённостей — вне области статической ГМ этой итерации
+  '12':
+    title: Контроль качества гидродинамической модели
+    items: 158
+    gates: []
+    severity: from_weight
+    status: out_of_scope
+    reason: гидродинамическая модель — вне области статической ГМ
+  '13':
+    title: Петрофизическое моделирование (керн, ГИС, зависимости по литотипам и фациям)
+    items: 873
+    gates:
+    - G-PETRO
+    severity: from_weight
+  '14':
+    title: 14. Сейсморазведочные работы и кросс-функциональные проверки с результатами интерпретации сейсморазведочных
+      работ и сейсмогеологических моделей
+    items: 0
+    gates: []
+    severity: from_weight
+# --- F-19: проверки РЕЗУЛЬТАТА (гейт → id проверок) — ДАННЫЕ ------------------
+# Гейт не может стать passed, если проверки результата не нашли свидетельства
+# (тогда они помечаются unverified): «операция формально прошла, результата нет».
+result_checks:
+  G-FACIES:
+  - facies.cube_exists
+  - facies.cube_nonempty
+  G-PETRO:
+  - cube.poro_exists
+  - cube.poro_nonempty
+  - cube.perm_exists
+  - cube.perm_nonempty
+  G-VOL:
+  - cube.metric_exists
+  - cube.metric_nonempty
+# Ключи свидетельств пробника (данные; читают agents/checks/builtin.py и report.py).
+evidence_keys:
+  grid_properties: "список имён свойств сетки (get_all_properties); формы — [имя], {properties: [...]},
+    [{name: ...}]"
+  property_stats: "статистика куба: count|n_cells|cells|non_null, nulls, classes|unique"
+  blocked_wells: "число или список блокированных скважин (для сообщения о причине)"

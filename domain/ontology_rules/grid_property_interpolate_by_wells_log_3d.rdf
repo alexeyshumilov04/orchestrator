@@ -1,0 +1,3 @@
+<https://example.org/tnav#computational-function__grid_property_interpolate_by_wells_log_3d> <http://www.w3.org/2000/01/rdf-schema#label> "grid_property_interpolate_by_wells_log_3d" .
+<https://example.org/tnav#computational-function__grid_property_interpolate_by_wells_log_3d> <https://example.org/tnav#code> "grid_property_interpolate_by_wells_log_3d" .
+<https://example.org/tnav#computational-function__grid_property_interpolate_by_wells_log_3d> <https://example.org/tnav#шаблон_кода> "templates/grid_property_interpolate_by_wells_log_3d.txt" .

@@ -1,0 +1,11 @@
+    begin_wf_item (index = 20)
+    grid_property_interpolate_by_blocked_wells_trivial_3d (mesh=find_object (name="main_grid",
+          type="Grid3d"),
+          blocked_wells=find_object (name="FaciesU",
+          type="BlockedWells"),
+          result_grid_property=find_object (name="FACIES",
+          type="Grid3dProperty"),
+          clear_all_values=False,
+          use_default_value=False,
+          default_value=0)
+    end_wf_item (index = 20)

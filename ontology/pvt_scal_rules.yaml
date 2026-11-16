@@ -1,0 +1,42 @@
+# ОНТОЛОГИЯ: правила PVT и SCAL (общие зависимости, а не полевые значения)
+#
+# Зачем: в проектном графе `pvt` и `scal` описывали КОРРЕЛЯЦИИ — это общие правила
+# (применимые к любому полю), поэтому их место в онтологии. Конкретные числовые значения
+# (плотности, вязкости, параметры кривых) остаются ДАННЫМИ ПОЛЯ и передаются в графе.
+schema_version: 1
+knowledge_base: KB_PVT_SCAL
+
+policy:
+  provenance_required: true            # корреляция без источника недействительна
+  on_missing_provenance: "unverified"  # правило 6: нет источника → не выдаём за норму
+  on_missing_values: "skipped_by_policy"
+  report: ["корреляция", "источник", "применимость", "вердикт"]
+
+pvt:
+  # Тип системы и корреляции — правила выбора; значения — данные поля
+  selection_rule: "тип флюида и корреляция выбираются по данным поля (состав/пластовые условия)"
+  correlations:
+    dead_oil: {default: "standing", alternatives: ["beggs_robinson", "vasquez_beggs"]}
+    gas:      {default: "hall_yarborough", alternatives: ["dranchuk_abou_kassem"]}
+    water:    {default: "batzle_wang", alternatives: ["mccain"]}
+  constraints:
+    - "RULE_LIT_PVT_010"    # свойства флюидов калибровать по лабораторным данным, если есть
+  source: "current_config"  # ВРЕМЕННО: перенесено из графа поля; provenance — подтвердить
+  provenance: "pending"
+
+scal:
+  # Кривые относительных фазовых проницаемостей и капиллярного давления
+  selection_rule: "набор кривых и способ осреднения выбираются по данным SCAL поля"
+  methods:
+    relperm: {default: "corey", alternatives: ["let", "brooks_corey", "table"]}
+    capillary: {default: "j_function", alternatives: ["table", "lattice_boltzmann"]}
+  constraints:
+    - "RULE_LIT_SCAL_010"   # концевые точки (Swc, Sor) обосновывать по керну/SCAL, не константой
+  source: "current_config"
+  provenance: "pending"
+
+checks:
+  - id: "pvt.correlation_provenance"
+    needs: ["policy.provenance_required", "pvt.correlations"]
+  - id: "scal.endpoints_provenance"
+    needs: ["scal.methods", "scal.constraints"]

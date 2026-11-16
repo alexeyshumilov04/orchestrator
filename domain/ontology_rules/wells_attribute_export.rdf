@@ -1,0 +1,22 @@
+# ЭТАЛОН (правило 8): domain/ontology_rules/reference_workflow.py, тНавигатор v26.1
+# (api_version=v0_0_300a), стр. 235/690 — wells_attribute_export.
+# Параметры/объекты — из вызова эталона; шаблон — domain/templates/<fn>.txt.
+<https://example.org/tnav#computational-function__wells_attribute_export> <http://www.w3.org/2000/01/rdf-schema#label> "wells_attribute_export" .
+<https://example.org/tnav#computational-function__wells_attribute_export> <https://example.org/tnav#code> "wells_attribute_export" .
+<https://example.org/tnav#computational-function__wells_attribute_export> <https://example.org/tnav#шаблон_кода> "templates/wells_attribute_export.txt" .
+<https://example.org/tnav#computational-function__wells_attribute_export> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__wells_attribute_export__file_name> .
+<https://example.org/tnav#function-entity__wells_attribute_export__file_name> <https://example.org/tnav#code> "file_name" .
+<https://example.org/tnav#function-entity__wells_attribute_export__file_name> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#computational-function__wells_attribute_export> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__wells_attribute_export__units_system> .
+<https://example.org/tnav#function-entity__wells_attribute_export__units_system> <https://example.org/tnav#code> "units_system" .
+<https://example.org/tnav#function-entity__wells_attribute_export__units_system> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__wells_attribute_export__units_system> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__wells_attribute_export__metric> .
+<https://example.org/tnav#function-entity__wells_attribute_export__metric> <https://example.org/tnav#code> "metric" .
+<https://example.org/tnav#computational-function__wells_attribute_export> <https://example.org/tnav#имеет_параметр> <https://example.org/tnav#function-entity__wells_attribute_export__separation_delimeter> .
+<https://example.org/tnav#function-entity__wells_attribute_export__separation_delimeter> <https://example.org/tnav#code> "separation_delimeter" .
+<https://example.org/tnav#function-entity__wells_attribute_export__separation_delimeter> <https://example.org/tnav#тип_данных> "string" .
+<https://example.org/tnav#function-entity__wells_attribute_export__separation_delimeter> <https://example.org/tnav#возможное_значение> <https://example.org/tnav#function-entity__wells_attribute_export__all_spaces> .
+<https://example.org/tnav#function-entity__wells_attribute_export__all_spaces> <https://example.org/tnav#code> "all spaces" .
+<https://example.org/tnav#computational-function__wells_attribute_export> <https://example.org/tnav#использует> <https://example.org/tnav#function-entity__wells_attribute_export__attribute_name%28obj_name%29> .
+<https://example.org/tnav#function-entity__wells_attribute_export__attribute_name%28obj_name%29> <https://example.org/tnav#code> "attribute_name(obj_name)" .
+<https://example.org/tnav#function-entity__wells_attribute_export__attribute_name%28obj_name%29> <https://example.org/tnav#тип_данных> "well_attribute" .
