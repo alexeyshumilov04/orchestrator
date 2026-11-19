@@ -57,6 +57,12 @@ workflow:
   console_unavailable: ["create_screenshot", "contour_line_settings_step",
                         "contour_line_settings_style", "show_palette", "adjust_size",
                         "select_geometry_object"]
+  # Каталоги выгрузок в папке ПРОЕКТА тНава (имена — данные шагов `file_name`).
+  # Внутри элемента воркфлоу инструкции Python недопустимы («Could not recognize
+  # python code as workflow item»), а сам тНав каталогов не создаёт («Can't open
+  # file '<проект>/Maps/PORO.txt'!»), поэтому каталог создаёт ОРКЕСТРАТОР — до
+  # исполнения этапов, и для базового прогона, и для каждой ветви ансамбля.
+  export_dirs: ["Maps"]
 
 # --- ПРОЕКТНЫЙ граф (ABox): значения, зависящие от месторождения --------------
 # НЕ хардкод в коде: маркеры/PVT/SCAL/CRS/пороги задаются данными.
