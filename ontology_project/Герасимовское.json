@@ -1,0 +1,829 @@
+{
+  "field": "Герасимовское",
+  "dataset_root": "data/Герасимовское/Source",
+  "crs": "local (X_seiscoord/y_seiscoord, m)",
+  "inputs": {
+    "wellhead": "Wellhead.txt",
+    "welltop": "Welltop.txt",
+    "surface": "struct/depth_u1.irap",
+    "surface_std": "struct/std_depth_u1.irap",
+    "faults": "struct/faults.irap",
+    "fault_map": "struct/fault_map.irap",
+    "logs": "RIGIS",
+    "inclinometry": "GERASIM_406_inkl"
+  },
+  "markers": {
+    "reservoir_top": "BAJ",
+    "reservoir_base": "J2",
+    "order": [
+      "BAJ",
+      "J1",
+      "J2",
+      "J3"
+    ],
+    "candidates": [
+      "J1(1+2)",
+      "J10",
+      "J5",
+      "J6",
+      "J8",
+      "J9",
+      "BAJ",
+      "J1-3",
+      "J1-4",
+      "J11",
+      "J2",
+      "J4",
+      "J3",
+      "М",
+      "J12",
+      "J13",
+      "M1",
+      "GEORG",
+      "J14",
+      "J15",
+      "UNKNOWN",
+      "БАЖ",
+      "Ю1(1+2)",
+      "Ю1(3)",
+      "Ю1(4)",
+      "Ю13",
+      "Ю2"
+    ]
+  },
+  "reservoir_horizon": "U1_top",
+  "structural": {
+    "extent": {
+      "x0": 63754.458879,
+      "y0": 304597.452304,
+      "x1": 76254.458879,
+      "y1": 320147.452304
+    },
+    "box": {
+      "min_x": 63754.458879,
+      "min_y": 304597.452304,
+      "length_x": 12500.0,
+      "length_y": 15550.0
+    },
+    "step": {
+      "step_x": 50.0,
+      "step_y": 50.0,
+      "counts_x": 251,
+      "counts_y": 312
+    },
+    "blank_share": 0.4673
+  },
+  "contacts": {
+    "owc_offset_m": 20.0
+  },
+  "pvt": {
+    "pvtw": [
+      300.0,
+      1.0,
+      4e-05,
+      0.5,
+      0.0
+    ],
+    "pvdo": [
+      [
+        20.0,
+        1.05,
+        1.3
+      ],
+      [
+        100.0,
+        1.03,
+        1.2
+      ],
+      [
+        300.0,
+        1.0,
+        1.0
+      ]
+    ],
+    "pvdg": [
+      [
+        50.0,
+        0.019,
+        0.013
+      ],
+      [
+        150.0,
+        0.0075,
+        0.015
+      ],
+      [
+        350.0,
+        0.0036,
+        0.018
+      ]
+    ]
+  },
+  "scal": {
+    "swof": [
+      [
+        0.15,
+        0.0,
+        0.85,
+        0.0
+      ],
+      [
+        0.5,
+        0.2,
+        0.3,
+        0.0
+      ],
+      [
+        0.85,
+        1.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "sgof": [
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.3,
+        0.3,
+        0.4,
+        0.0
+      ],
+      [
+        0.6,
+        1.0,
+        0.0,
+        0.0
+      ]
+    ]
+  },
+  "thresholds": {
+    "poro": [
+      0.02,
+      0.35
+    ],
+    "perm": [
+      0.1,
+      5000.0
+    ],
+    "swl": [
+      0.05,
+      0.6
+    ]
+  },
+  "geostat": {
+    "hole_range_m": 3500.0,
+    "nugget": 0.15,
+    "anisotropy": 0.5,
+    "n_facies": 3,
+    "facies_method": "sis"
+  },
+  "petrophysics": {
+    "method": "kriging",
+    "variogram": {
+      "range_main": 3500.0,
+      "nugget_effect": 0.15,
+      "sill": 1.0
+    },
+    "cubes": [
+      {
+        "log": "PHIE",
+        "blocked": "Poro",
+        "cube": "PORO"
+      },
+      {
+        "log": "KINT",
+        "blocked": "Perm",
+        "cube": "PERM"
+      }
+    ],
+    "null_values": [
+      -999.2,
+      -999.25,
+      -999.0
+    ],
+    "expect": {
+      "PHIE": {
+        "units": "percent",
+        "min": 0.0,
+        "max": 35.0
+      },
+      "KINT": {
+        "units": "not_permeability",
+        "min": 0.0,
+        "max": 5000.0
+      }
+    },
+    "scale": {
+      "PHIE": 0.01
+    },
+    "perm_from_poro": {
+      "enabled": true,
+      "source_curve": "PORO",
+      "target_cube": "PERM",
+      "form": "kozeny_carman",
+      "source_rule": "RULE_LIT_PETRO_020",
+      "source_ids": [
+        "LIT-0201#p14"
+      ],
+      "constraints": [
+        "RULE_LIT_PETRO_110",
+        "RULE_LIT_PETRO_080",
+        "RULE_LIT_PETRO_040"
+      ],
+      "a": 0.0,
+      "b": 0.0,
+      "knowledge_status": "EVIDENCE_BACKED_CANDIDATE",
+      "needs_review": true,
+      "note": "KINT признан непроницаемостной кривой (решение заказчика); PERM строитсясвязью k-φ по литературе (Козени-Карман), с обязательным учётом литотипов иобоснованным cut-off; до получения керна коэффициенты не задаются (unknown)"
+    }
+  },
+  "deck": {
+    "nz": 3,
+    "dz": 10.0,
+    "well_rate": 200.0,
+    "well_bhp": 50.0
+  },
+  "functions": {
+    "polygon_create_by_map_2d_boundary": {
+      "objects": {
+        "polygon": {
+          "obj_name": "U1_seis_boundary",
+          "obj_type": "Curve3d"
+        },
+        "horizon": {
+          "obj_name": "U1_seis",
+          "obj_type": "Horizon"
+        }
+      }
+    },
+    "map_2d_distance_to_marker": {
+      "objects": {
+        "result_map_2d": {
+          "obj_name": "Dist_to_well",
+          "obj_type": "Map2d"
+        },
+        "well_marker": {
+          "obj_name": "BAJ",
+          "obj_type": "WellMarker"
+        }
+      }
+    },
+    "horizon_smooth": {
+      "parameters": {
+        "radius": 200
+      },
+      "objects": {
+        "input_horizon": {
+          "obj_name": "U1_seis",
+          "obj_type": "Horizon"
+        },
+        "output_horizon": {
+          "obj_name": "U1_seis_smooth",
+          "obj_type": "Horizon"
+        }
+      }
+    },
+    "horizon_interpolate_by_marker_idw": {
+      "parameters": {
+        "autodetect_box": true,
+        "min_x": 63754.458879,
+        "min_y": 304597.452304,
+        "length_x": 12500.0,
+        "length_y": 15550.0,
+        "counts_x": 0,
+        "counts_y": 0,
+        "autodetect_grid": false,
+        "step_x": 50,
+        "step_y": 50
+      }
+    },
+    "wells_attribute_thickness_calculation": {
+      "objects": {
+        "result_well_attribute": {
+          "obj_name": "Tl_thick",
+          "obj_type": "WellAttribute"
+        },
+        "marker_top": {
+          "obj_name": "BAJ",
+          "obj_type": "WellMarker"
+        },
+        "marker_bottom": {
+          "obj_name": "J2",
+          "obj_type": "WellMarker"
+        },
+        "marker_unconformity": {
+          "obj_name": "BAJ",
+          "obj_type": "WellMarker"
+        }
+      }
+    },
+    "create_blocked_well_log": {
+      "replace": {
+        "name=\"CS_trend\"": "name=\"\"",
+        "name=\"CS\"": "name=\"\""
+      }
+    },
+    "grid_property_interpolate_by_wells_log_3d": {
+      "replace": {
+        "name=\"zone_id\"": "name=\"\"",
+        "name=\"Litho3D\"": "name=\"\"",
+        "name=\"CS\"": "name=\"\"",
+        "name=\"Res3D\"": "name=\"\""
+      }
+    },
+    "grid_property_create_volumetric_properties": {
+      "replace": {
+        "name=\"CS_trend\"": "name=\"\"",
+        "name=\"LithoRes\"": "name=\"\""
+      }
+    }
+  },
+  "pipeline": [
+    {
+      "stage": "этап 1 [S02]",
+      "steps": [
+        {
+          "function": "map_2d_export_ascii_format",
+          "objects": {
+            "map_2d": {
+              "obj_name": "FACIES",
+              "obj_type": "Map2d"
+            }
+          },
+          "parameters": {
+            "file_name": "Maps/FACIES.txt",
+            "default_value": 9999900
+          }
+        },
+        {
+          "function": "map_2d_export_cps_format",
+          "objects": {
+            "map_2d": {
+              "obj_name": "PORO",
+              "obj_type": "Map2d"
+            }
+          },
+          "parameters": {
+            "file_name": "Maps/PORO_cps.txt",
+            "default_value": 9999900
+          }
+        },
+        {
+          "function": "map_2d_import_ascii_format"
+        },
+        {
+          "function": "marker_export_well_marker_table_format",
+          "objects": {
+            "marker": {
+              "obj_name": "BAJ",
+              "obj_type": "WellMarker"
+            }
+          },
+          "parameters": {
+            "file_name": "BAJ_markers.txt"
+          }
+        },
+        {
+          "function": "marker_import_txt_format"
+        },
+        {
+          "function": "wells_import_path_deviation_format"
+        },
+        {
+          "function": "create_screenshot"
+        }
+      ]
+    },
+    {
+      "stage": "этап 2 [S06]",
+      "steps": [
+        {
+          "function": "wells_attribute_export",
+          "objects": {
+            "attribute_name": {
+              "obj_name": "Residual_U1_top",
+              "obj_type": "WellAttribute"
+            }
+          },
+          "parameters": {
+            "file_name": "Residual_U1_top.txt"
+          }
+        },
+        {
+          "function": "wells_attribute_thickness_calculation"
+        }
+      ]
+    },
+    {
+      "stage": "этап 3 [S07]",
+      "steps": [
+        {
+          "function": "fault_import_sticks_xyz_format"
+        },
+        {
+          "function": "horizon_export_cps_format",
+          "objects": {
+            "horizon": {
+              "obj_name": "U1_bot",
+              "obj_type": "Horizon"
+            }
+          },
+          "parameters": {
+            "file_name": "U1_bot_cps.txt"
+          }
+        },
+        {
+          "function": "horizon_import_ascii_format",
+          "parameters": {
+            "novalue": 9999900
+          }
+        },
+        {
+          "function": "contact_create_by_horizon",
+          "objects": {
+            "grid_3d": {
+              "obj_name": "main_grid",
+              "obj_type": "Grid3d"
+            },
+            "result_contact": {
+              "obj_name": "OWC",
+              "obj_type": "Contact"
+            }
+          }
+        },
+        {
+          "function": "horizon_calculator"
+        },
+        {
+          "function": "horizon_smooth",
+          "objects": {
+            "input_horizon": {
+              "obj_name": "U1_seis_trend",
+              "obj_type": "Horizon"
+            },
+            "output_horizon": {
+              "obj_name": "U1_seis_trend_smooth",
+              "obj_type": "Horizon"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage": "этап 4 [S08]",
+      "steps": [
+        {
+          "function": "wells_log_import_las_format"
+        },
+        {
+          "function": "blocked_well_log_change_type",
+          "objects": {
+            "grid": {
+              "obj_name": "main_grid",
+              "obj_type": "Grid3d"
+            }
+          }
+        },
+        {
+          "function": "create_blocked_well_log",
+          "objects": {
+            "input_log": {
+              "obj_name": "KINT",
+              "obj_type": "WellLog"
+            },
+            "BlockedWells": {
+              "obj_name": "Perm",
+              "obj_type": "BlockedWells"
+            }
+          },
+          "parameters": {
+            "averaging_method": "midpoint",
+            "use_override_discreteness": true,
+            "override_discreteness": "continuous"
+          }
+        }
+      ]
+    },
+    {
+      "stage": "этап 5 [S10]",
+      "steps": [
+        {
+          "function": "polygon_import_txt_format"
+        },
+        {
+          "function": "create_object_template"
+        },
+        {
+          "function": "object_template_mapping",
+          "objects": {
+            "grid": {
+              "obj_name": "main_grid",
+              "obj_type": "Grid3d"
+            }
+          }
+        },
+        {
+          "function": "polygon_create_by_map_2d_boundary"
+        },
+        {
+          "function": "polygon_create_by_map_intersection",
+          "objects": {
+            "top": {
+              "obj_name": "Tl_thick_vrez",
+              "obj_type": "Map2d"
+            },
+            "result_polygon": {
+              "obj_name": "Vrez",
+              "obj_type": "Curve3d"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage": "этап 6 [S14]",
+      "steps": [
+        {
+          "function": "horizon_interpolate_by_marker_idw",
+          "objects": {
+            "result_horizon": {
+              "obj_name": "U1_bot",
+              "obj_type": "Horizon"
+            },
+            "well_marker": {
+              "obj_name": "J2",
+              "obj_type": "WellMarker"
+            },
+            "trend_horizon": {
+              "obj_name": "U1_top",
+              "obj_type": "Horizon"
+            },
+            "residual_idw": {
+              "obj_name": "Residual_U1_bot",
+              "obj_type": "WellAttribute"
+            }
+          },
+          "parameters": {
+            "use_trend_horizon": true,
+            "use_residual_idw": true
+          }
+        },
+        {
+          "function": "map_2d_interpolate"
+        }
+      ]
+    },
+    {
+      "stage": "этап 7 [S15]",
+      "steps": [
+        {
+          "function": "geobody_create_by_property",
+          "objects": {
+            "grid": {
+              "obj_name": "main_grid",
+              "obj_type": "Grid3d"
+            },
+            "property": {
+              "obj_name": "FACIES",
+              "obj_type": "Grid3dProperty"
+            },
+            "result_geobody": {
+              "obj_name": "Geobodies_FACIES",
+              "obj_type": "Geobody"
+            }
+          }
+        },
+        {
+          "function": "grid_3d_create_by_horizons",
+          "objects": {
+            "mesh": {
+              "obj_name": "main_grid",
+              "obj_type": "Grid3d"
+            },
+            "region": {
+              "obj_name": "Boundary",
+              "obj_type": "Curve3d"
+            }
+          },
+          "parameters": {
+            "autodetect_box": false,
+            "min_x": 63754.458879,
+            "min_y": 304597.452304,
+            "length_x": 12500.0,
+            "length_y": 15550.0,
+            "autodetect_angle": false,
+            "angle": 0,
+            "autodetect_grid": false,
+            "step_x": 50,
+            "step_y": 50,
+            "use_minimum_thickness": false,
+            "use_minimum_zone_thickness": false,
+            "autodetect_during_wf_calculation": false,
+            "use_region": false
+          }
+        },
+        {
+          "function": "grid_3d_create_by_horizons_with_faults"
+        },
+        {
+          "function": "grid_property_calculator",
+          "objects": {
+            "mesh": {
+              "obj_name": "main_grid",
+              "obj_type": "Grid3d"
+            },
+            "result_grid_property": {
+              "obj_name": "STOIIP_calc",
+              "obj_type": "Grid3dProperty"
+            },
+            "user_cut_for_filter": {
+              "obj_name": "",
+              "obj_type": "Grid3dProperty"
+            }
+          },
+          "parameters": {
+            "formula": "HCPV/1.2"
+          }
+        },
+        {
+          "function": "grid_property_create_by_values"
+        },
+        {
+          "function": "grid_property_create_by_zones"
+        },
+        {
+          "function": "grid_property_create_volumetric_properties",
+          "objects": {
+            "poro_cube": {
+              "obj_name": "PORO",
+              "obj_type": "Grid3dProperty"
+            }
+          },
+          "parameters": {
+            "stoiip_use_in_table": true
+          }
+        },
+        {
+          "function": "grid_property_facies_modeling"
+        },
+        {
+          "function": "grid_property_interpolate_by_blocked_wells_trivial_3d"
+        },
+        {
+          "function": "grid_property_interpolate_by_wells_log_3d",
+          "objects": {
+            "mesh": {
+              "obj_name": "main_grid",
+              "obj_type": "Grid3d"
+            },
+            "blocked_wells": {
+              "obj_name": "Perm",
+              "obj_type": "BlockedWells"
+            },
+            "result_grid_property": {
+              "obj_name": "PERM",
+              "obj_type": "Grid3dProperty"
+            }
+          }
+        },
+        {
+          "function": "grid_property_interpolate_by_wells_log_sgs_multilayer_facies",
+          "objects": {
+            "mesh": {
+              "obj_name": "main_grid",
+              "obj_type": "Grid3d"
+            },
+            "result_grid_property": {
+              "obj_name": "FACIES",
+              "obj_type": "Grid3dProperty"
+            },
+            "well_log": {
+              "obj_name": "LIT",
+              "obj_type": "WellLog"
+            }
+          }
+        },
+        {
+          "function": "map_2d_create_by_grid_property",
+          "objects": {
+            "grid": {
+              "obj_name": "main_grid",
+              "obj_type": "Grid3d"
+            },
+            "cube": {
+              "obj_name": "FACIES",
+              "obj_type": "Grid3dProperty"
+            },
+            "map_2d": {
+              "obj_name": "FACIES",
+              "obj_type": "Map2d"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage": "этап 8 [S18]",
+      "steps": [
+        {
+          "function": "map_2d_calculator",
+          "objects": {
+            "result_map_2d": {
+              "obj_name": "Tl_thick_vrez",
+              "obj_type": "Map2d"
+            }
+          },
+          "parameters": {
+            "autodetect_box": false,
+            "min_x": 63754.458879,
+            "min_y": 304597.452304,
+            "length_x": 12500.0,
+            "length_y": 15550.0,
+            "autodetect_grid": false,
+            "step_x": 50,
+            "step_y": 50,
+            "counts_x": 0,
+            "counts_y": 0,
+            "formula": "Tl_thick-Tl_thick_smooth"
+          }
+        },
+        {
+          "function": "map_2d_distance_to_marker"
+        },
+        {
+          "function": "map_2d_smooth",
+          "objects": {
+            "input_map": {
+              "obj_name": "Tl_thick",
+              "obj_type": "Map2d"
+            },
+            "output_map": {
+              "obj_name": "Tl_thick_smooth",
+              "obj_type": "Map2d"
+            }
+          }
+        },
+        {
+          "function": "map_2d_thickness_map"
+        }
+      ]
+    }
+  ],
+  "variations": [
+    {
+      "id": "S001",
+      "label": "базовая",
+      "parameters": {}
+    },
+    {
+      "id": "S002",
+      "label": "структура: сглаживание 100 м",
+      "parameters": {
+        "horizon_smooth": {
+          "radius": 100
+        }
+      }
+    },
+    {
+      "id": "S003",
+      "label": "структура: сглаживание 400 м",
+      "parameters": {
+        "horizon_smooth": {
+          "radius": 400
+        }
+      }
+    },
+    {
+      "id": "S004",
+      "label": "структура: IDW степень 3",
+      "parameters": {
+        "horizon_interpolate_by_marker_idw": {
+          "power_parameter": 3
+        }
+      }
+    },
+    {
+      "id": "S005",
+      "label": "тренд-карта: сглаживание карты, радиус 2500 м",
+      "parameters": {
+        "map_2d_smooth": {
+          "radius": 2500
+        }
+      }
+    }
+  ],
+  "todo": [
+    "markers.reservoir_top",
+    "reservoir_horizon",
+    "contacts",
+    "pvt",
+    "scal",
+    "thresholds",
+    "geostat"
+  ]
+}

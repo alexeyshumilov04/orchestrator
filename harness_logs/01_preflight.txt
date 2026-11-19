@@ -1,0 +1,24 @@
+python -X utf8 main.py preflight
+{
+  "tnavigator": {
+    "executable": "C:\\Users\\Alexey\\AppData\\Local\\Programs\\tNavigator\\26.3\\tNavigator-con.exe",
+    "present": true,
+    "version": "tNavigator v26.3-4423-gff9f46d4269a",
+    "api_available": true,
+    "license_features": [
+      "FEAT_GEOLOGY_DESIGNER"
+    ],
+    "ok": true
+  },
+  "ontology": {
+    "operations": 1272,
+    "stages": 18,
+    "tnav_functions": 3257,
+    "qa_rules": 6117,
+    "params": 403,
+    "software_bindings": 414,
+    "rdf": "csv-only (rdf lazy)"
+  }
+}
+
+preflight: OK

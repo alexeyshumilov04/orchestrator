@@ -1,0 +1,234 @@
+python -X utf8 main.py plan --field Герасимовское
+{
+  "field": "Герасимовское",
+  "ontology": {
+    "operations": 1272,
+    "stages": 18,
+    "tnav_functions": 3257,
+    "qa_rules": 6117,
+    "params": 403,
+    "software_bindings": 414,
+    "rdf": "csv-only (rdf lazy)"
+  },
+  "stages": [
+    {
+      "id": "EV_STAGE_S01",
+      "label": "Цели, границы и управление моделью",
+      "order": 1
+    },
+    {
+      "id": "EV_STAGE_S02",
+      "label": "Наполнение проекта, каталогизация и нормировка",
+      "order": 2
+    },
+    {
+      "id": "EV_STAGE_S03",
+      "label": "Региональная модель, бассейновый анализ и petroleum play",
+      "order": 3
+    },
+    {
+      "id": "EV_STAGE_S04",
+      "label": "Стратиграфия, расчленение и корреляция",
+      "order": 4
+    },
+    {
+      "id": "EV_STAGE_S05",
+      "label": "Седиментология и концептуальная модель",
+      "order": 5
+    },
+    {
+      "id": "EV_STAGE_S06",
+      "label": "Обработка и интерпретация сейсмики",
+      "order": 6
+    },
+    {
+      "id": "EV_STAGE_S07",
+      "label": "Структурный каркас и глубинная модель",
+      "order": 7
+    },
+    {
+      "id": "EV_STAGE_S08",
+      "label": "ГИС, керн и петрофизическая интерпретация",
+      "order": 8
+    },
+    {
+      "id": "EV_STAGE_S09",
+      "label": "Литология, типы пород и распространение коллектора",
+      "order": 9
+    },
+    {
+      "id": "EV_STAGE_S10",
+      "label": "2D/3D фациальное моделирование",
+      "order": 10
+    },
+    {
+      "id": "EV_STAGE_S11",
+      "label": "Давления, ГДИС, приток и межскважинные поля",
+      "order": 11
+    },
+    {
+      "id": "EV_STAGE_S12",
+      "label": "Насыщение, PVT, SCAL и распределение флюидов",
+      "order": 12
+    },
+    {
+      "id": "EV_STAGE_S13",
+      "label": "Геомеханика, напряжения и трещиноватость",
+      "order": 13
+    },
+    {
+      "id": "EV_STAGE_S14",
+      "label": "Геостатистика и распределение свойств",
+      "order": 14
+    },
+    {
+      "id": "EV_STAGE_S15",
+      "label": "Сетка, апскейлинг, объёмы и запасы",
+      "order": 15
+    },
+    {
+      "id": "EV_STAGE_S16",
+      "label": "Неопределённости, аналоги и ансамбли",
+      "order": 16
+    },
+    {
+      "id": "EV_STAGE_S17",
+      "label": "ГДМ, 4D-ассимиляция и адаптация",
+      "order": 17
+    },
+    {
+      "id": "EV_STAGE_S18",
+      "label": "Эволюционное обновление и поздний жизненный цикл",
+      "order": 18
+    }
+  ],
+  "nodes": [
+    {
+      "group": "0. Импорт данных Герасимовского",
+      "method": "0. Импорт данных Герасимовского",
+      "functions": [
+        "polygon_import_txt_format",
+        "wells_import_path_deviation_format",
+        "wells_log_import_las_format",
+        "marker_import_txt_format",
+        "horizon_import_ascii_format",
+        "horizon_import_ascii_format",
+        "fault_import_sticks_xyz_format"
+      ]
+    },
+    {
+      "group": "1. Структурные поверхности: горизонты",
+      "method": "1. Структурные поверхности: горизонты",
+      "functions": [
+        "polygon_create_by_map_2d_boundary",
+        "horizon_smooth",
+        "horizon_smooth",
+        "horizon_interpolate_by_marker_idw",
+        "horizon_interpolate_by_marker_idw",
+        "horizon_export_cps_format",
+        "horizon_export_cps_format",
+        "marker_export_well_marker_table_format"
+      ]
+    },
+    {
+      "group": "2. Толщины и 2D-тренды",
+      "method": "2. Толщины и 2D-тренды",
+      "functions": [
+        "map_2d_calculator",
+        "map_2d_smooth",
+        "map_2d_calculator",
+        "map_2d_export_cps_format",
+        "wells_attribute_export"
+      ]
+    },
+    {
+      "group": "3. Полигон вреза (эрозия)",
+      "method": "3. Полигон вреза (эрозия)",
+      "functions": [
+        "polygon_create_by_map_intersection"
+      ]
+    },
+    {
+      "group": "4. Структурная 3D-модель и сетка (corner-point)",
+      "method": "4. Структурная 3D-модель и сетка (corner-point)",
+      "functions": [
+        "grid_3d_create_by_horizons"
+      ]
+    },
+    {
+      "group": "5. Апскейлинг ГИС на сетку (blocked wells)",
+      "method": "5. Апскейлинг ГИС на сетку (blocked wells)",
+      "functions": [
+        "create_object_template",
+        "object_template_mapping",
+        "create_blocked_well_log",
+        "blocked_well_log_change_type",
+        "create_blocked_well_log",
+        "create_blocked_well_log"
+      ]
+    },
+    {
+      "group": "6. Фации (дискретный куб FACIES)",
+      "method": "6. Фации (дискретный куб FACIES)",
+      "functions": [
+        "create_object_template",
+        "grid_property_interpolate_by_wells_log_sgs_multilayer_facies",
+        "object_template_mapping"
+      ]
+    },
+    {
+      "group": "6.1 Геологические тела (geobodies из фаций)",
+      "method": "6.1 Геологические тела (geobodies из фаций)",
+      "functions": [
+        "geobody_create_by_property"
+      ]
+    },
+    {
+      "group": "7. Петрофизика (PORO, PERM)",
+      "method": "7. Петрофизика (PORO, PERM)",
+      "functions": [
+        "grid_property_interpolate_by_wells_log_3d",
+        "grid_property_interpolate_by_wells_log_3d"
+      ]
+    },
+    {
+      "group": "8. Насыщение (контакты OWC/GOC)",
+      "method": "8. Насыщение (контакты OWC/GOC)",
+      "functions": [
+        "contact_create_by_horizon"
+      ]
+    },
+    {
+      "group": "9. Волюметрия (запасы)",
+      "method": "9. Волюметрия (запасы)",
+      "functions": [
+        "grid_property_create_volumetric_properties"
+      ]
+    },
+    {
+      "group": "10. Экспорт карт",
+      "method": "10. Экспорт карт",
+      "functions": [
+        "grid_property_calculator",
+        "map_2d_create_by_grid_property",
+        "map_2d_export_ascii_format",
+        "map_2d_export_cps_format",
+        "map_2d_create_by_grid_property",
+        "map_2d_export_ascii_format",
+        "map_2d_create_by_grid_property",
+        "map_2d_export_ascii_format",
+        "map_2d_create_by_grid_property",
+        "map_2d_export_ascii_format",
+        "map_2d_create_by_grid_property",
+        "map_2d_export_ascii_format",
+        "map_2d_create_by_grid_property",
+        "map_2d_export_ascii_format",
+        "map_2d_export_ascii_format",
+        "map_2d_create_by_grid_property",
+        "map_2d_export_ascii_format"
+      ]
+    }
+  ],
+  "nodes_total": 12,
+  "functions_total": 53
+}
